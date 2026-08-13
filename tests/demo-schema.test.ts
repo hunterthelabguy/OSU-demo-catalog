@@ -31,6 +31,11 @@ const validRecord = {
   consumables: ['liquid nitrogen, ~2 L'],
   prediction_prompt: 'What happens to her rate of spin, and why?',
   target_misconceptions: ['Angular momentum and angular velocity are interchangeable.'],
+  accessibility: {
+    hearing: 'accessible',
+    vision: 'with_support',
+    notes: 'Narrate the spin rate change; let the student feel the stool bearing before class.',
+  },
   images: [{ src: './stool-01.jpg', alt: 'Stool with dumbbells resting on the seat.' }],
   notes: 'staging area',
   maintenance_log: [
@@ -141,6 +146,16 @@ test('maintenance_log must be in date order, newest last', () => {
       }),
     ),
   ).toBe(true);
+});
+
+test('accessibility levels are a closed vocabulary and the object rejects typos', () => {
+  // Absence is fine: it means unassessed, not a claim of accessibility.
+  expect(parses(withChanges({ accessibility: undefined }))).toBe(true);
+  expect(parses(withChanges({ accessibility: { hearing: 'accessible' } }))).toBe(true);
+  expect(parses(withChanges({ accessibility: { vision: 'sort of' } }))).toBe(false);
+  // vision: instead of visions: style typos must fail, same as hazards.
+  expect(parses(withChanges({ accessibility: { visions: 'accessible' } }))).toBe(false);
+  expect(parses(withChanges({ accessibility: { notes: '' } }))).toBe(false);
 });
 
 test('minutes and quantity reject nonsense', () => {
