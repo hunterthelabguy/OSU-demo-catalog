@@ -10,10 +10,13 @@ Last updated: 2026-08-12
 
 ## Current state
 
-**Phase 1 complete: scaffold, verification gate, and CI.** Astro 7, TypeScript
-strict, vitest, and a composite `npm run verify` (typecheck, tests, build) that
-CI runs on every pull request and on `main`. The site itself is a placeholder
-index page; the catalog (schema, records, pages, browse) begins at phase 2.
+**Phases 1 and 2 complete: toolchain, CI, schema, fixtures.** Astro 7,
+TypeScript strict, vitest, and a composite `npm run verify` (typecheck, tests,
+build) that CI runs on every pull request and on `main`. The record schema
+lives in `src/lib/demo-schema.ts` with strict validation (unknown keys fail),
+and two fixture records exercise the verified and stub paths. The site itself
+is a placeholder index listing record titles; demonstration pages begin at
+phase 3.
 
 The documentation pass that preceded it settled the licensing split and the
 commit-authorship discipline before any code existed, inverting spec §7, which
@@ -142,22 +145,27 @@ data.
 - README "Building and running" section replaced with commands that have
   actually been run.
 
-### Phase 2: schema and fixtures
+### Phase 2: schema and fixtures. Shipped 2026-08-12.
 
 - `src/content.config.ts`: glob loader over `**/index.md` under
-  `src/content/demos`, plus the zod schema from spec §3.
-- Two fixtures, one `verified` and one `stub`.
-- Invariant tests, the point of which is that a bad record fails loudly:
-  - malformed frontmatter fails validation
-  - `entry.id`, `data.slug`, and the directory name all agree
-  - body headings appear in the fixed order
-  - `pira_verified: true` implies a non-null `pira_dcs`
-  - every image carries non-empty `alt`
-
-Fixture logistics fields (shelf location, quantity, maintenance history, PIRA
-code, verification dates) are placeholders and marked as such. Inventing them
-would put fabricated data into the record that the catalog exists to make
-trustworthy.
+  `src/content/demos`; schema in `src/lib/demo-schema.ts` so vitest can import
+  it without Astro's virtual modules. Controlled vocabularies are exported
+  consts, because phase 4's facet chips render from the same lists.
+- Validation is strict beyond the spec's letter: unknown frontmatter keys fail
+  the build. A typo like `hazard:` for `hazards:` must not produce a record
+  that silently claims to be hazard-free.
+- Two fixtures, one `verified` (the spec's own worked example, logistics
+  values marked in `notes` as copied rather than checked) and one `stub`.
+  Neither has photographs yet; records render honestly without them.
+- Invariant tests at three layers: schema claims (18 assertions across
+  required fields, closed vocabularies, alt text, the `pira_verified`
+  contradiction, maintenance log order), real-content invariants (slug equals
+  directory name, heading order, records validate outside the build), and the
+  repository invariants from phase 1.
+- The load-bearing claim was demonstrated by hand, once: corrupting a
+  fixture's `status` made `astro build` fail with
+  `InvalidContentEntryDataError` naming the entry, the field, and the allowed
+  values. A malformed record fails the build; it does not render blank.
 
 ### Phase 3: demo page
 
