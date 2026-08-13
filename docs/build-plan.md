@@ -10,24 +10,19 @@ Last updated: 2026-08-12
 
 ## Current state
 
-**Documentation and repository configuration only.** There is no `package.json`,
-no site scaffold, no content, and no deploy. Nothing in this repository builds or
-runs yet, by design: the licensing decision and the commit-authorship decision
-are the two things that get expensive to change after the fact, and both were free
-to settle first.
+**Phase 1 complete: scaffold, verification gate, and CI.** Astro 7, TypeScript
+strict, vitest, and a composite `npm run verify` (typecheck, tests, build) that
+CI runs on every pull request and on `main`. The site itself is a placeholder
+index page; the catalog (schema, records, pages, browse) begins at phase 2.
 
-Present today:
+The documentation pass that preceded it settled the licensing split and the
+commit-authorship discipline before any code existed, inverting spec §7, which
+scheduled the README and LICENSE at step 6: those two decisions are the ones
+that get expensive to change after the fact, and both were free to settle
+first.
 
-```
-README.md              Runbook, field reference, notes promotion rule, photo policy
-LICENSE                MIT, covering code
-LICENSE-CONTENT        CC BY-SA 4.0, covering catalog content
-.gitignore             Anticipates the Astro toolchain that has not landed yet
-docs/spec-v0.1.md      The specification as ruled, reproduced without edit
-docs/build-plan.md     This file
-```
-
-This inverts spec §7, which scheduled the README and LICENSE at step 6.
+Not yet done: Vercel import (requires a dashboard grant only the account owner
+can click), and therefore no deploy URL and no repository homepage field.
 
 ---
 
@@ -37,32 +32,33 @@ Ruled in session on 2026-08-12.
 
 | Question | Ruling |
 |---|---|
-| Repository visibility | **Private until the faculty preview.** Spec §9 assumed public. Flipping later requires no content change. |
+| Repository visibility | Originally private until the faculty preview. **Flipped public 2026-08-12**, before any deploy existed, to unlock branch rulesets on the free plan. Spec §9's caution still applies: the thing not to circulate early is a URL, and there is none yet. |
 | Commit author identity | `hunterthelabguy` with the GitHub noreply address, set repo-local before the first commit existed. |
 | Tests and CI | Full practice floor, planned below, deliberately not built in the documentation pass. |
 | Index card rendering | Cards baked into the built HTML at build time. See amendment 3. |
 
-### Consequence of private visibility
+### Branch protection: resolved
 
-GitHub rulesets are not available for private repositories on the free plan. This
-was attempted and refused with HTTP 403, "Upgrade to GitHub Pro or make this
-repository public to enable this feature."
+While the repository was private, rulesets were refused with HTTP 403 ("Upgrade
+to GitHub Pro or make this repository public to enable this feature"), so the
+first two documentation commits landed on `main` directly, protected by
+convention only. The moment visibility flipped, the ruleset was applied:
+`main-protection` (id 20779940), active, requiring a pull request and a passing
+`verify` check, and forbidding deletion and force pushes. Also applied earlier:
+topics, wiki and projects disabled, delete-branch-on-merge.
 
-**Branch protection on `main` is therefore convention-enforced, not
-machine-enforced, until the repository goes public.** The convention stands
-regardless: code-touching changes land through a pull request with green CI.
-Documentation whose content was already ruled may land directly. Re-attempt the
-ruleset at the moment visibility flips, because a convention that survives only
-in someone's memory is not a control.
-
-Applied successfully: topics, wiki and projects disabled, delete-branch-on-merge.
+One consequence worth stating: rulesets cannot express "documentation may land
+directly." **Every change now rides a pull request**, including docs. That is
+more ceremony than the working agreement strictly requires, and it is accepted:
+a docs PR costs a minute, and a protection rule with a human-judgment escape
+hatch is not a protection rule.
 
 ---
 
 ## Amendments to the spec
 
-Six points raised in review. The spec file itself is left unedited; these are the
-deltas.
+The spec file itself is left unedited; these are the deltas. The first six were
+raised in the initial review, the seventh at scaffold time.
 
 **1. Commit-identity hazard was understated.**
 Spec §7 step 0 is correct that authorship comes first, but the machine's global
@@ -105,6 +101,16 @@ convention.
 index page. It is nearly free while the demo page template is already open and
 tedious to retrofit. Folded into phase 3.
 
+**7. Astro 7, not Astro 5.**
+The spec and the original plan assumed Astro 5, which was current when they were
+drafted. At scaffold time the current major was 7, and a fresh install of 5.x
+reported eight high-severity advisories (an XSS batch, a Windows dev-server
+file-read in esbuild, libvips CVEs in sharp), all resolved on 7. On a greenfield
+repo the major-version choice is free, the spec's reasons for Astro (build-time
+schema validation, near-zero client JS) are unchanged in 7, and the scaffold ran
+green on 7.2.1 without modification. `npm audit` reports zero vulnerabilities.
+A credibility artifact should not open with two highs in every install log.
+
 **Minor.** The spec's own example `alt` text describes a seated student, which
 collides with §9's no-identifiable-faces rule. Fixture photographs will be
 apparatus-only or absent. The PIRA DCS list is a PIRA and CU Boulder community
@@ -115,18 +121,23 @@ data.
 
 ## Phases
 
-### Phase 1: scaffold and verification
+### Phase 1: scaffold and verification. Shipped 2026-08-12.
 
-- Astro 5, TypeScript strict.
-- Vitest; `astro check` for typecheck.
+- Astro 7 (see amendment 7), TypeScript strict.
+- Vitest; `astro check` for typecheck. The first tests guard repository
+  invariants (commit attribution across full history, license file shape),
+  because those are the rulings already in force; content invariants arrive
+  with the schema in phase 2.
 - Scripts: `dev`, `build`, `check`, `test`, and `verify` as the composite gate.
-- `.github/workflows/ci.yml` running `npm ci && npm run verify`. The README badge
-  describes exactly that scope and nothing more.
-- Vercel project linked. Vercel earns its place here specifically because
-  per-pull-request preview URLs make review meaningful on a visual project, which
-  is a real return rather than ceremony.
-- README "Building and running" section replaced with commands that have actually
-  been run.
+- `.github/workflows/ci.yml` running `npm ci && npm run verify` on every pull
+  request and on `main`, with full fetch depth so the attribution test sees all
+  of history. The README badge describes exactly that scope and nothing more.
+- Vercel project: **pending, the one step requiring the account owner.** Import
+  the repo at vercel.com/new; Astro is auto-detected; no environment variables.
+  Vercel earns its place because per-pull-request preview URLs make review
+  meaningful on a visual project, which is a real return rather than ceremony.
+- README "Building and running" section replaced with commands that have
+  actually been run.
 
 ### Phase 2: schema and fixtures
 
