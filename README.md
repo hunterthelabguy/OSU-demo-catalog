@@ -232,8 +232,10 @@ behavior, because there is no site behavior yet: every commit in history is
 attributed to `hunterthelabguy`, and the license files keep the exact shape
 GitHub's detection depends on. Content invariants arrive with the schema.
 
-There is no deploy yet. The build emits a fully static site to `dist/`; Vercel
-import is the planned host.
+Deploys are automatic: every push to `main` goes to production at
+[osu-demo-catalog.vercel.app](https://osu-demo-catalog.vercel.app), and every
+pull request gets its own preview URL from Vercel. There are no build secrets
+and no environment variables; a fork deploys the same way.
 
 ---
 

@@ -21,8 +21,12 @@ scheduled the README and LICENSE at step 6: those two decisions are the ones
 that get expensive to change after the fact, and both were free to settle
 first.
 
-Not yet done: Vercel import (requires a dashboard grant only the account owner
-can click), and therefore no deploy URL and no repository homepage field.
+Deployed: the owner completed the Vercel import on 2026-08-12. Production
+tracks `main` at https://osu-demo-catalog.vercel.app, pull requests get preview
+URLs, and the repository homepage field points at production. Spec §9's caution
+still stands: do not circulate the URL beyond the faculty preview until the
+infrastructure is final, because a propagated link is the expensive thing to
+change.
 
 ---
 
@@ -132,8 +136,7 @@ data.
 - `.github/workflows/ci.yml` running `npm ci && npm run verify` on every pull
   request and on `main`, with full fetch depth so the attribution test sees all
   of history. The README badge describes exactly that scope and nothing more.
-- Vercel project: **pending, the one step requiring the account owner.** Import
-  the repo at vercel.com/new; Astro is auto-detected; no environment variables.
+- Vercel project: imported by the owner 2026-08-12; production tracks `main`.
   Vercel earns its place because per-pull-request preview URLs make review
   meaningful on a visual project, which is a real return rather than ceremony.
 - README "Building and running" section replaced with commands that have
