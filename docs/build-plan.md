@@ -4,7 +4,7 @@ Companion to [spec-v0.1.md](spec-v0.1.md). The spec says what is being built and
 why. This file says what exists today, what is planned next, and which spec
 decisions have been amended since it was written.
 
-Last updated: 2026-08-12
+Last updated: 2026-08-13
 
 ---
 
@@ -140,6 +140,20 @@ institution. Everything a fork would re-rule now lives in
 `--accent-deep` became `--accent-text` (the AA-safe accent text color in each
 scheme), a `--surface` token replaced the last hardcoded whites, and print
 forces the light tokens so dark-mode users print catalog pages.
+
+**9. Accessibility earned a frontmatter field, 2026-08-13.**
+The extraction pass over the stockroom's demo library document found per-sense
+accessibility guidance (hard of hearing, visually impaired) on more than three
+records, which is the threshold the notes promotion rule sets. Added
+`accessibility` to the schema: `hearing` and `vision` levels from a closed
+vocabulary (`accessible`, `with_support`, `inaccessible`) plus a `notes` string
+carrying the accommodation itself. Absence means unassessed, not accessible.
+Rendered in the specimen strip. The same pass replaced the phase 2 fixture's
+invented logistics on `rotating-stool-dumbbells` with document-sourced content
+at `drafted` status, so the content-invariants fixture test now requires "one
+stub and one non-stub" instead of naming `verified`. Triage of the full
+document, including the physics corrections applied during extraction, lives in
+[triage-demo-library-2026-08.md](triage-demo-library-2026-08.md).
 
 **Minor.** The spec's own example `alt` text describes a seated student, which
 collides with §9's no-identifiable-faces rule. Fixture photographs will be

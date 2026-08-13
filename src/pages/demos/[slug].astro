@@ -39,7 +39,8 @@ const hasLogistics =
   d.location !== undefined ||
   d.room_requirements.length > 0 ||
   d.hazards.length > 0 ||
-  d.consumables.length > 0;
+  d.consumables.length > 0 ||
+  d.accessibility !== undefined;
 
 const requestUrl = REQUEST_URL_TEMPLATE?.replace('{slug}', d.slug) ?? null;
 const printUrl = Astro.site ? new URL(`/demos/${demo.id}/`, Astro.site).href : null;
@@ -149,6 +150,28 @@ const classificationLine = [
                 <div class="cell wide">
                   <dt>Consumables</dt>
                   <dd>{d.consumables.join('; ')}</dd>
+                </div>
+              )}
+              {d.accessibility && (
+                <div class="cell wide">
+                  <dt>Accessibility</dt>
+                  <dd class="chip-row">
+                    {d.accessibility.hearing && (
+                      <Chip
+                        label={`hearing: ${humanize(d.accessibility.hearing)}`}
+                        tone={d.accessibility.hearing === 'inaccessible' ? 'alert' : 'neutral'}
+                      />
+                    )}
+                    {d.accessibility.vision && (
+                      <Chip
+                        label={`vision: ${humanize(d.accessibility.vision)}`}
+                        tone={d.accessibility.vision === 'inaccessible' ? 'alert' : 'neutral'}
+                      />
+                    )}
+                    {d.accessibility.notes && (
+                      <span class="access-notes">{d.accessibility.notes}</span>
+                    )}
+                  </dd>
                 </div>
               )}
             </dl>
@@ -313,6 +336,13 @@ const classificationLine = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
+  }
+
+  .access-notes {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--muted);
+    flex-basis: 100%;
   }
 
   .photos figure {

@@ -24,6 +24,14 @@ export const ROOM_REQUIREMENTS = [
   'needs_projector',
 ] as const;
 
+// Accessibility levels, per sense. `with_support` means the demonstration
+// works for the student given an accommodation the record describes in
+// accessibility.notes (a verbal description, a tactile pass before class).
+// Promoted from free-text notes in the 2026-08 extraction pass: the source
+// document carried this guidance on more than three records, which is the
+// threshold the notes promotion rule sets.
+export const ACCESS_LEVELS = ['accessible', 'with_support', 'inaccessible'] as const;
+
 export const HAZARDS = [
   'high_voltage',
   'cryogen',
@@ -120,6 +128,19 @@ export const buildDemoSchema = <ImageSchema extends z.ZodTypeAny>(
       // --- pedagogy ---
       prediction_prompt: z.string().min(1).optional(),
       target_misconceptions: z.array(z.string().min(1)).default([]),
+
+      // --- accessibility ---
+      // Per-sense levels answer "can every student in the room experience
+      // this"; notes carry the accommodation itself. All optional: absence
+      // means nobody has assessed it yet, which is different from a claim.
+      accessibility: z
+        .object({
+          hearing: z.enum(ACCESS_LEVELS).optional(),
+          vision: z.enum(ACCESS_LEVELS).optional(),
+          notes: z.string().min(1).optional(),
+        })
+        .strict()
+        .optional(),
 
       // --- media ---
       images: z

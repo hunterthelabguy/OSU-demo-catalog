@@ -116,6 +116,13 @@ optional, so a stub record still builds and still renders.
 | `prediction_prompt` | The question you pose *before* running it. |
 | `target_misconceptions` | The specific wrong models this demonstration is meant to confront. |
 
+**Accessibility**
+
+| Field | Notes |
+|---|---|
+| `accessibility.hearing`, `accessibility.vision` | `accessible`, `with_support`, or `inaccessible`, per sense. Absence means nobody has assessed it, which is different from a claim. |
+| `accessibility.notes` | The accommodation itself, e.g. "verbally describe the scale reading; let the student feel the surfaces before class". |
+
 **Media**
 
 | Field | Notes |

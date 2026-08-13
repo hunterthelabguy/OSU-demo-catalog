@@ -37,10 +37,15 @@ const loadDemoFiles = (): DemoFile[] =>
 
 const demoFiles = loadDemoFiles();
 
-test('fixtures exist: one verified, one stub, so both rendering paths stay exercised', () => {
+test('both rendering paths stay exercised: at least one stub and one non-stub', () => {
+  // Originally this demanded one `verified` fixture, but the 2026-08
+  // extraction pass replaced the fixture's invented logistics with real
+  // content that no one has physically checked, and a record must not claim
+  // verification it does not have. The rendering split the test protects is
+  // stub band versus full body, which drafted exercises identically.
   const statuses = demoFiles.map((d) => d.frontmatter['status']);
-  expect(statuses).toContain('verified');
   expect(statuses).toContain('stub');
+  expect(statuses.some((s) => s === 'drafted' || s === 'verified')).toBe(true);
 });
 
 test('slug always equals the directory name', () => {
