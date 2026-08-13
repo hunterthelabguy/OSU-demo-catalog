@@ -1,0 +1,171 @@
+---
+// The demo card, spec section 6's signature element: photograph first, then
+// a dense specimen-label strip that answers "can I run this Tuesday" before
+// any prose. Every facet value rides the card as data-* attributes; the
+// index page script toggles visibility, so this component is the only
+// source of card markup.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import Chip from './Chip.astro';
+import { joinValues, setupBucket } from '../lib/facets';
+import { formatMinutes, humanize } from '../lib/format';
+
+interface Props {
+  demo: CollectionEntry<'demos'>;
+}
+const { demo } = Astro.props;
+const d = demo.data;
+const photo = d.images[0];
+
+const stripBits = [
+  d.pira_dcs ?? null,
+  d.setup_minutes !== undefined ? `setup ${formatMinutes(d.setup_minutes)}` : null,
+  d.location?.room ?? null,
+].filter((bit): bit is string => bit !== null);
+---
+
+<article
+  class="card"
+  data-slug={demo.id}
+  data-status={d.status}
+  data-condition={d.condition ?? 'unknown'}
+  data-topics={joinValues(d.topics)}
+  data-courses={joinValues(d.course_tags)}
+  data-setup-bucket={setupBucket(d.setup_minutes)}
+  data-rooms={joinValues(d.room_requirements)}
+  data-hazards={joinValues(d.hazards)}
+>
+  <div class="photo">
+    {
+      photo ? (
+        <Image src={photo.src} alt={photo.alt} widths={[400, 800]} sizes="(max-width: 40rem) 100vw, 20rem" />
+      ) : (
+        <p class="no-photo">No photograph yet</p>
+      )
+    }
+  </div>
+  <div class="card-body">
+    <h2><a href={`/demos/${demo.id}/`}>{d.title}</a></h2>
+    <p class="chips">
+      <Chip label={d.status} tone="stamp" />
+      {
+        d.condition && d.condition !== 'good' && (
+          <Chip label={humanize(d.condition)} tone="alert" />
+        )
+      }
+    </p>
+    <ul class="topics" aria-label="Topics">
+      {d.topics.map((topic) => <li>{topic}</li>)}
+    </ul>
+    {
+      (stripBits.length > 0 || d.hazards.length > 0) && (
+        <div class="mini-strip">
+          {stripBits.length > 0 && <p>{stripBits.join(' · ')}</p>}
+          {d.hazards.length > 0 && (
+            <p class="hazards">
+              {d.hazards.map((hazard) => (
+                <Chip label={humanize(hazard)} tone="alert" />
+              ))}
+            </p>
+          )}
+        </div>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .card {
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--paper) 60%, white);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .photo {
+    border-bottom: 1px solid var(--rule);
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .no-photo {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .card-body {
+    padding: 0.7rem 0.8rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+    margin: 0;
+    line-height: 1.25;
+  }
+
+  h2 a {
+    text-decoration: none;
+  }
+
+  h2 a:hover {
+    text-decoration: underline;
+  }
+
+  .chips {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .topics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .topics li {
+    font-size: 0.75rem;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.1em 0.45em;
+  }
+
+  .mini-strip {
+    margin-top: auto;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .mini-strip p {
+    margin: 0;
+  }
+
+  .mini-strip .hazards {
+    margin-top: 0.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+</style>

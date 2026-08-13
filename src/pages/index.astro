@@ -1,70 +1,412 @@
 ---
-// Placeholder index. The real index page, with demo cards, facets, and
-// search, is phase 4 of docs/build-plan.md. Until then: a plain linked list,
-// which also proves content flows from the collection to the deploy.
+// The catalog index: every card baked into the HTML at build time, facets
+// as show/hide over data-* attributes, Pagefind as the URL-set oracle for
+// free text (build-plan amendment 3). With JavaScript off, the full grid
+// renders with live links and the filter form is inert.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import Chip from '../components/Chip.astro';
+import DemoCard from '../components/DemoCard.astro';
+import { SETUP_BUCKETS, deriveFacets } from '../lib/facets';
+import { humanize } from '../lib/format';
 
 const demos = (await getCollection('demos')).sort((a, b) =>
   a.data.title.localeCompare(b.data.title),
 );
+const facets = deriveFacets(demos);
+
+const groups: {
+  param: string;
+  legend: string;
+  options: { value: string; label: string }[];
+}[] = [
+  {
+    param: 'topic',
+    legend: 'Topic',
+    options: facets.topics.map((t) => ({ value: t, label: t })),
+  },
+  {
+    param: 'course',
+    legend: 'Course',
+    options: facets.courses.map((c) => ({ value: c, label: c })),
+  },
+  {
+    param: 'setup',
+    legend: 'Setup time',
+    options: SETUP_BUCKETS.map((b) => ({ value: b.value, label: b.label })),
+  },
+  {
+    param: 'room',
+    legend: 'Room needs',
+    options: facets.rooms.map((r) => ({ value: r, label: humanize(r) })),
+  },
+  {
+    param: 'hazard',
+    legend: 'Hazards',
+    options: facets.hazards.map((h) => ({ value: h, label: humanize(h) })),
+  },
+].filter((group) => group.options.length > 0);
 ---
 
 <Base
   title="Physics Demonstration Catalog"
   description="A browsable catalog of physics lecture demonstrations."
 >
-  <main>
+  <main class="wide">
     <h1>Physics Demonstration Catalog</h1>
-    <p>
-      A browsable catalog of physics lecture demonstrations. Under
-      construction: faceted browse and search arrive in a later phase; the
-      records below are live now.
+    <p class="lede">
+      One page per demonstration: what it shows, what it needs, where it
+      lives, and the prediction question to ask before you run it.
     </p>
-    <h2>Records</h2>
-    <ul class="records">
-      {
-        demos.map((demo) => (
-          <li>
-            <a href={`/demos/${demo.id}/`}>{demo.data.title}</a>
-            <Chip label={demo.data.status} tone="stamp" />
-          </li>
-        ))
-      }
-    </ul>
-    <p class="count">{demos.length} records so far.</p>
+
+    <form id="filters" aria-label="Search and filter">
+      <search>
+        <label for="q">Search</label>
+        <input
+          type="search"
+          id="q"
+          name="q"
+          placeholder="title, topic, apparatus, anything in a record"
+          autocomplete="off"
+        />
+        <span class="search-note" id="search-note" hidden>
+          Search needs the built site; run npm run preview. Filters still work.
+        </span>
+      </search>
+
+      <div class="facet-groups">
+        {
+          groups.map((group) => (
+            <fieldset data-param={group.param}>
+              <legend>{group.legend}</legend>
+              {group.options.map((option) => (
+                <label>
+                  <input type="checkbox" name={group.param} value={option.value} />
+                  {option.label}
+                </label>
+              ))}
+            </fieldset>
+          ))
+        }
+        <fieldset class="toggles">
+          <legend>Records</legend>
+          <label>
+            <input type="checkbox" name="stubs" value="1" />
+            show stubs
+          </label>
+          <label>
+            <input type="checkbox" name="oos" value="1" />
+            show out of service
+          </label>
+        </fieldset>
+      </div>
+    </form>
+
+    <p id="count" aria-live="polite">{demos.length} demonstrations.</p>
+
+    <div class="grid" id="grid">
+      {demos.map((demo) => <DemoCard demo={demo} />)}
+    </div>
+
+    <div id="empty" class="empty" hidden>
+      <p id="empty-message">No demonstrations match.</p>
+    </div>
   </main>
 </Base>
+
+<script>
+  import { splitValues } from '../lib/facets';
+  import type { CardFacets, FilterState } from '../lib/filter-logic';
+  import {
+    cardVisible,
+    isDefaultHidden,
+    matchesFacets,
+    parseState,
+    serializeState,
+  } from '../lib/filter-logic';
+
+  const form = document.getElementById('filters') as HTMLFormElement;
+  const searchInput = document.getElementById('q') as HTMLInputElement;
+  const searchNote = document.getElementById('search-note') as HTMLElement;
+  const countEl = document.getElementById('count') as HTMLElement;
+  const emptyEl = document.getElementById('empty') as HTMLElement;
+  const emptyMessage = document.getElementById('empty-message') as HTMLElement;
+
+  const cardEls = [...document.querySelectorAll<HTMLElement>('.card')];
+  const cards: { el: HTMLElement; facets: CardFacets }[] = cardEls.map((el) => ({
+    el,
+    facets: {
+      slug: el.dataset.slug ?? '',
+      status: el.dataset.status ?? '',
+      condition: el.dataset.condition ?? 'unknown',
+      topics: splitValues(el.dataset.topics ?? ''),
+      courses: splitValues(el.dataset.courses ?? ''),
+      setupBucket: (el.dataset.setupBucket ?? 'unknown') as CardFacets['setupBucket'],
+      rooms: splitValues(el.dataset.rooms ?? ''),
+      hazards: splitValues(el.dataset.hazards ?? ''),
+    },
+  }));
+
+  // Pagefind loads lazily on first search. Under `astro dev` the bundle does
+  // not exist; search degrades with a visible note and facets keep working.
+  type Pagefind = {
+    search: (q: string) => Promise<{ results: { data: () => Promise<{ url: string }> }[] }>;
+  };
+  let pagefind: Pagefind | null | 'failed' = null;
+  let searchSlugs: ReadonlySet<string> | null = null;
+  let lastChangedLabel = '';
+
+  const loadPagefind = async (): Promise<Pagefind | null> => {
+    if (pagefind === 'failed') return null;
+    if (pagefind) return pagefind;
+    try {
+      // The bundle exists only after `pagefind --site dist`; the specifier
+      // lives in a variable so neither vite nor TypeScript tries to resolve
+      // a module that is not on disk at build time.
+      const bundlePath = '/pagefind/pagefind.js';
+      pagefind = (await import(/* @vite-ignore */ bundlePath)) as Pagefind;
+      return pagefind;
+    } catch {
+      pagefind = 'failed';
+      searchInput.setAttribute('aria-describedby', 'search-note');
+      searchNote.hidden = false;
+      return null;
+    }
+  };
+
+  const runSearch = async (q: string): Promise<void> => {
+    if (q.trim() === '') {
+      searchSlugs = null;
+      return;
+    }
+    const pf = await loadPagefind();
+    if (!pf) {
+      searchSlugs = null;
+      return;
+    }
+    const { results } = await pf.search(q);
+    const data = await Promise.all(results.map((r) => r.data()));
+    searchSlugs = new Set(
+      data
+        .map((d) => /\/demos\/([^/]+)\/?$/.exec(d.url)?.[1])
+        .filter((slug): slug is string => slug !== undefined),
+    );
+  };
+
+  const readState = (): FilterState => {
+    const fd = new FormData(form);
+    return {
+      q: searchInput.value,
+      topics: fd.getAll('topic').map(String),
+      courses: fd.getAll('course').map(String),
+      setup: fd.getAll('setup').map(String),
+      rooms: fd.getAll('room').map(String),
+      hazards: fd.getAll('hazard').map(String),
+      showStubs: fd.get('stubs') === '1',
+      showOutOfService: fd.get('oos') === '1',
+    };
+  };
+
+  const writeControls = (state: FilterState): void => {
+    searchInput.value = state.q;
+    const selected: Record<string, string[]> = {
+      topic: state.topics,
+      course: state.courses,
+      setup: state.setup,
+      room: state.rooms,
+      hazard: state.hazards,
+      stubs: state.showStubs ? ['1'] : [],
+      oos: state.showOutOfService ? ['1'] : [],
+    };
+    for (const input of form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
+      input.checked = (selected[input.name] ?? []).includes(input.value);
+    }
+  };
+
+  const activeFilterCount = (state: FilterState): number =>
+    state.topics.length +
+    state.courses.length +
+    state.setup.length +
+    state.rooms.length +
+    state.hazards.length +
+    (state.q.trim() === '' ? 0 : 1);
+
+  const apply = (state: FilterState): void => {
+    let visible = 0;
+    let hiddenByDefault = 0;
+    for (const { el, facets } of cards) {
+      const show = cardVisible(facets, state, searchSlugs);
+      el.hidden = !show;
+      if (show) visible += 1;
+      else if (matchesFacets(facets, state, searchSlugs) && isDefaultHidden(facets, state)) {
+        hiddenByDefault += 1;
+      }
+    }
+
+    countEl.textContent = `Showing ${visible} of ${cards.length} demonstrations.`;
+    emptyEl.hidden = visible > 0;
+    if (visible === 0) {
+      const filters = activeFilterCount(state);
+      const parts: string[] = [];
+      if (filters > 0) {
+        parts.push(
+          `No demonstrations match ${filters === 1 ? 'this filter' : `all ${filters} filters`}.`,
+        );
+        if (lastChangedLabel) parts.push(`Try clearing "${lastChangedLabel}".`);
+      } else {
+        parts.push('No demonstrations to show.');
+      }
+      if (hiddenByDefault > 0) {
+        parts.push(
+          `${hiddenByDefault} matching ${hiddenByDefault === 1 ? 'record is' : 'records are'} hidden as stub or out of service; the "Records" toggles show them.`,
+        );
+      }
+      emptyMessage.textContent = parts.join(' ');
+    }
+
+    const query = serializeState(state);
+    const next = query === '' ? location.pathname : `${location.pathname}?${query}`;
+    history.replaceState(null, '', next);
+  };
+
+  const refresh = async (): Promise<void> => {
+    const state = readState();
+    await runSearch(state.q);
+    apply(state);
+  };
+
+  form.addEventListener('change', (event) => {
+    const target = event.target;
+    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+      lastChangedLabel = target.closest('label')?.textContent?.trim() ?? '';
+    }
+    void refresh();
+  });
+
+  let debounce: ReturnType<typeof setTimeout> | undefined;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      lastChangedLabel = 'the search text';
+      void refresh();
+    }, 150);
+  });
+
+  // Enter in the search box must not reload the page.
+  form.addEventListener('submit', (event) => event.preventDefault());
+
+  // Restore linkable state from the URL, then apply.
+  writeControls(parseState(location.search));
+  void refresh();
+</script>
 
 <style>
   h1 {
     font-size: 1.9rem;
+    margin-bottom: 0.3rem;
   }
 
-  h2 {
-    font-size: 1.15rem;
-    border-top: 1px solid var(--rule);
-    padding-top: 0.9rem;
-    margin-top: 1.75rem;
+  .lede {
+    color: var(--muted);
+    margin-top: 0;
+    max-width: 46rem;
   }
 
-  .records {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  #filters {
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.9rem 1rem;
+    margin: 1.25rem 0 0.75rem;
+    background: color-mix(in srgb, var(--paper) 60%, white);
   }
 
-  .records li {
+  search {
     display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
     gap: 0.6rem;
-    padding: 0.45rem 0;
-    border-bottom: 1px solid var(--rule);
   }
 
-  .count {
+  search label {
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+
+  #q {
+    flex: 1;
+    min-width: 14rem;
+    max-width: 32rem;
+    font: inherit;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--muted);
+    border-radius: 2px;
+    background: white;
+    color: var(--ink);
+  }
+
+  .search-note {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .facet-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    margin-top: 0.75rem;
+  }
+
+  fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  legend {
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  fieldset label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.88rem;
+    margin: 0 0.75rem 0.25rem 0;
+  }
+
+  fieldset input[type='checkbox'] {
+    accent-color: var(--accent-deep);
+    width: 1rem;
+    height: 1rem;
+  }
+
+  #count {
     color: var(--muted);
     font-size: 0.85rem;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1rem;
+  }
+
+  .empty {
+    border: 2px dashed var(--muted);
+    border-radius: 2px;
+    padding: 1.25rem;
+    max-width: 46rem;
+  }
+
+  .empty p {
+    margin: 0;
+    color: var(--muted);
   }
 </style>
