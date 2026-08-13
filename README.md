@@ -9,9 +9,10 @@ as a static site with faceted browse and full-text search.
 The badge claims exactly what CI checks: typecheck, the test suite, and a
 production build. Nothing else is verified by it.
 
-**Status: v0.1, proof of concept.** The toolchain, CI, the record schema, and
-two fixture records are in place; a malformed record fails the build by
-construction. Demonstration pages, browse, and search are not yet built. See
+**Status: v0.1, proof of concept.** The toolchain, CI, the record schema,
+fixture records, and the demonstration page template (with print stylesheet)
+are in place; a malformed record fails the build by construction. Faceted
+browse and search are not yet built. See
 [docs/build-plan.md](docs/build-plan.md) for what exists, what is planned, and in
 what order.
 
@@ -280,8 +281,10 @@ docs/build-plan.md         Phased build order and current state
 src/content.config.ts      Collection definition: glob loader plus schema
 src/lib/demo-schema.ts     The record schema and controlled vocabularies
 src/content/demos/         One directory per demonstration
-src/pages/                 Site pages (placeholder index only, for now)
-tests/                     Repo, schema, and content invariants
+src/pages/demos/           The per-demonstration page template
+src/layouts/, src/components/   Base layout (fonts, tokens), chips
+src/config.ts              Request-button gate, null until a request system exists
+tests/                     Repo, schema, content, and formatting invariants
 LICENSE                    MIT, covering code
 LICENSE-CONTENT            CC BY-SA 4.0, covering catalog content
 ```

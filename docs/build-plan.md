@@ -167,15 +167,31 @@ data.
   `InvalidContentEntryDataError` naming the entry, the field, and the allowed
   values. A malformed record fails the build; it does not render blank.
 
-### Phase 3: demo page
+### Phase 3: demo page. Shipped 2026-08-12.
 
-- `src/pages/demos/[slug].astro`.
-- The specimen-label metadata strip from spec §6, which is the element a colleague
-  is meant to remember.
-- Stub rendering: photograph, known fields, an explicit "not yet documented" band,
-  and no empty headings.
-- Print stylesheet in the same pass.
-- Accessibility floor, unannounced: visible focus, keyboard operability, reduced
+- `src/pages/demos/[slug].astro`, kept as glue: formatting in
+  `src/lib/format.ts` (tested), chips in `src/components/Chip.astro`, tokens
+  and fonts in `src/layouts/Base.astro`.
+- Design defaults, ruled "defaults" in session: Archivo for headings, Source
+  Serif 4 for body, IBM Plex Mono for identifiers, all self-hosted via
+  Fontsource so the site makes no external requests. Accent is a stamp
+  crimson (#a31621): inspection-stamp semantics for status chips, warning
+  semantics for hazard chips, one saturated hue as the spec requires, and it
+  appears nowhere else. All pairings meet WCAG AA. Chips always carry text
+  and a border, so grayscale printing and color blindness lose nothing.
+- The specimen-label strip renders only fields that exist: sparse record,
+  sparse label, no blanks. The prediction block leads the pedagogy sections
+  because predict-first is the half that produces learning.
+- Stub rendering verified in the browser: explicit "not yet documented" band,
+  no empty strip, no empty headings.
+- Print stylesheet in the same pass: chrome hidden, strip and prediction kept
+  unbroken, canonical URL printed in the footer.
+- `src/config.ts` pulled forward from phase 5, since the request button gate
+  belongs to this template. `REQUEST_URL_TEMPLATE` is null; the button renders
+  nothing today.
+- `noindex` on every page, removed at launch: spec §9 keeps the URL inside the
+  faculty preview, and search indexing would circulate it first.
+- Accessibility floor, unannounced: visible focus, semantic landmarks, reduced
   motion respected, WCAG AA contrast.
 
 ### Phase 4: index, facets, search

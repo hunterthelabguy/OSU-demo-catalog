@@ -1,0 +1,57 @@
+---
+// Status, condition, and hazard chips. The accent color appears here and
+// nowhere else (spec section 6). Chips never rely on color alone: every chip
+// carries its text label and a border, so grayscale printing and color
+// blindness lose nothing.
+interface Props {
+  label: string;
+  // stamp: accent outline, uppercase. The status chip, worn like an
+  //   inspection stamp.
+  // alert: accent filled. Hazards and out_of_service.
+  // neutral: ink outline. Everything informational.
+  tone: 'stamp' | 'alert' | 'neutral';
+}
+const { label, tone } = Astro.props;
+---
+
+<span class={`chip chip-${tone}`}>{label}</span>
+
+<style>
+  .chip {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1;
+    padding: 0.3em 0.55em;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .chip-stamp {
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .chip-alert {
+    color: var(--paper);
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+  }
+  .chip-neutral {
+    color: var(--ink);
+    border: 1px solid var(--muted);
+  }
+  @media print {
+    .chip-alert {
+      color: var(--ink);
+      background: none;
+      border-color: var(--ink);
+      font-weight: 600;
+    }
+    .chip-stamp {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+  }
+</style>
