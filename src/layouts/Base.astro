@@ -1,0 +1,177 @@
+---
+// Base layout: fonts, design tokens, global styles, site chrome.
+//
+// Type (defaults ruled in session, 2026-08-12): Archivo for headings, a
+// grotesque with typefounding lineage; Source Serif 4 for body, a screen
+// workhorse; IBM Plex Mono for identifiers, which signals which strings are
+// addresses rather than prose. All self-hosted via Fontsource: no external
+// requests, no CDN dependency, forkable as-is.
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/source-serif-4';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/600.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Remove at launch. Spec section 9 keeps the URL inside the faculty
+         preview until infrastructure is final; noindex keeps search engines
+         from circulating it first. -->
+    <meta name="robots" content="noindex" />
+    {description && <meta name="description" content={description} />}
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="/">Physics Demonstration Catalog</a>
+    </header>
+    <slot />
+    <footer class="site-footer">
+      <p>
+        Content CC BY-SA 4.0, code MIT.
+        <a href="https://github.com/hunterthelabguy/OSU-demo-catalog">Source</a>
+      </p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    /* Palette (spec section 6): off-white paper, near-black ink, one
+       saturated accent that appears only in chips. The accent is a stamp
+       crimson: inspection-stamp semantics for status, warning semantics for
+       hazards, one hue for both. All pairings meet WCAG AA. */
+    --paper: #f7f4ee;
+    --ink: #1c1a17;
+    --muted: #5c5852;
+    --rule: #d9d2c4;
+    --accent: #a31621;
+
+    --font-display: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas,
+      monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--paper);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  .site-header {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.75rem 1.25rem;
+  }
+
+  .site-header a {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+
+  .site-header a:hover {
+    text-decoration: underline;
+  }
+
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding: 1.5rem 1.25rem 4rem;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    padding: 0.75rem 1.25rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+
+  @media print {
+    :root {
+      --paper: #ffffff;
+    }
+    .site-header,
+    .site-footer {
+      display: none;
+    }
+    body {
+      font-size: 10.5pt;
+    }
+    main {
+      max-width: none;
+      padding: 0;
+    }
+    @page {
+      margin: 15mm;
+    }
+  }
+</style>

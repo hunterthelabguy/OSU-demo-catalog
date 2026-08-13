@@ -1,0 +1,465 @@
+---
+// One page per demonstration. The specimen-label strip answers "can I run
+// this Tuesday" before any prose; the prediction block leads the pedagogy
+// because predict-first is the half of a demonstration that produces
+// learning (see spec, Pedagogical grounding). This template stays glue:
+// formatting lives in src/lib/format.ts, validation in the schema.
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Chip from '../../components/Chip.astro';
+import { REQUEST_URL_TEMPLATE } from '../../config';
+import { formatDate, formatMinutes, humanize } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const demos = await getCollection('demos');
+  return demos.map((demo) => ({ params: { slug: demo.id }, props: { demo } }));
+}
+
+interface Props {
+  demo: CollectionEntry<'demos'>;
+}
+const { demo } = Astro.props;
+const d = demo.data;
+const { Content } = await render(demo);
+
+const hasBody = (demo.body ?? '').trim().length > 0;
+const isStub = d.status === 'stub';
+
+// The strip renders only rows whose fields exist: a sparse record gets a
+// sparse label, not a label full of blanks (spec section 6, stub rendering).
+const hasLogistics =
+  d.pira_dcs != null ||
+  d.setup_minutes !== undefined ||
+  d.teardown_minutes !== undefined ||
+  d.setup_difficulty !== undefined ||
+  d.transportable !== undefined ||
+  d.quantity !== undefined ||
+  d.location !== undefined ||
+  d.room_requirements.length > 0 ||
+  d.hazards.length > 0 ||
+  d.consumables.length > 0;
+
+const requestUrl = REQUEST_URL_TEMPLATE?.replace('{slug}', d.slug) ?? null;
+const printUrl = Astro.site ? new URL(`/demos/${demo.id}/`, Astro.site).href : null;
+
+const classificationLine = [
+  d.topics.join(', '),
+  d.course_tags.length > 0 ? d.course_tags.join(', ') : null,
+  d.typical_units.length > 0 ? `units: ${d.typical_units.join(', ')}` : null,
+]
+  .filter(Boolean)
+  .join(' · ');
+---
+
+<Base title={`${d.title} · Physics Demonstration Catalog`} description={d.topics.join(', ')}>
+  <main>
+    <article>
+      <header class="demo-header">
+        <h1>{d.title}</h1>
+        <p class="chips">
+          <Chip label={d.status} tone="stamp" />
+          {
+            d.condition && d.condition !== 'good' && (
+              <Chip label={humanize(d.condition)} tone="alert" />
+            )
+          }
+          {d.condition === 'good' && <Chip label="condition: good" tone="neutral" />}
+        </p>
+        <p class="classification">{classificationLine}</p>
+      </header>
+
+      {
+        hasLogistics && (
+          <section class="strip" aria-label="Logistics">
+            <dl>
+              {d.pira_dcs != null && (
+                <div class="cell">
+                  <dt>PIRA</dt>
+                  <dd>
+                    <code>{d.pira_dcs}</code>
+                    {!d.pira_verified && <span class="unverified"> (unverified)</span>}
+                  </dd>
+                </div>
+              )}
+              {d.setup_minutes !== undefined && (
+                <div class="cell">
+                  <dt>Setup</dt>
+                  <dd>{formatMinutes(d.setup_minutes)}</dd>
+                </div>
+              )}
+              {d.teardown_minutes !== undefined && (
+                <div class="cell">
+                  <dt>Teardown</dt>
+                  <dd>{formatMinutes(d.teardown_minutes)}</dd>
+                </div>
+              )}
+              {d.setup_difficulty && (
+                <div class="cell">
+                  <dt>Difficulty</dt>
+                  <dd>{d.setup_difficulty}</dd>
+                </div>
+              )}
+              {d.quantity !== undefined && (
+                <div class="cell">
+                  <dt>Quantity</dt>
+                  <dd>{d.quantity}</dd>
+                </div>
+              )}
+              {d.transportable !== undefined && (
+                <div class="cell">
+                  <dt>Transportable</dt>
+                  <dd>{d.transportable ? 'yes' : 'no, fixed room'}</dd>
+                </div>
+              )}
+              {d.location && (
+                <div class="cell">
+                  <dt>Location</dt>
+                  <dd>
+                    <code>
+                      {[d.location.room, d.location.shelf].filter(Boolean).join(' · ')}
+                    </code>
+                  </dd>
+                </div>
+              )}
+              {d.hazards.length > 0 && (
+                <div class="cell wide">
+                  <dt>Hazards</dt>
+                  <dd class="chip-row">
+                    {d.hazards.map((hazard) => (
+                      <Chip label={humanize(hazard)} tone="alert" />
+                    ))}
+                  </dd>
+                </div>
+              )}
+              {d.room_requirements.length > 0 && (
+                <div class="cell wide">
+                  <dt>Room needs</dt>
+                  <dd class="chip-row">
+                    {d.room_requirements.map((requirement) => (
+                      <Chip label={humanize(requirement)} tone="neutral" />
+                    ))}
+                  </dd>
+                </div>
+              )}
+              {d.consumables.length > 0 && (
+                <div class="cell wide">
+                  <dt>Consumables</dt>
+                  <dd>{d.consumables.join('; ')}</dd>
+                </div>
+              )}
+            </dl>
+          </section>
+        )
+      }
+
+      {
+        d.images.length > 0 && (
+          <section class="photos">
+            {d.images.map((img) => (
+              <figure>
+                <Image src={img.src} alt={img.alt} widths={[480, 960]} sizes="(max-width: 46rem) 100vw, 46rem" />
+                {img.caption && <figcaption>{img.caption}</figcaption>}
+              </figure>
+            ))}
+          </section>
+        )
+      }
+
+      {
+        isStub && (
+          <section class="stub-band" aria-label="Documentation status">
+            <p>
+              <strong>Not yet documented.</strong> This record is a stub. What
+              appears on this page is everything the catalog knows so far.
+            </p>
+          </section>
+        )
+      }
+
+      {
+        d.prediction_prompt && (
+          <section class="prediction">
+            <h2>Predict first</h2>
+            <p class="prompt">{d.prediction_prompt}</p>
+            {d.target_misconceptions.length > 0 && (
+              <>
+                <p class="misconceptions-label">Targets these misconceptions:</p>
+                <ul>
+                  {d.target_misconceptions.map((m) => (
+                    <li>{m}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
+        )
+      }
+
+      {
+        hasBody && (
+          <div class="body">
+            <Content />
+          </div>
+        )
+      }
+
+      {
+        d.maintenance_log.length > 0 && (
+          <section class="maintenance">
+            <h2>Maintenance log</h2>
+            <ul>
+              {d.maintenance_log.map((entry) => (
+                <li>
+                  <code>{formatDate(entry.date)}</code> {entry.note}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        d.notes && (
+          <section class="curator-notes">
+            <h2>Curator notes</h2>
+            <p>{d.notes}</p>
+          </section>
+        )
+      }
+
+      {requestUrl && <a class="request" href={requestUrl}>Request this demo</a>}
+
+      <footer class="provenance">
+        <p>
+          <code>{d.slug}</code>
+          {d.last_verified && <> · apparatus checked {formatDate(d.last_verified)}</>}
+          {d.last_updated && <> · record updated {formatDate(d.last_updated)}</>}
+        </p>
+        {printUrl && <p class="print-url">{printUrl}</p>}
+      </footer>
+    </article>
+  </main>
+</Base>
+
+<style>
+  .demo-header h1 {
+    font-size: 2.1rem;
+    margin: 0.5rem 0 0.4rem;
+  }
+
+  .chips {
+    margin: 0 0 0.35rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .classification {
+    margin: 0 0 1.25rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  /* The specimen label. Dense, bordered, hairline-divided: the element that
+     answers "can I actually run this Tuesday" before a word of prose. */
+  .strip {
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  .strip dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  }
+
+  .cell {
+    padding: 0.5rem 0.7rem;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cell.wide {
+    grid-column: 1 / -1;
+  }
+
+  .strip dt {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--muted);
+    margin-bottom: 0.15rem;
+  }
+
+  .strip dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+
+  .strip .unverified {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .photos figure {
+    margin: 0 0 1rem;
+  }
+
+  .photos img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+  }
+
+  .photos figcaption {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.35rem;
+  }
+
+  .stub-band {
+    border: 2px dashed var(--muted);
+    border-radius: 2px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .stub-band p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .prediction {
+    border-left: 3px solid var(--ink);
+    padding: 0.2rem 0 0.2rem 1.1rem;
+    margin: 1.75rem 0;
+  }
+
+  .prediction h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  .prediction .prompt {
+    font-size: 1.15rem;
+    margin: 0 0 0.75rem;
+  }
+
+  .misconceptions-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin: 0 0 0.3rem;
+  }
+
+  .prediction ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+
+  .prediction li {
+    margin-bottom: 0.3rem;
+  }
+
+  /* Body sections: catalog-style rules above each heading. */
+  .body :global(h2) {
+    font-size: 1.2rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+    margin: 1.75rem 0 0.6rem;
+  }
+
+  .body :global(ol),
+  .body :global(ul) {
+    padding-left: 1.3rem;
+  }
+
+  .maintenance h2,
+  .curator-notes h2 {
+    font-size: 1.05rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+    margin: 1.75rem 0 0.5rem;
+  }
+
+  .maintenance ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .maintenance li {
+    margin-bottom: 0.3rem;
+  }
+
+  .curator-notes p {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .request {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 0.55rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .provenance {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 0.6rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .provenance p {
+    margin: 0;
+  }
+
+  .print-url {
+    display: none;
+    font-family: var(--font-mono);
+  }
+
+  @media print {
+    .request {
+      display: none;
+    }
+    .strip,
+    .prediction,
+    .stub-band {
+      break-inside: avoid;
+    }
+    .strip {
+      border-color: #000;
+    }
+    .print-url {
+      display: block;
+      margin-top: 0.3rem;
+    }
+    .demo-header h1 {
+      font-size: 18pt;
+      margin-top: 0;
+    }
+  }
+</style>
