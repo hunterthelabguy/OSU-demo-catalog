@@ -55,7 +55,9 @@ const classificationLine = [
 
 <Base title={`${d.title} · Physics Demonstration Catalog`} description={d.topics.join(', ')}>
   <main>
-    <article>
+    <!-- data-pagefind-body scopes the search index to demo pages only: the
+         index page and any future about page stay out of search results. -->
+    <article data-pagefind-body>
       <header class="demo-header">
         <h1>{d.title}</h1>
         <p class="chips">

@@ -206,13 +206,34 @@ data.
 - Accessibility floor, unannounced: visible focus, semantic landmarks, reduced
   motion respected, WCAG AA contrast.
 
-### Phase 4: index, facets, search
+### Phase 4: index, facets, search. Shipped 2026-08-12.
 
-- Cards baked in at build time per amendment 3.
-- Facets: topic, course tag, setup-time bucket, room requirements, hazards, status
-  (stubs hidden by default), condition (out-of-service hidden by default).
-- Filter state mirrored in the URL query string so a filtered view is linkable.
-- Empty state names the fix rather than the failure.
+- Cards baked in at build time per amendment 3; `DemoCard.astro` is the only
+  source of card markup, and every facet value rides the card as `data-*`
+  attributes.
+- Filtering semantics live in `src/lib/filter-logic.ts` as pure tested
+  functions (OR within a group, AND across groups, stubs and out-of-service
+  hidden by default); the page script is DOM glue. Setup-time buckets carry
+  the spec's boundaries in `src/lib/facets.ts`, asserted by test.
+- Facet groups derive from the records at build time: a group with no values
+  in any record does not render, so the UI grows with the content. Facet
+  values present today: topics, courses, setup buckets.
+- Search is Pagefind, run as part of `npm run build`, indexing only demo
+  pages via `data-pagefind-body`. The index page script uses it purely as a
+  slug-set oracle intersected with the facet verdict. Under `astro dev` the
+  bundle does not exist; search degrades with a visible note and facets keep
+  working. Test search against `npm run preview`.
+- Filter state mirrors into the URL query string (`q`, `topic`, `course`,
+  `setup`, `room`, `hazard`, `stubs`, `oos`), restored on load, so a filtered
+  view is linkable.
+- Empty state names the fix rather than the failure, including the case the
+  spec did not anticipate: when hidden stubs or out-of-service records do
+  match the active filters, the message says so and points at the toggles.
+- One bug found by browser verification and fixed globally: author `display`
+  styles silently defeat the `hidden` attribute, so the base stylesheet now
+  carries `[hidden] { display: none !important }`.
+- Verified in a built preview: full-text hit on body prose, URL round trip,
+  empty-state hints, keyboard focus, 375px with no horizontal overflow.
 
 ### Phase 5: supporting infrastructure
 

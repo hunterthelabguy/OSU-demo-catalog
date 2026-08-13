@@ -9,12 +9,12 @@ as a static site with faceted browse and full-text search.
 The badge claims exactly what CI checks: typecheck, the test suite, and a
 production build. Nothing else is verified by it.
 
-**Status: v0.1, proof of concept.** The toolchain, CI, the record schema,
-fixture records, and the demonstration page template (with print stylesheet)
-are in place; a malformed record fails the build by construction. Faceted
-browse and search are not yet built. See
-[docs/build-plan.md](docs/build-plan.md) for what exists, what is planned, and in
-what order.
+**Status: v0.1, proof of concept.** The proof-of-concept trio is complete:
+validated records, demonstration pages (with print stylesheet), and an index
+with faceted browse and full-text search. A malformed record fails the build
+by construction. Remaining: the photo ingest script, the cached PIRA list,
+and above all the launch content itself. See
+[docs/build-plan.md](docs/build-plan.md) for detail.
 
 ---
 
@@ -233,7 +233,11 @@ npm run verify     # the whole gate: typecheck, tests, production build
 `verify` is exactly what CI runs on every pull request and on `main`. If it is
 green locally, CI will agree. The individual pieces are `npm run check`
 (typecheck via `astro check`), `npm run test` (vitest), and `npm run build`
-(static site into `dist/`).
+(static site into `dist/`, including the Pagefind search index).
+
+Search only works against a built site, because the index is generated from
+the built HTML: use `npm run preview` after a build. Under `npm run dev` the
+search box says so and the facet filters keep working.
 
 The test suite guards three layers: repository invariants (every commit in
 history is attributed to `hunterthelabguy`; the license files keep the exact
