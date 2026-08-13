@@ -249,6 +249,19 @@ and no environment variables; a fork deploys the same way.
 
 ---
 
+## Rebranding a fork
+
+All fonts and every color token live in one file:
+[src/styles/theme.css](src/styles/theme.css). Edit the tokens, swap the font
+`@import` lines (installing the matching `@fontsource` package), and the whole
+site follows. No template names a font or a color directly.
+
+The defaults are Atkinson Hyperlegible Next (a typeface commissioned by the
+Braille Institute for low-vision legibility) and OSU Beaver Orange. The orange
+ships as two tokens because it misses WCAG AA for small text on the paper
+ground: `--accent` for fills and large elements, `--accent-deep` for colored
+text at reading sizes. If you swap the accent, keep or recompute that pair.
+
 ## Licensing
 
 This repository is licensed in two parts.

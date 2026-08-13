@@ -1,15 +1,7 @@
 ---
-// Base layout: fonts, design tokens, global styles, site chrome.
-//
-// Type (defaults ruled in session, 2026-08-12): Archivo for headings, a
-// grotesque with typefounding lineage; Source Serif 4 for body, a screen
-// workhorse; IBM Plex Mono for identifiers, which signals which strings are
-// addresses rather than prose. All self-hosted via Fontsource: no external
-// requests, no CDN dependency, forkable as-is.
-import '@fontsource-variable/archivo';
-import '@fontsource-variable/source-serif-4';
-import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-mono/600.css';
+// Base layout: global styles and site chrome. Fonts and every color token
+// live in src/styles/theme.css, the single file a fork edits to rebrand.
+import '../styles/theme.css';
 
 interface Props {
   title: string;
@@ -46,23 +38,6 @@ const { title, description } = Astro.props;
 </html>
 
 <style is:global>
-  :root {
-    /* Palette (spec section 6): off-white paper, near-black ink, one
-       saturated accent that appears only in chips. The accent is a stamp
-       crimson: inspection-stamp semantics for status, warning semantics for
-       hazards, one hue for both. All pairings meet WCAG AA. */
-    --paper: #f7f4ee;
-    --ink: #1c1a17;
-    --muted: #5c5852;
-    --rule: #d9d2c4;
-    --accent: #a31621;
-
-    --font-display: 'Archivo Variable', 'Helvetica Neue', Arial, sans-serif;
-    --font-body: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
-    --font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas,
-      monospace;
-  }
-
   * {
     box-sizing: border-box;
   }
@@ -103,7 +78,7 @@ const { title, description } = Astro.props;
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--accent-deep);
     outline-offset: 2px;
   }
 

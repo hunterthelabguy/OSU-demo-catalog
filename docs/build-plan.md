@@ -118,6 +118,18 @@ schema validation, near-zero client JS) are unchanged in 7, and the scaffold ran
 green on 7.2.1 without modification. `npm audit` reports zero vulnerabilities.
 A credibility artifact should not open with two highs in every install log.
 
+**8. Type and accent re-ruled after review, 2026-08-12.**
+The phase 3 defaults (Archivo, Source Serif 4, IBM Plex Mono, stamp crimson)
+read wrong to the owner. Re-ruled: Atkinson Hyperlegible Next throughout with
+its companion mono, chosen as the most friendly and accessible face available
+(commissioned by the Braille Institute; unambiguous letterforms), and OSU
+Beaver Orange as the default accent, split into two tokens because the raw
+orange misses WCAG AA for small text on the paper ground. Spec §6's "avoid
+warm-cream-plus-terracotta" is knowingly overridden for the accent: the
+institution's actual brand color does not read as generated, it reads as the
+institution. Everything a fork would re-rule now lives in
+`src/styles/theme.css`, one file.
+
 **Minor.** The spec's own example `alt` text describes a seated student, which
 collides with §9's no-identifiable-faces rule. Fixture photographs will be
 apparatus-only or absent. The PIRA DCS list is a PIRA and CU Boulder community
