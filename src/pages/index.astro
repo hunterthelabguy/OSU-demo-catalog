@@ -1,6 +1,12 @@
 ---
 // Placeholder index. The real index page, with demo cards, facets, and
-// search, is phase 4 of docs/build-plan.md.
+// search, is phase 4 of docs/build-plan.md. The bare record list below
+// exists to prove content flows from the collection to the deploy.
+import { getCollection } from 'astro:content';
+
+const demos = (await getCollection('demos')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
 ---
 
 <!doctype html>
@@ -24,6 +30,17 @@
           >Repository and roadmap</a
         >
       </p>
+      <h2>Records</h2>
+      <p>{demos.length} in the repository so far.</p>
+      <ul>
+        {
+          demos.map((demo) => (
+            <li>
+              {demo.data.title} <code>{demo.id}</code> ({demo.data.status})
+            </li>
+          ))
+        }
+      </ul>
     </main>
   </body>
 </html>

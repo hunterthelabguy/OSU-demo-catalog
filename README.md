@@ -9,9 +9,9 @@ as a static site with faceted browse and full-text search.
 The badge claims exactly what CI checks: typecheck, the test suite, and a
 production build. Nothing else is verified by it.
 
-**Status: v0.1, proof of concept.** The toolchain, verification gate, and CI
-are in place. The catalog itself is not yet built: no record schema, no
-demonstration pages, no browse or search. See
+**Status: v0.1, proof of concept.** The toolchain, CI, the record schema, and
+two fixture records are in place; a malformed record fails the build by
+construction. Demonstration pages, browse, and search are not yet built. See
 [docs/build-plan.md](docs/build-plan.md) for what exists, what is planned, and in
 what order.
 
@@ -62,7 +62,14 @@ src/content/demos/
         stool-02.jpg
 ```
 
-The directory name, the `slug` field, and the published URL must all match.
+The directory name, the `slug` field, and the published URL must all match; a
+test enforces it.
+
+Frontmatter is validated at build time against the schema in
+[src/lib/demo-schema.ts](src/lib/demo-schema.ts). Validation is strict: an
+unknown key is a build failure, not a silently dropped typo. Writing `hazard:`
+instead of `hazards:` must not produce a record that quietly claims to be
+hazard-free.
 
 ### Frontmatter fields
 
@@ -227,10 +234,12 @@ green locally, CI will agree. The individual pieces are `npm run check`
 (typecheck via `astro check`), `npm run test` (vitest), and `npm run build`
 (static site into `dist/`).
 
-The test suite currently guards repository invariants rather than site
-behavior, because there is no site behavior yet: every commit in history is
-attributed to `hunterthelabguy`, and the license files keep the exact shape
-GitHub's detection depends on. Content invariants arrive with the schema.
+The test suite guards three layers: repository invariants (every commit in
+history is attributed to `hunterthelabguy`; the license files keep the exact
+shape GitHub's detection depends on), the schema's claims (required fields,
+closed vocabularies, the `pira_verified` contradiction, alt text, maintenance
+log order), and the real records (slug equals directory name, body headings in
+the fixed order, every record validates outside the build too).
 
 Deploys are automatic: every push to `main` goes to production at
 [osu-demo-catalog.vercel.app](https://osu-demo-catalog.vercel.app), and every
@@ -268,9 +277,11 @@ are not original to this work.
 docs/spec-v0.1.md          Full design specification, including the decisions log
 docs/build-plan.md         Phased build order and current state
 .github/workflows/ci.yml   The verify gate, run on every PR and on main
+src/content.config.ts      Collection definition: glob loader plus schema
+src/lib/demo-schema.ts     The record schema and controlled vocabularies
+src/content/demos/         One directory per demonstration
 src/pages/                 Site pages (placeholder index only, for now)
-src/content/demos/         One directory per demonstration (not yet created)
-tests/                     Repository invariants: attribution, license shape
+tests/                     Repo, schema, and content invariants
 LICENSE                    MIT, covering code
 LICENSE-CONTENT            CC BY-SA 4.0, covering catalog content
 ```

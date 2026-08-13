@@ -1,0 +1,81 @@
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { expect, test } from 'vitest';
+import { parse as parseYaml } from 'yaml';
+import { z } from 'astro/zod';
+import { BODY_HEADINGS, buildDemoSchema } from '../src/lib/demo-schema';
+
+// Invariants over the real records in src/content/demos/, the ones the build
+// itself cannot see. Astro validates frontmatter against the schema; it does
+// not know that the directory name, the slug, and the entry id are supposed
+// to be the same string, or that body headings have a fixed order.
+
+const DEMOS_DIR = join(__dirname, '..', 'src', 'content', 'demos');
+
+interface DemoFile {
+  dirname: string;
+  frontmatter: Record<string, unknown>;
+  body: string;
+}
+
+const loadDemoFiles = (): DemoFile[] =>
+  readdirSync(DEMOS_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const raw = readFileSync(join(DEMOS_DIR, entry.name, 'index.md'), 'utf-8').replace(
+        /\r\n/g,
+        '\n',
+      );
+      const match = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(raw);
+      if (!match) throw new Error(`${entry.name}/index.md has no frontmatter block`);
+      return {
+        dirname: entry.name,
+        frontmatter: parseYaml(match[1]!) as Record<string, unknown>,
+        body: match[2] ?? '',
+      };
+    });
+
+const demoFiles = loadDemoFiles();
+
+test('fixtures exist: one verified, one stub, so both rendering paths stay exercised', () => {
+  const statuses = demoFiles.map((d) => d.frontmatter['status']);
+  expect(statuses).toContain('verified');
+  expect(statuses).toContain('stub');
+});
+
+test('slug always equals the directory name', () => {
+  // The frontmatter slug overrides the glob loader's path-derived entry id,
+  // so slug === dirname makes id, slug, directory, and URL one string. The
+  // slug is also the durable contract with the future request system; a
+  // drifted one is a join that silently fails years from now.
+  for (const demo of demoFiles) {
+    expect(demo.frontmatter['slug'], `${demo.dirname}/index.md`).toBe(demo.dirname);
+  }
+});
+
+test('every record validates against the schema outside the build too', () => {
+  // Belt to astro build's suspenders: schema breakage surfaces in the unit
+  // suite even when nobody has run a build.
+  const schema = buildDemoSchema(() => z.string().min(1));
+  for (const demo of demoFiles) {
+    const result = schema.safeParse(demo.frontmatter);
+    expect(
+      result.success,
+      `${demo.dirname}/index.md: ${result.success ? '' : result.error.message}`,
+    ).toBe(true);
+  }
+});
+
+test('body H2 headings appear in the fixed order, with omissions allowed', () => {
+  const canonical: readonly string[] = BODY_HEADINGS;
+  for (const demo of demoFiles) {
+    const headings = [...demo.body.matchAll(/^## (.+)$/gm)].map((m) => m[1]!.trim());
+    let cursor = -1;
+    for (const heading of headings) {
+      const index = canonical.indexOf(heading);
+      expect(index, `${demo.dirname}: unknown H2 "${heading}"`).toBeGreaterThanOrEqual(0);
+      expect(index, `${demo.dirname}: "${heading}" is out of order`).toBeGreaterThan(cursor);
+      cursor = index;
+    }
+  }
+});
