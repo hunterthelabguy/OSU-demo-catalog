@@ -10,7 +10,7 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Chip from '../../components/Chip.astro';
 import { REQUEST_URL_TEMPLATE } from '../../config';
-import { formatDate, formatMinutes, humanize } from '../../lib/format';
+import { formatDate, formatMinutes, formatMinutesRange, humanize } from '../../lib/format';
 
 export async function getStaticPaths() {
   const demos = await getCollection('demos');
@@ -31,6 +31,7 @@ const isStub = d.status === 'stub';
 // sparse label, not a label full of blanks (spec section 6, stub rendering).
 const hasLogistics =
   d.pira_dcs != null ||
+  d.demo_minutes !== undefined ||
   d.setup_minutes !== undefined ||
   d.teardown_minutes !== undefined ||
   d.setup_difficulty !== undefined ||
@@ -45,13 +46,24 @@ const hasLogistics =
 const requestUrl = REQUEST_URL_TEMPLATE?.replace('{slug}', d.slug) ?? null;
 const printUrl = Astro.site ? new URL(`/demos/${demo.id}/`, Astro.site).href : null;
 
+// Tags ride the classification line so they are visible prose inside the
+// Pagefind-indexed body: searchable, never a facet.
 const classificationLine = [
-  d.topics.join(', '),
+  d.topics.map(humanize).join(', '),
+  d.tags.length > 0 ? `tags: ${d.tags.join(', ')}` : null,
   d.course_tags.length > 0 ? d.course_tags.join(', ') : null,
   d.typical_units.length > 0 ? `units: ${d.typical_units.join(', ')}` : null,
 ]
   .filter(Boolean)
   .join(' · ');
+
+const hasPrep = d.setup_minutes !== undefined || d.teardown_minutes !== undefined;
+const prepLine = [
+  d.setup_minutes !== undefined ? `setup ${formatMinutes(d.setup_minutes)}` : null,
+  d.teardown_minutes !== undefined ? `teardown ${formatMinutes(d.teardown_minutes)}` : null,
+]
+  .filter(Boolean)
+  .join(', ');
 ---
 
 <Base title={`${d.title} · Physics Demonstration Catalog`} description={d.topics.join(', ')}>
@@ -77,6 +89,12 @@ const classificationLine = [
         hasLogistics && (
           <section class="strip" aria-label="Logistics">
             <dl>
+              {d.demo_minutes !== undefined && (
+                <div class="cell">
+                  <dt>Demo time</dt>
+                  <dd>{formatMinutesRange(d.demo_minutes)}</dd>
+                </div>
+              )}
               {d.pira_dcs != null && (
                 <div class="cell">
                   <dt>PIRA</dt>
@@ -86,16 +104,10 @@ const classificationLine = [
                   </dd>
                 </div>
               )}
-              {d.setup_minutes !== undefined && (
+              {hasPrep && (
                 <div class="cell">
-                  <dt>Setup</dt>
-                  <dd>{formatMinutes(d.setup_minutes)}</dd>
-                </div>
-              )}
-              {d.teardown_minutes !== undefined && (
-                <div class="cell">
-                  <dt>Teardown</dt>
-                  <dd>{formatMinutes(d.teardown_minutes)}</dd>
+                  <dt>Prep</dt>
+                  <dd>{prepLine}</dd>
                 </div>
               )}
               {d.setup_difficulty && (
@@ -176,6 +188,15 @@ const classificationLine = [
               )}
             </dl>
           </section>
+        )
+      }
+
+      {
+        hasPrep && (
+          <p class="prep-note">
+            Setup and teardown are handled with stockroom support. Choose by
+            demonstration time, not prep time.
+          </p>
         )
       }
 
@@ -330,6 +351,12 @@ const classificationLine = [
   .strip .unverified {
     color: var(--muted);
     font-size: 0.75rem;
+  }
+
+  .prep-note {
+    margin: -1rem 0 1.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
   }
 
   .chip-row {

@@ -2,7 +2,9 @@
 title: "Friction Plank"
 slug: friction-plank
 status: stub
+category: mechanics
 topics: [friction, forces]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "back of room"

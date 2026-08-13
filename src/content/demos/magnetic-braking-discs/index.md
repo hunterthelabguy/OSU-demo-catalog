@@ -2,7 +2,10 @@
 title: "Magnetic Braking Discs"
 slug: magnetic-braking-discs
 status: stub
-topics: [electromagnetic induction]
+category: electricity_and_magnetism
+topics: [electromagnetic_induction]
+tags: [eddy currents]
+course_tags: [PH213]
 notes: >
   Spinning metal discs stop fast between magnet poles; a sliced disc does not,
   because the eddy currents are broken up. The discs are not ferromagnetic,

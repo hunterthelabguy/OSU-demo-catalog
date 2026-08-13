@@ -2,7 +2,9 @@
 title: "Unit Circle"
 slug: unit-circle
 status: stub
-topics: [mathematical tools]
+category: measurement
+topics: [mathematical_tools]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "A"

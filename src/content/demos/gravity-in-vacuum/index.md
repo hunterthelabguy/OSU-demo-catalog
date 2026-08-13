@@ -5,7 +5,10 @@ slug: gravity-in-vacuum
 status: drafted
 
 # --- classification ---
-topics: [free fall, air resistance]
+category: mechanics
+topics: [kinematics, forces]
+tags: [free fall, air resistance]
+course_tags: [PH211]
 typical_units: [kinematics]
 
 # --- logistics ---

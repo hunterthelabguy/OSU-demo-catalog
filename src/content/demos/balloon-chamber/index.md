@@ -2,7 +2,9 @@
 title: "Balloon Chamber"
 slug: balloon-chamber
 status: stub
+category: fluids
 topics: [pressure]
+course_tags: [PH212]
 notes: >
   A slightly inflated balloon sealed in a chamber grows as the pump removes
   the surrounding air: pressure differential, not added air. Triaged from the

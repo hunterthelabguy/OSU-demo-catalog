@@ -7,7 +7,10 @@ status: drafted
 # --- classification ---
 pira_dcs: "1Q40.10"
 pira_verified: false
-topics: [rotational inertia, angular momentum conservation]
+category: mechanics
+topics: [rotation]
+tags: [rotational inertia, angular momentum]
+course_tags: [PH211]
 typical_units: [rotation]
 
 # --- logistics ---

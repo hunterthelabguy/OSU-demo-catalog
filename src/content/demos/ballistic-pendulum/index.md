@@ -2,7 +2,10 @@
 title: "Ballistic Pendulum"
 slug: ballistic-pendulum
 status: stub
-topics: [momentum, projectile motion]
+category: mechanics
+topics: [momentum, kinematics]
+tags: [projectile motion]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "A"

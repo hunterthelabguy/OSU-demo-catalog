@@ -2,7 +2,10 @@
 title: "Cathode Ray Tube"
 slug: cathode-ray-tube
 status: stub
-topics: [electron beams, magnetism]
+category: electricity_and_magnetism
+topics: [electromagnetism, magnetism]
+tags: [electron beams]
+course_tags: [PH213]
 hazards: [high_voltage]
 notes: >
   Deflect the beam with a bar magnet: compare the two poles and vary the

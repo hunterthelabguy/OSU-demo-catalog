@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { expect, test } from 'vitest';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'astro/zod';
-import { BODY_HEADINGS, buildDemoSchema } from '../src/lib/demo-schema';
+import { BODY_HEADINGS, CATEGORIES, SUBTOPICS, buildDemoSchema } from '../src/lib/demo-schema';
 
 // Invariants over the real records in src/content/demos/, the ones the build
 // itself cannot see. Astro validates frontmatter against the schema; it does
@@ -68,6 +68,33 @@ test('every record validates against the schema outside the build too', () => {
       result.success,
       `${demo.dirname}/index.md: ${result.success ? '' : result.error.message}`,
     ).toBe(true);
+  }
+});
+
+test('every record carries a category from the closed list', () => {
+  // The schema keeps `category` optional so a minimal stub still parses;
+  // this repo requires it anyway, the same way slug must equal dirname.
+  // Without a category a record's subtopics would be reachable from the
+  // browse UI while the record itself matches no category selection.
+  const known: readonly string[] = CATEGORIES;
+  for (const demo of demoFiles) {
+    expect(
+      known.includes(demo.frontmatter['category'] as string),
+      `${demo.dirname}/index.md: category missing or not in CATEGORIES`,
+    ).toBe(true);
+  }
+});
+
+test('every topic is a known subtopic slug', () => {
+  // Redundant with the schema check above, but this one names the file and
+  // the offending value when a remap goes stale.
+  for (const demo of demoFiles) {
+    for (const topic of (demo.frontmatter['topics'] as string[]) ?? []) {
+      expect(
+        topic in SUBTOPICS,
+        `${demo.dirname}/index.md: "${topic}" is not in SUBTOPICS`,
+      ).toBe(true);
+    }
   }
 });
 

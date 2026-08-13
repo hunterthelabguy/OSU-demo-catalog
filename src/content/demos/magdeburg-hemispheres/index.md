@@ -2,7 +2,10 @@
 title: "Magdeburg Hemispheres"
 slug: magdeburg-hemispheres
 status: stub
-topics: [pressure, vacuum]
+category: fluids
+topics: [pressure]
+tags: [vacuum]
+course_tags: [PH212]
 notes: >
   Evacuated hemispheres become nearly impossible to pull apart. Apply vacuum
   grease, pump down, warn pullers to pull straight apart, and run soon after

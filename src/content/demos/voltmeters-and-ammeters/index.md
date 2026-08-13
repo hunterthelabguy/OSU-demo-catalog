@@ -2,7 +2,9 @@
 title: "Voltmeters and Ammeters"
 slug: voltmeters-and-ammeters
 status: stub
-topics: [circuits, measurement]
+category: equipment
+topics: [circuits]
+tags: [meters]
 notes: >
   Equipment: voltmeters large and small, a large milliammeter, a small
   microammeter; included by the owner's ruling. Triaged from the stockroom

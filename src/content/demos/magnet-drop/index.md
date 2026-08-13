@@ -5,7 +5,10 @@ slug: magnet-drop
 status: drafted
 
 # --- classification ---
-topics: [electromagnetic induction, magnetism]
+category: electricity_and_magnetism
+topics: [electromagnetic_induction, magnetism]
+tags: [eddy currents]
+course_tags: [PH213]
 typical_units: [induction]
 
 # --- logistics ---

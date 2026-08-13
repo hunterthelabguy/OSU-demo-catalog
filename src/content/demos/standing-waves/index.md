@@ -5,7 +5,9 @@ slug: standing-waves
 status: drafted
 
 # --- classification ---
-topics: [waves, resonance]
+category: waves
+topics: [wave_properties, standing_waves_and_resonance]
+course_tags: [PH212]
 typical_units: [waves]
 
 # --- logistics ---

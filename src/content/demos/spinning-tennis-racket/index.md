@@ -5,7 +5,10 @@ slug: spinning-tennis-racket
 status: drafted
 
 # --- classification ---
-topics: [center of mass, rotation]
+category: mechanics
+topics: [rotation]
+tags: [center of mass]
+course_tags: [PH211]
 typical_units: [rotation]
 
 # --- logistics ---

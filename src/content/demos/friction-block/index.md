@@ -2,7 +2,9 @@
 title: "Friction Block"
 slug: friction-block
 status: stub
+category: mechanics
 topics: [friction, forces]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "A"

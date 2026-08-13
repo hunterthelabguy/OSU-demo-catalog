@@ -2,7 +2,10 @@
 title: "Centripetal Motion Marbles"
 slug: centripetal-motion-marbles
 status: stub
-topics: [circular motion]
+category: mechanics
+topics: [kinematics]
+tags: [circular motion]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "B"

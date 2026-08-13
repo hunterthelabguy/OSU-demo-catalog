@@ -2,7 +2,10 @@
 title: "Tesla Coil and Large Capacitor"
 slug: tesla-coil
 status: stub
+category: electricity_and_magnetism
 topics: [electromagnetism]
+tags: [high voltage]
+course_tags: [PH213]
 location:
   room: "Demo Room"
   shelf: "back of room"

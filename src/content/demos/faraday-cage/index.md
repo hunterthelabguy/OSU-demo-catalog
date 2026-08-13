@@ -5,7 +5,10 @@ slug: faraday-cage
 status: drafted
 
 # --- classification ---
-topics: [electromagnetism, shielding]
+category: electricity_and_magnetism
+topics: [electromagnetism]
+tags: [shielding]
+course_tags: [PH213]
 typical_units: [electrostatics]
 
 # --- logistics ---

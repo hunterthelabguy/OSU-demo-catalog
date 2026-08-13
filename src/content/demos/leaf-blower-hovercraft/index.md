@@ -2,7 +2,9 @@
 title: "Leaf Blower Hovercraft"
 slug: leaf-blower-hovercraft
 status: stub
+category: fluids
 topics: [pressure, friction]
+course_tags: [PH212]
 notes: >
   Rider-carrying hovercraft: a leaf blower feeds a skirt whose small exit
   holes maintain a pressurized cushion that supports the rider's weight per

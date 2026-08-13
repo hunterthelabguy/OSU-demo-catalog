@@ -5,7 +5,10 @@ slug: ballistic-cart
 status: drafted
 
 # --- classification ---
-topics: [relative motion, projectile motion]
+category: mechanics
+topics: [kinematics]
+tags: [projectile motion, relative motion]
+course_tags: [PH211]
 typical_units: [kinematics]
 
 # --- logistics ---

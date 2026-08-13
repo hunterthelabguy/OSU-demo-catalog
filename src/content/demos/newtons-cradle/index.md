@@ -2,7 +2,10 @@
 title: "Newton's Cradle"
 slug: newtons-cradle
 status: stub
-topics: [momentum, collisions]
+category: mechanics
+topics: [momentum]
+tags: [collisions]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "B"

@@ -2,7 +2,10 @@
 title: "Torque Gun"
 slug: torque-gun
 status: stub
-topics: [rotation, torque]
+category: mechanics
+topics: [rotation]
+tags: [torque]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "back of room"

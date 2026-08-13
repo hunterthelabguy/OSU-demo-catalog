@@ -155,6 +155,53 @@ stub and one non-stub" instead of naming `verified`. Triage of the full
 document, including the physics corrections applied during extraction, lives in
 [triage-demo-library-2026-08.md](triage-demo-library-2026-08.md).
 
+**10. Facet redesign after instructor feedback, 2026-08-13.**
+The extraction pass left the index with 44 flat topic checkboxes, and
+feedback called for a scalable two-level browse, the PH 211/212/213 sequence
+in the course filter, and demonstration time (not setup time) as the
+instructor-facing, filterable time. Ruled and shipped:
+
+- Classification vocabulary adapted from the comPADRE faceted schema
+  (compadre.org, The Physics Front) and the Physics and Equity portal
+  (physicsandequity.org): the portal's seven top levels with four ruled
+  deviations (an oscillations subarea added, fluids standalone, optics split
+  from waves, a measurement category added), plain "Energy" naming without
+  the justice subareas until content exists, and a local `equipment`
+  category neither portal has. New `category` field (optional in schema,
+  required by content test); `topics` became closed subtopic slugs, each
+  with a home category; new free-text `tags` field, rendered and searchable,
+  never a facet. This organizes topics without reversing spec section 4's
+  "no PIRA DCS as primary axis" ruling: topics remain the working values.
+- Index UI: category rows with disclosure-revealed subtopic checkboxes
+  (native details/summary, checkbox beside the summary, no tri-state
+  logic). Category (`cat`) and topic are independent AND-ed facet groups.
+  URL params are now q, cat, topic, course, time, room, hazard, stubs, oos;
+  the old `setup` param died pre-launch without a shim.
+- Demonstration time: new `demo_minutes` range field `{min, max}`; the time
+  facet buckets keep the spec boundaries but a range overlaps every bucket
+  it touches. `setup_minutes`/`teardown_minutes` survive as a merged Prep
+  cell on the detail page with a standing note that prep is staff-supported,
+  and are no longer filterable. The facet renders only for buckets some
+  record actually overlaps, which also fixed a latent trap: the old setup
+  facet rendered unconditionally while zero records carried the field, so
+  any selection emptied the grid. No record carries `demo_minutes` yet;
+  values arrive with the physical verification pass.
+- Course facet: PH211, PH212, PH213 sort first in sequence order. All 54
+  records backfilled with category, remapped topics, tags, and course tags
+  derived category-to-course (fluids to PH212 and measurement to PH211
+  flagged as judgment calls in the PR).
+
+**Queued next, in order (ruled 2026-08-13, deliberately not built yet):**
+
+1. **LaTeX math**, before the heavy content-drafting pass, since physics
+   sections want equations: remark-math plus rehype-katex rendered at build
+   time, KaTeX CSS and fonts self-hosted through npm, zero client
+   JavaScript.
+2. **Embedded video and simulations**, with the content pass that would use
+   them: a constrained embed component (iframe with a fixed host allowlist
+   for YouTube and PhET, lazy click-to-load placeholder so no third-party
+   request fires without consent).
+
 **Minor.** The spec's own example `alt` text describes a seated student, which
 collides with §9's no-identifiable-faces rule. Fixture photographs will be
 apparatus-only or absent. The PIRA DCS list is a PIRA and CU Boulder community

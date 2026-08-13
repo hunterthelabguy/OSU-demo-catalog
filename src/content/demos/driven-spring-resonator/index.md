@@ -5,7 +5,9 @@ slug: driven-spring-resonator
 status: drafted
 
 # --- classification ---
-topics: [resonance, oscillations]
+category: waves
+topics: [oscillations, standing_waves_and_resonance]
+course_tags: [PH212]
 typical_units: [oscillations]
 
 # --- logistics ---

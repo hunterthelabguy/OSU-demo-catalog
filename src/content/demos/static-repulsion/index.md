@@ -2,7 +2,10 @@
 title: "Static Repulsion"
 slug: static-repulsion
 status: stub
+category: electricity_and_magnetism
 topics: [electrostatics]
+tags: [electroscope]
+course_tags: [PH213]
 notes: >
   Electroscope: charge transferred to the top tip spreads to two curved foil
   leaves, which repel each other. Charge it with a rubbed PVC pipe held near

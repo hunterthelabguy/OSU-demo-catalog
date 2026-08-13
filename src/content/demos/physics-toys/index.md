@@ -2,7 +2,10 @@
 title: "Physics Toys"
 slug: physics-toys
 status: stub
-topics: [angular momentum, waves]
+category: mechanics
+topics: [rotation, wave_properties]
+tags: [angular momentum]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "B"
