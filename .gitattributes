@@ -1,0 +1,15 @@
+# Normalize line endings to LF in the repository. Without this, a Windows
+# checkout commits CRLF and a Linux CI runner sees whole-file diffs.
+* text=auto eol=lf
+
+# Shell scripts must keep LF even on a Windows checkout, or they will not run.
+*.sh text eol=lf
+
+# Binary. Never diff, never normalize.
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.webp binary
+*.avif binary
+*.pdf  binary
+*.ico  binary
