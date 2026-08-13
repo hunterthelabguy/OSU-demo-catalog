@@ -15,6 +15,7 @@ const { title, description } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <!-- Remove at launch. Spec section 9 keeps the URL inside the faculty
          preview until infrastructure is final; noindex keeps search engines
@@ -85,7 +86,7 @@ const { title, description } = Astro.props;
   }
 
   :focus-visible {
-    outline: 2px solid var(--accent-deep);
+    outline: 2px solid var(--accent-text);
     outline-offset: 2px;
   }
 
@@ -142,9 +143,7 @@ const { title, description } = Astro.props;
   }
 
   @media print {
-    :root {
-      --paper: #ffffff;
-    }
+    /* Print tokens are forced light in theme.css. */
     .site-header,
     .site-footer {
       display: none;
