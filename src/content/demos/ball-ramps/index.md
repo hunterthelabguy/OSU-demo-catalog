@@ -2,7 +2,9 @@
 title: "Ball Ramps"
 slug: ball-ramps
 status: stub
+category: mechanics
 topics: [kinematics]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "floor"

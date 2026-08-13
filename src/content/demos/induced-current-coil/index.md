@@ -2,7 +2,9 @@
 title: "Induced Current Coil"
 slug: induced-current-coil
 status: stub
-topics: [electromagnetic induction]
+category: electricity_and_magnetism
+topics: [electromagnetic_induction]
+course_tags: [PH213]
 notes: >
   Move a magnet in and out of a coil and read the induced current on a meter.
   The currents are small; use a sensitive meter or a strong magnet. Triaged

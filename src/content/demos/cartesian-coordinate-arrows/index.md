@@ -2,7 +2,10 @@
 title: "Cartesian Coordinate Arrows"
 slug: cartesian-coordinate-arrows
 status: stub
-topics: [mathematical tools, vectors]
+category: measurement
+topics: [mathematical_tools]
+tags: [vectors]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "A"

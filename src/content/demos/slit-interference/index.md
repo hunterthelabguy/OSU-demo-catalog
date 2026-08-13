@@ -2,7 +2,10 @@
 title: "Slit Interference"
 slug: slit-interference
 status: stub
-topics: [interference, diffraction]
+category: optics
+topics: [wave_optics]
+tags: [interference, diffraction]
+course_tags: [PH213]
 location:
   room: "Optics lab, fourth floor"
 hazards: [laser]

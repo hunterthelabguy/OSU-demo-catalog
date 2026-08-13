@@ -2,7 +2,9 @@
 title: "Stringed Cups"
 slug: stringed-cups
 status: stub
-topics: [sound, waves]
+category: waves
+topics: [sound, wave_properties]
+course_tags: [PH212]
 location:
   shelf: "F"
 notes: >

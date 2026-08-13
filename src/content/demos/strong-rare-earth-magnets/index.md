@@ -2,6 +2,7 @@
 title: "Strong Rare Earth Magnets"
 slug: strong-rare-earth-magnets
 status: stub
+category: equipment
 topics: [magnetism]
 notes: >
   Equipment rather than a demonstration; included by the owner's ruling.

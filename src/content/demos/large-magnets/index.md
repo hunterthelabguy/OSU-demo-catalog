@@ -2,6 +2,7 @@
 title: "Large Magnets"
 slug: large-magnets
 status: stub
+category: equipment
 topics: [magnetism]
 notes: >
   Equipment rather than a demonstration; included by the owner's ruling.

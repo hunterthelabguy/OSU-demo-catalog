@@ -2,7 +2,10 @@
 title: "Doppler Football"
 slug: doppler-football
 status: stub
-topics: [sound, Doppler effect]
+category: waves
+topics: [sound]
+tags: [Doppler effect]
+course_tags: [PH212]
 notes: >
   Foam ball with an internal speaker, switched by pressing the spot marked
   with red tape; the pitch shifts as it flies. Throw along several directions,

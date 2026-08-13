@@ -17,9 +17,12 @@ const validRecord = {
   condition: 'good',
   pira_dcs: '1Q40.10',
   pira_verified: false,
-  topics: ['rotational inertia', 'angular momentum conservation'],
-  course_tags: ['PHYS201'],
+  category: 'mechanics',
+  topics: ['rotation', 'conservation_of_energy'],
+  tags: ['rotational inertia', 'angular momentum'],
+  course_tags: ['PH211'],
   typical_units: ['rotation'],
+  demo_minutes: { min: 5, max: 10 },
   setup_minutes: 5,
   teardown_minutes: 5,
   setup_difficulty: 'easy',
@@ -56,7 +59,8 @@ const withChanges = (changes: Record<string, unknown>): Record<string, unknown> 
 test('the maximal record and the minimal stub both validate', () => {
   expect(parses(validRecord)).toBe(true);
   // A stub is required fields only: this is what "optional so a stub still
-  // builds" means, and it must never regress.
+  // builds" means, and it must never regress. Note `category` is optional
+  // at schema level; the repo-wide requirement is a content invariant.
   expect(
     parses({ title: 'Bed of Nails', slug: 'bed-of-nails', status: 'stub', topics: ['pressure'] }),
   ).toBe(true);
@@ -97,6 +101,20 @@ test('controlled vocabularies are closed', () => {
   expect(parses(withChanges({ hazards: ['sharp'] }))).toBe(false);
   expect(parses(withChanges({ room_requirements: ['room_214'] }))).toBe(false);
   expect(parses(withChanges({ setup_difficulty: 'hard' }))).toBe(false);
+  // Since the comPADRE alignment, category and topics are closed too;
+  // free-text specificity belongs in tags.
+  expect(parses(withChanges({ category: 'astrology' }))).toBe(false);
+  expect(parses(withChanges({ topics: ['rotational inertia'] }))).toBe(false);
+});
+
+test('demonstration time is a validated range', () => {
+  expect(parses(withChanges({ demo_minutes: { min: 10, max: 5 } }))).toBe(false);
+  expect(parses(withChanges({ demo_minutes: { min: 2.5, max: 5 } }))).toBe(false);
+  expect(parses(withChanges({ demo_minutes: { min: -1, max: 5 } }))).toBe(false);
+  // A typo key inside the range must fail, same as top level.
+  expect(parses(withChanges({ demo_minutes: { min: 5, max: 10, typical: 7 } }))).toBe(false);
+  expect(parses(withChanges({ demo_minutes: { min: 5, max: 5 } }))).toBe(true);
+  expect(parses(withChanges({ demo_minutes: undefined }))).toBe(true);
 });
 
 test('slugs are kebab-case and URL-safe', () => {

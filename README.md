@@ -92,15 +92,18 @@ optional, so a stub record still builds and still renders.
 |---|---|
 | `pira_dcs` | PIRA DCS code, e.g. `1Q40.10`. Nullable. |
 | `pira_verified` | `true` only after a human checked the code against the real list. |
-| `topics` | **Required, at least one.** Free-text physics topics. The primary browse axis. |
-| `course_tags` | Courses that actually use this, e.g. `[PHYS201, PHYS211]`. |
+| `category` | Top-level browse category, e.g. `mechanics`. Closed vocabulary adapted from the comPADRE schema and the Physics and Equity portal. Optional in the schema so a minimal stub parses; a content test requires it on every record here. |
+| `topics` | **Required, at least one.** Controlled subtopic slugs (e.g. `rotation`, `electromagnetic_induction`) from the vocabulary in `demo-schema.ts`. Each subtopic has a home category, which is where the browse UI lists it; a record may carry subtopics homed elsewhere. |
+| `tags` | Free-text specifics, e.g. `Doppler effect`, `eddy currents`. Rendered on the page and searchable, never a facet. |
+| `course_tags` | Courses that actually use this, e.g. `[PH211]`. The PH 211/212/213 sequence sorts first in the course filter. |
 | `typical_units` | Coarse curricular unit, e.g. `rotation`. Not a week number. |
 
 **Logistics**
 
 | Field | Notes |
 |---|---|
-| `setup_minutes`, `teardown_minutes` | Integers. |
+| `demo_minutes` | Demonstration time as a range, `{min, max}` in minutes: how long the demo takes *in class*. The only time that filters. |
+| `setup_minutes`, `teardown_minutes` | Integers. Prep descriptors, shown on the page, deliberately not filterable: prep is staff-supported, and instructors choose by demonstration time. |
 | `setup_difficulty` | `easy`, `moderate`, or `involved`. |
 | `transportable` | `false` means it lives permanently in one room. |
 | `quantity` | How many exist. |
@@ -292,7 +295,10 @@ text to `LICENSE`.
 The PIRA Demonstration Classification Scheme is a community standard maintained
 by the [Physics Instructional Resource Association](https://physicslearning.colorado.edu/)
 and hosted by the University of Colorado Boulder. DCS codes and category titles
-are not original to this work.
+are not original to this work. The category and subtopic vocabulary is adapted
+from the [comPADRE](https://www.compadre.org/) faceted classification schema
+and the [Physics and Equity portal](https://www.physicsandequity.org/), with
+local deviations recorded in `docs/build-plan.md`.
 
 ---
 

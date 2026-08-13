@@ -2,7 +2,9 @@
 title: "Mass Carts"
 slug: mass-carts
 status: stub
+category: mechanics
 topics: [forces, kinematics]
+course_tags: [PH211]
 location:
   shelf: "A"
 notes: >

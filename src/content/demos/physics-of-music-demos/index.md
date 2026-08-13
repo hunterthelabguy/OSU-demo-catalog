@@ -2,7 +2,9 @@
 title: "Physics of Music Demos"
 slug: physics-of-music-demos
 status: stub
-topics: [sound, resonance]
+category: waves
+topics: [sound, standing_waves_and_resonance]
+course_tags: [PH212]
 location:
   shelf: "F"
 notes: >

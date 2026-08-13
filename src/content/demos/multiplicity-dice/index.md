@@ -5,7 +5,9 @@ slug: multiplicity-dice
 status: drafted
 
 # --- classification ---
-topics: [entropy, statistical mechanics]
+category: thermodynamics
+topics: [entropy_and_statistical_mechanics]
+tags: [entropy, multiplicity]
 course_tags: [PH423]
 typical_units: [thermodynamics]
 

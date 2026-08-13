@@ -5,7 +5,9 @@ slug: interlaced-books
 status: drafted
 
 # --- classification ---
+category: mechanics
 topics: [friction]
+course_tags: [PH211]
 typical_units: [forces]
 
 # --- logistics ---

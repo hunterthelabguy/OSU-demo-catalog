@@ -5,7 +5,10 @@ slug: wood-induced-dipole
 status: drafted
 
 # --- classification ---
-topics: [electrostatics, polarization]
+category: electricity_and_magnetism
+topics: [electrostatics]
+tags: [polarization]
+course_tags: [PH213]
 typical_units: [electrostatics]
 
 # --- logistics ---

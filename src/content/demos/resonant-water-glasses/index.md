@@ -2,7 +2,9 @@
 title: "Resonant Frequency Water Glasses"
 slug: resonant-water-glasses
 status: stub
-topics: [resonance, sound]
+category: waves
+topics: [standing_waves_and_resonance, sound]
+course_tags: [PH212]
 notes: >
   Rub a wet finger around the rim and the glass hums at a frequency set by its
   shape and water level. The source document lists Shelf F with a question

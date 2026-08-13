@@ -3,7 +3,10 @@ title: "Falling Duck Shot"
 slug: falling-duck-shot
 status: stub
 condition: needs_repair
-topics: [projectile motion, relative motion]
+category: mechanics
+topics: [kinematics]
+tags: [projectile motion, relative motion]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "A"

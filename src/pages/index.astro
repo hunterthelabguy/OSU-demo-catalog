@@ -6,7 +6,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import DemoCard from '../components/DemoCard.astro';
-import { SETUP_BUCKETS, deriveFacets } from '../lib/facets';
+import { TIME_BUCKETS, deriveFacets, subtopicsByCategory, timeBuckets } from '../lib/facets';
 import { humanize } from '../lib/format';
 
 const demos = (await getCollection('demos')).sort((a, b) =>
@@ -14,25 +14,34 @@ const demos = (await getCollection('demos')).sort((a, b) =>
 );
 const facets = deriveFacets(demos);
 
+// The two-level topic browse: category blocks with disclosure-revealed
+// subtopic checkboxes, comPADRE / Physics and Equity style (build-plan
+// amendment 10). Categories with nothing to show are dropped inside
+// subtopicsByCategory.
+const categoryGroups = subtopicsByCategory(demos);
+
+// Demonstration-time options render only for buckets some record actually
+// overlaps, so a rendered checkbox can never match nothing; with no timed
+// records, the whole group vanishes via the options.length filter below.
+const usedTimeBuckets = new Set(demos.flatMap((d) => timeBuckets(d.data.demo_minutes)));
+
 const groups: {
   param: string;
   legend: string;
   options: { value: string; label: string }[];
 }[] = [
   {
-    param: 'topic',
-    legend: 'Topic',
-    options: facets.topics.map((t) => ({ value: t, label: t })),
-  },
-  {
     param: 'course',
     legend: 'Course',
     options: facets.courses.map((c) => ({ value: c, label: c })),
   },
   {
-    param: 'setup',
-    legend: 'Setup time',
-    options: SETUP_BUCKETS.map((b) => ({ value: b.value, label: b.label })),
+    param: 'time',
+    legend: 'Demo time',
+    options: TIME_BUCKETS.filter((b) => usedTimeBuckets.has(b.value)).map((b) => ({
+      value: b.value,
+      label: b.label,
+    })),
   },
   {
     param: 'room',
@@ -72,6 +81,41 @@ const groups: {
           Search needs the built site; run npm run preview. Filters still work.
         </span>
       </search>
+
+      <!-- Two-level topic browse. The category checkbox sits BESIDE the
+           details element, never inside its summary: a checkbox inside a
+           summary is announced as part of a disclosure button and label
+           clicks toggle both controls. Category and topic are independent
+           facet groups; there is no tri-state parent logic. -->
+      <fieldset class="topic-facet">
+        <legend>Topic</legend>
+        {
+          categoryGroups.map(({ category, subtopics }) => (
+            <div class="cat-block">
+              <label class="cat-label">
+                <input type="checkbox" name="cat" value={category} />
+                {humanize(category)}
+              </label>
+              {subtopics.length > 0 && (
+                <details class="cat-topics" data-category={category}>
+                  <summary>
+                    <span class="vh">{humanize(category)}: </span>
+                    {subtopics.length} {subtopics.length === 1 ? 'topic' : 'topics'}
+                  </summary>
+                  <div class="topic-list">
+                    {subtopics.map((subtopic) => (
+                      <label>
+                        <input type="checkbox" name="topic" value={subtopic} />
+                        {humanize(subtopic)}
+                      </label>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          ))
+        }
+      </fieldset>
 
       <div class="facet-groups">
         {
@@ -138,9 +182,10 @@ const groups: {
       slug: el.dataset.slug ?? '',
       status: el.dataset.status ?? '',
       condition: el.dataset.condition ?? 'unknown',
+      categories: el.dataset.category ? [el.dataset.category] : [],
       topics: splitValues(el.dataset.topics ?? ''),
       courses: splitValues(el.dataset.courses ?? ''),
-      setupBucket: (el.dataset.setupBucket ?? 'unknown') as CardFacets['setupBucket'],
+      timeBuckets: splitValues(el.dataset.timeBuckets ?? ''),
       rooms: splitValues(el.dataset.rooms ?? ''),
       hazards: splitValues(el.dataset.hazards ?? ''),
     },
@@ -194,11 +239,15 @@ const groups: {
 
   const readState = (): FilterState => {
     const fd = new FormData(form);
+    // Set-dedupe is cheap insurance: each subtopic renders once under its
+    // home category today, but a duplicated checkbox would otherwise
+    // double-count in the URL and the filter count.
     return {
       q: searchInput.value,
-      topics: fd.getAll('topic').map(String),
+      categories: [...new Set(fd.getAll('cat').map(String))],
+      topics: [...new Set(fd.getAll('topic').map(String))],
       courses: fd.getAll('course').map(String),
-      setup: fd.getAll('setup').map(String),
+      times: fd.getAll('time').map(String),
       rooms: fd.getAll('room').map(String),
       hazards: fd.getAll('hazard').map(String),
       showStubs: fd.get('stubs') === '1',
@@ -209,9 +258,10 @@ const groups: {
   const writeControls = (state: FilterState): void => {
     searchInput.value = state.q;
     const selected: Record<string, string[]> = {
+      cat: state.categories,
       topic: state.topics,
       course: state.courses,
-      setup: state.setup,
+      time: state.times,
       room: state.rooms,
       hazard: state.hazards,
       stubs: state.showStubs ? ['1'] : [],
@@ -220,12 +270,19 @@ const groups: {
     for (const input of form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
       input.checked = (selected[input.name] ?? []).includes(input.value);
     }
+    // A restored URL must show its own filters: open (never close) any
+    // category disclosure whose block holds a checked box.
+    for (const details of form.querySelectorAll<HTMLDetailsElement>('details[data-category]')) {
+      const block = details.closest('.cat-block');
+      if (block?.querySelector('input:checked')) details.open = true;
+    }
   };
 
   const activeFilterCount = (state: FilterState): number =>
+    state.categories.length +
     state.topics.length +
     state.courses.length +
-    state.setup.length +
+    state.times.length +
     state.rooms.length +
     state.hazards.length +
     (state.q.trim() === '' ? 0 : 1);
@@ -354,6 +411,58 @@ const groups: {
     flex-wrap: wrap;
     gap: 0.75rem 1.5rem;
     margin-top: 0.75rem;
+  }
+
+  /* Two-level topic browse: category rows with disclosure-revealed
+     subtopics. */
+  .topic-facet {
+    margin-top: 0.75rem;
+  }
+
+  .cat-block {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    column-gap: 0.6rem;
+    align-items: baseline;
+    margin-bottom: 0.3rem;
+  }
+
+  .cat-label {
+    font-weight: 700;
+  }
+
+  .cat-topics summary {
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--muted);
+    width: max-content;
+  }
+
+  .cat-topics summary:hover {
+    color: var(--ink);
+  }
+
+  .topic-list {
+    padding: 0.25rem 0 0.35rem;
+  }
+
+  .vh {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 32rem) {
+    .cat-block {
+      grid-template-columns: 1fr;
+    }
+
+    .cat-topics {
+      margin-left: 1.3rem;
+    }
   }
 
   fieldset {

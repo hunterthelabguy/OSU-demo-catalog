@@ -2,7 +2,10 @@
 title: "Pendulum Stand"
 slug: pendulum-stand
 status: stub
-topics: [oscillations, pendulum]
+category: waves
+topics: [oscillations]
+tags: [pendulum]
+course_tags: [PH212]
 location:
   room: "Demo Room"
 notes: >

@@ -2,7 +2,10 @@
 title: "Rolling Wheels"
 slug: rolling-wheels
 status: stub
-topics: [rotational inertia, energy conservation]
+category: mechanics
+topics: [rotation, conservation_of_energy]
+tags: [rotational inertia]
+course_tags: [PH211]
 location:
   room: "Demo Room"
   shelf: "B"

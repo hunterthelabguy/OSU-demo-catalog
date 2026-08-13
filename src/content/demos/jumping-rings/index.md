@@ -5,7 +5,9 @@ slug: jumping-rings
 status: drafted
 
 # --- classification ---
-topics: [electromagnetic induction]
+category: electricity_and_magnetism
+topics: [electromagnetic_induction]
+course_tags: [PH213]
 typical_units: [induction]
 
 # --- logistics ---

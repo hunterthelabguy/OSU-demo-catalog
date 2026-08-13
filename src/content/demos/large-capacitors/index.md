@@ -2,7 +2,9 @@
 title: "Large Capacitors"
 slug: large-capacitors
 status: stub
-topics: [circuits, capacitance]
+category: equipment
+topics: [circuits]
+tags: [capacitance]
 notes: >
   Equipment rather than a demonstration; included by the owner's ruling.
   Triaged from the stockroom demo library document, 2026-08-13; see

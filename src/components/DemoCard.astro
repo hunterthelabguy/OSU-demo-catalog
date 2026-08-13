@@ -7,8 +7,8 @@
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import Chip from './Chip.astro';
-import { joinValues, setupBucket } from '../lib/facets';
-import { formatMinutes, humanize } from '../lib/format';
+import { joinValues, timeBuckets } from '../lib/facets';
+import { formatMinutesRange, humanize } from '../lib/format';
 
 interface Props {
   demo: CollectionEntry<'demos'>;
@@ -17,9 +17,11 @@ const { demo } = Astro.props;
 const d = demo.data;
 const photo = d.images[0];
 
+// Demonstration time, not setup time: the card answers the instructor's
+// question (how long in class), and prep stays a detail-page descriptor.
 const stripBits = [
   d.pira_dcs ?? null,
-  d.setup_minutes !== undefined ? `setup ${formatMinutes(d.setup_minutes)}` : null,
+  d.demo_minutes !== undefined ? `demo ${formatMinutesRange(d.demo_minutes)}` : null,
   d.location?.room ?? null,
 ].filter((bit): bit is string => bit !== null);
 ---
@@ -29,9 +31,10 @@ const stripBits = [
   data-slug={demo.id}
   data-status={d.status}
   data-condition={d.condition ?? 'unknown'}
+  data-category={d.category ?? ''}
   data-topics={joinValues(d.topics)}
   data-courses={joinValues(d.course_tags)}
-  data-setup-bucket={setupBucket(d.setup_minutes)}
+  data-time-buckets={joinValues(timeBuckets(d.demo_minutes))}
   data-rooms={joinValues(d.room_requirements)}
   data-hazards={joinValues(d.hazards)}
 >
@@ -55,7 +58,7 @@ const stripBits = [
       }
     </p>
     <ul class="topics" aria-label="Topics">
-      {d.topics.map((topic) => <li>{topic}</li>)}
+      {d.topics.map((topic) => <li>{humanize(topic)}</li>)}
     </ul>
     {
       (stripBits.length > 0 || d.hazards.length > 0) && (
