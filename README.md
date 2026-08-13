@@ -1,11 +1,17 @@
 # Physics Demonstration Catalog
 
+[![CI](https://github.com/hunterthelabguy/OSU-demo-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/hunterthelabguy/OSU-demo-catalog/actions/workflows/ci.yml)
+
 A browsable catalog of the physics lecture demonstrations held in the OSU
 stockroom. One Markdown file per demonstration, validated at build time, rendered
 as a static site with faceted browse and full-text search.
 
-**Status: v0.1, proof of concept.** At present this repository contains
-documentation and licensing only. The site itself is not yet built. See
+The badge claims exactly what CI checks: typecheck, the test suite, and a
+production build. Nothing else is verified by it.
+
+**Status: v0.1, proof of concept.** The toolchain, verification gate, and CI
+are in place. The catalog itself is not yet built: no record schema, no
+demonstration pages, no browse or search. See
 [docs/build-plan.md](docs/build-plan.md) for what exists, what is planned, and in
 what order.
 
@@ -208,9 +214,26 @@ hand.
 
 ## Building and running
 
-**Not yet implemented.** There is no `package.json`, no build, and no deploy in
-this repository today. This section will be filled in with real, tested commands
-when the site scaffold lands, and not before.
+Developed and CI-verified on Node 24. Built on Astro 7.
+
+```bash
+npm ci             # install the locked dependency tree
+npm run dev        # dev server at localhost:4321
+npm run verify     # the whole gate: typecheck, tests, production build
+```
+
+`verify` is exactly what CI runs on every pull request and on `main`. If it is
+green locally, CI will agree. The individual pieces are `npm run check`
+(typecheck via `astro check`), `npm run test` (vitest), and `npm run build`
+(static site into `dist/`).
+
+The test suite currently guards repository invariants rather than site
+behavior, because there is no site behavior yet: every commit in history is
+attributed to `hunterthelabguy`, and the license files keep the exact shape
+GitHub's detection depends on. Content invariants arrive with the schema.
+
+There is no deploy yet. The build emits a fully static site to `dist/`; Vercel
+import is the planned host.
 
 ---
 
@@ -240,11 +263,14 @@ are not original to this work.
 ## Repository map
 
 ```
-docs/spec-v0.1.md      Full design specification, including the decisions log
-docs/build-plan.md     Phased build order and current state
-src/content/demos/     One directory per demonstration (not yet created)
-LICENSE                MIT, covering code
-LICENSE-CONTENT        CC BY-SA 4.0, covering catalog content
+docs/spec-v0.1.md          Full design specification, including the decisions log
+docs/build-plan.md         Phased build order and current state
+.github/workflows/ci.yml   The verify gate, run on every PR and on main
+src/pages/                 Site pages (placeholder index only, for now)
+src/content/demos/         One directory per demonstration (not yet created)
+tests/                     Repository invariants: attribution, license shape
+LICENSE                    MIT, covering code
+LICENSE-CONTENT            CC BY-SA 4.0, covering catalog content
 ```
 
 Read `docs/spec-v0.1.md` before making structural changes. It records not only

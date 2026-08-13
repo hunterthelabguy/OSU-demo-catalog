@@ -1,0 +1,29 @@
+# The whole gate is `npm run verify`: typecheck, tests, production build.
+# The README badge claims exactly this and nothing more.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      # Full history, not a shallow clone: the attribution invariant in
+      # tests/repo-invariants.test.ts walks every commit.
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
