@@ -335,6 +335,14 @@ const groups: {
     const target = event.target;
     if (target instanceof HTMLInputElement && target.type === 'checkbox') {
       lastChangedLabel = target.closest('label')?.textContent?.trim() ?? '';
+      // Checking a category reveals its subtopics. Open only, never close:
+      // collapsing on uncheck could hide a still-checked subtopic filter.
+      if (target.name === 'cat' && target.checked) {
+        const details = target
+          .closest('.cat-block')
+          ?.querySelector<HTMLDetailsElement>('details[data-category]');
+        if (details) details.open = true;
+      }
     }
     void refresh();
   });
