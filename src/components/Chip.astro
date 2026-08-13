@@ -27,8 +27,10 @@ const { label, tone } = Astro.props;
     white-space: nowrap;
   }
   .chip-stamp {
-    color: var(--accent);
-    border: 1.5px solid var(--accent);
+    /* accent-deep, not accent: chip text is small, and the raw accent
+       misses AA on the paper ground. See src/styles/theme.css. */
+    color: var(--accent-deep);
+    border: 1.5px solid var(--accent-deep);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 600;

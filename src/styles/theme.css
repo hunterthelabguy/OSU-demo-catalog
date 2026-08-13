@@ -1,0 +1,40 @@
+/*
+ * THE RE-RULE FILE. To rebrand a fork, edit this file and nothing else.
+ * Fonts: swap the @import lines and install the matching @fontsource
+ * package (npm install -D @fontsource-variable/<name>), then update the
+ * three --font-* stacks. Colors: edit the tokens. No template touches a
+ * color or font family directly; everything reads these variables.
+ *
+ * Defaults, ruled 2026-08-12:
+ *
+ * Type is Atkinson Hyperlegible Next throughout, with its companion mono
+ * for identifiers. Commissioned by the Braille Institute for low-vision
+ * legibility: unambiguous letterforms (I/l/1, O/0, b/d all distinct),
+ * friendly without being casual. One family, weights carry the hierarchy.
+ *
+ * The accent is OSU Beaver Orange (#D73F09). It fails WCAG AA for
+ * small text on the paper ground (4.2:1), so it comes in two tokens:
+ * --accent for fills and large elements (white text on it clears 4.5:1),
+ * --accent-deep for accent-colored text at reading sizes (6.9:1).
+ * Use --accent-deep for any colored text; never put small text in raw
+ * --accent on paper.
+ */
+
+@import '@fontsource-variable/atkinson-hyperlegible-next';
+@import '@fontsource-variable/atkinson-hyperlegible-mono';
+
+:root {
+  --paper: #f7f4ee;
+  --ink: #1c1a17;
+  --muted: #5c5852;
+  --rule: #d9d2c4;
+  --accent: #d73f09;
+  --accent-deep: #9a2e06;
+
+  --font-display: 'Atkinson Hyperlegible Next Variable', 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-body: 'Atkinson Hyperlegible Next Variable', 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono Variable', ui-monospace,
+    'Cascadia Mono', Consolas, monospace;
+}
