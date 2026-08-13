@@ -223,6 +223,13 @@ This repository is licensed in two parts.
 - **Content** (demonstration records under `src/content/` and their photographs)
   is CC BY-SA 4.0. See [LICENSE-CONTENT](LICENSE-CONTENT).
 
+`LICENSE` holds the MIT text and nothing else, deliberately. GitHub detects a
+license by matching the file against known license bodies, and any appended
+scope note defeats that match, which costs the repository its license
+designation in the sidebar, the API, and search. The scope of each license is
+therefore stated here and in `LICENSE-CONTENT` instead. Do not add explanatory
+text to `LICENSE`.
+
 The PIRA Demonstration Classification Scheme is a community standard maintained
 by the [Physics Instructional Resource Association](https://physicslearning.colorado.edu/)
 and hosted by the University of Colorado Boulder. DCS codes and category titles
