@@ -10,13 +10,21 @@ Last updated: 2026-08-12
 
 ## Current state
 
-**Phases 1 and 2 complete: toolchain, CI, schema, fixtures.** Astro 7,
-TypeScript strict, vitest, and a composite `npm run verify` (typecheck, tests,
-build) that CI runs on every pull request and on `main`. The record schema
-lives in `src/lib/demo-schema.ts` with strict validation (unknown keys fail),
-and two fixture records exercise the verified and stub paths. The site itself
-is a placeholder index listing record titles; demonstration pages begin at
-phase 3.
+**The proof-of-concept trio is complete** (spec §7 steps 1 through 3):
+validated records, demonstration pages with print stylesheet, and the faceted
+index with Pagefind search. Since then: a dark scheme following
+`prefers-color-scheme` with print forced light, and the `/reflect` and
+`/handoff` agent commands. 31 tests; `npm run verify` is the gate; production
+tracks `main` at https://osu-demo-catalog.vercel.app.
+
+Remaining engineering is phase 5 (photo ingest script, cached PIRA list). The
+gate on the faculty showing is content: 8 to 12 records at `verified` depth,
+which requires the owner, the stockroom, and a camera.
+
+Known latent edge, zero current records affected: `target_misconceptions`
+renders inside the prediction block, so a record with misconceptions but no
+`prediction_prompt` would silently drop them. Fold the fix into the next code
+pass.
 
 The documentation pass that preceded it settled the licensing split and the
 commit-authorship discipline before any code existed, inverting spec §7, which
@@ -128,7 +136,10 @@ orange misses WCAG AA for small text on the paper ground. Spec §6's "avoid
 warm-cream-plus-terracotta" is knowingly overridden for the accent: the
 institution's actual brand color does not read as generated, it reads as the
 institution. Everything a fork would re-rule now lives in
-`src/styles/theme.css`, one file.
+`src/styles/theme.css`, one file. Extended 2026-08-12 with a dark scheme:
+`--accent-deep` became `--accent-text` (the AA-safe accent text color in each
+scheme), a `--surface` token replaced the last hardcoded whites, and print
+forces the light tokens so dark-mode users print catalog pages.
 
 **Minor.** The spec's own example `alt` text describes a seated student, which
 collides with §9's no-identifiable-faces rule. Fixture photographs will be
