@@ -31,6 +31,9 @@
 
 @import '@fontsource-variable/atkinson-hyperlegible-next';
 @import '@fontsource-variable/atkinson-hyperlegible-mono';
+/* KaTeX math styles and fonts, bundled locally like the fonts above so the
+ * site keeps making zero external requests. */
+@import 'katex/dist/katex.min.css';
 
 :root {
   color-scheme: light dark;

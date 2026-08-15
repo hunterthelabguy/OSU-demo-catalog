@@ -40,7 +40,7 @@ notes: >
   verified.
 
 # --- provenance (always last) ---
-last_updated: 2026-08-13
+last_updated: 2026-08-15
 ---
 
 ## Physics
@@ -49,10 +49,16 @@ With the stool's rotation axis vertical and bearing friction small over the
 timescale of the demonstration, the student, stool, and dumbbells form a system
 whose angular momentum about that axis is approximately conserved. Pulling the
 dumbbells inward reduces the moment of inertia, so the angular velocity rises to
-keep L = Iω constant. The rotational kinetic energy increases in the process:
-the student does work pulling the masses inward, and that work is where the
-extra energy comes from. Extending the arms slows the spin again, though bearing
-friction makes the return imperfect.
+keep $L = I\omega$ constant. The rotational kinetic energy increases in the
+process: at fixed angular momentum,
+
+$$
+K = \frac{L^2}{2I},
+$$
+
+so a smaller $I$ means a larger $K$. The student does work pulling the masses
+inward, and that work is where the extra energy comes from. Extending the arms
+slows the spin again, though bearing friction makes the return imperfect.
 
 The bicycle wheel variation demonstrates the same conservation law as a
 transfer. A student on the stationary stool holds a spinning wheel with its
