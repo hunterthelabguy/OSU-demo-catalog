@@ -14,12 +14,14 @@ Last updated: 2026-08-15
 validated records, demonstration pages with print stylesheet, and the faceted
 index with Pagefind search. Since then: a dark scheme following
 `prefers-color-scheme` with print forced light, and the `/reflect` and
-`/handoff` agent commands. 31 tests; `npm run verify` is the gate; production
+`/handoff` agent commands. 42 tests; `npm run verify` is the gate; production
 tracks `main` at https://osu-demo-catalog.vercel.app.
 
-Remaining engineering is phase 5 (photo ingest script, cached PIRA list). The
-gate on the faculty showing is content: 8 to 12 records at `verified` depth,
-which requires the owner, the stockroom, and a camera.
+Remaining engineering is phase 5 (photo ingest script, cached PIRA list),
+phase 6 (mobile, ruled 2026-08-15 in amendment 11 and waiting on mockups), and
+phase 7 (installable offline catalog). The gate on the faculty showing is
+content: 8 to 12 records at `verified` depth, which requires the owner, the
+stockroom, and a camera.
 
 The latent `target_misconceptions` edge is fixed (2026-08-15): the prediction
 section now renders when either the prompt or the misconceptions exist, so
@@ -190,6 +192,51 @@ instructor-facing, filterable time. Ruled and shipped:
   derived category-to-course (fluids to PH212 and measurement to PH211
   flagged as judgment calls in the PR).
 
+**11. Mobile is a stated target, not an unannounced floor, 2026-08-15.**
+Spec section 6 filed "responsive to mobile" among the unannounced quality
+floors, and phase 4 recorded a single manual spot check at 375px. Faculty will
+browse this catalog on a phone, plausibly standing in the stockroom, so the
+floor becomes a target with its own phase. Ruled, not yet built:
+
+- **Compact-width contract.** Two named breakpoints, both in `index.astro`.
+  The existing 32rem category-grid collapse stays. A new 40rem compact
+  breakpoint governs the facet disclosure, the touch floor, and the detail
+  page strip reflow. 40rem is the width below which the filter form exceeds
+  half the viewport before a single result renders, so the breakpoint is
+  derived from the content it fixes rather than from a device size.
+- **Facet disclosure.** The facet fieldsets move inside a native `details`
+  whose `summary` reads "Filters" or "Filters (n)", n being the count of
+  checked boxes. The disclosure exists at every width; only its default open
+  state depends on width. That avoids the rotation trap where a summary
+  hidden above the breakpoint strands a closed panel with no way to reopen
+  it. The markup ships `open`, so a script-less load shows every filter,
+  which is today's behavior unchanged; the page script closes it on load
+  below 40rem. The search input and the result count stay outside the
+  disclosure: search is the primary action on a phone, and hiding the count
+  would defeat the live region it sits in.
+- **Touch floor.** Every interactive control presents at least a 44px hit
+  area below the compact breakpoint, achieved by padding the `label` rather
+  than inflating the checkbox, so the control keeps its size while the target
+  grows. Today `fieldset label` is `inline-flex` with a 0.25rem bottom
+  margin, which leaves roughly 4px between stacked topic checkboxes.
+- **Hover independence.** No affordance may depend on `:hover`. Existing
+  hover rules get an `@media (hover: hover)` guard and a non-hover
+  equivalent, and `:active` states are added. The card title is the live
+  case: it carries `text-decoration: none` until hovered, so on a touch
+  device it never reads as a link at all.
+- **Form controls at 1rem or larger.** iOS Safari zooms the viewport when a
+  focused input renders below 16px. `#q` is 0.95rem today, so that zoom fires
+  on every search made from an iPhone.
+- **No pagination.** All 54 cards stay in the DOM. Filtering is show/hide
+  over baked markup (amendment 3), and pagination would mean rebuilding that
+  model to buy a scroll length 54 records do not justify. Revisit above
+  roughly 150 records.
+- **Verification gets teeth.** Phase 4's 375px claim was a manual spot check
+  with nothing guarding it, and it is written in the same voice as the tested
+  claims around it. Phase 6 converts it into a Playwright smoke inside
+  `npm run verify`. Until that lands, read that phase 4 bullet as
+  spot-checked, not tested.
+
 **Queued next (ruled 2026-08-13):**
 
 1. **LaTeX math: shipped 2026-08-15.** remark-math plus rehype-katex in
@@ -315,6 +362,68 @@ data.
   contract (a request system stores `slug` verbatim) recorded in a comment at the
   point of use rather than only in the spec.
 - Repository homepage field set once a deploy URL exists.
+
+### Phase 6: mobile
+
+Ruled in amendment 11, blocked on mockups rather than on engineering: the
+interaction contract is settled, the visual treatments are not.
+
+- Facet disclosure: markup change in `src/pages/index.astro`, a `matchMedia`
+  close-on-load in the existing page script, and the active count folded into
+  the current apply path rather than a new listener. The count itself is a
+  pure function of `FilterState`, so it lands in `src/lib/filter-logic.ts`
+  with a unit test and the page script stays DOM glue.
+- Touch floor and hover gating across `index.astro`, `DemoCard.astro`,
+  `Chip.astro`, `Base.astro`, and `demos/[slug].astro`.
+- `#q` to 1rem.
+- `.katex-display` gets `overflow-x: auto`. KaTeX ships it as a plain block,
+  so display math overflows a 375px viewport; the live case is
+  `rotating-stool-dumbbells`.
+- The KaTeX stylesheet import moves out of `src/styles/theme.css` into the
+  demo page, so the index stops paying for a stylesheet only demo pages can
+  use. Small, and free.
+- The specimen strip on `demos/[slug].astro` reflows to one column below the
+  compact breakpoint. Its `dt` is 0.62rem with 0.11em letter-spacing, which
+  at two columns of roughly 167px is under the legibility floor on a phone.
+- Whole-card tap target via a stretched-link pseudo-element on the title
+  anchor, which makes the card tappable without adding a second link to the
+  accessibility tree. Pending mockup confirmation, because it costs text
+  selection inside the card.
+- Playwright smoke: one Chromium spec at 375x812 against the built preview,
+  asserting no horizontal overflow on the index and on a demo page carrying
+  display math, the facet disclosure closed on load with the first card
+  visible, every checkbox label at least 44px tall, `#q` computed font size
+  at least 16px, and the summary count tracking a checked box. `package.json`
+  gains `test:e2e`, and `verify` becomes check, test, build, then e2e,
+  because the e2e pass needs the built site and `verify` is documented as the
+  whole gate. CI installs Chromium only. Roughly one minute of CI and one
+  devDependency, paid so the responsive work cannot rot silently.
+- Open for the mockup and not ruled here: whether the search row sticks on
+  scroll, the visual treatment of the disclosure summary, and the card
+  title's link affordance.
+
+### Phase 7: installable offline catalog
+
+The "make it a real app" question, answered. A manifest and a service worker
+are cheap against a static site with no backend, no accounts, and 54 pages,
+and the payoff is specific: browse and search in a building basement with no
+signal.
+
+- `manifest.webmanifest` with maskable icons and a `theme-color` per scheme;
+  `Base.astro` gains the link and meta tags. Installability does not require
+  lifting the site-wide `noindex`.
+- A service worker precaching the built pages, `_astro/`, and the Pagefind
+  index. Pagefind is the interesting part: its index is chunked and fetched
+  on demand, so caching it is the difference between offline search working
+  and offline search degrading to the no-script note.
+- Caveat to record wherever this gets described: iOS evicts storage after
+  roughly seven days without a visit, so a cold reopen re-fetches. Nothing
+  should promise permanent offline.
+- Caveat that keeps this out of phase 6: precaching a catalog whose records
+  are still churning needs a cache-invalidation story settled first.
+- Declined: Capacitor, or any native wrapper. The cost is not the code, it is
+  the store account, the review cycle, and persuading faculty to install
+  something when a URL is one tap away.
 
 ---
 
