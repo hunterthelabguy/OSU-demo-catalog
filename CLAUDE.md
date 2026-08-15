@@ -9,7 +9,12 @@ spec and build-plan differ, build-plan wins; never edit the spec file.
 ## Verify
 
 - `npm run verify` is the whole gate: `astro check`, vitest, `astro build`
-  (which also generates the Pagefind index). Green locally means green in CI.
+  (which also generates the Pagefind index), then `npm run test:e2e`, the
+  Playwright mobile-layout suite against the built site. Green locally
+  means green in CI. First run needs `npx playwright install chromium`.
+- `tests/e2e/` is Playwright and needs a built site; everything else in
+  `tests/` is vitest and pure. `vitest.config.ts` excludes the e2e
+  directory so the two gates cannot swallow each other.
 - Search only works against a built site: `npm run build && npm run preview`.
   Under `astro dev` the search box degrades with a note; facets still work.
 - Browser checks: `.claude/launch.json` has `dev` and `preview` configs for

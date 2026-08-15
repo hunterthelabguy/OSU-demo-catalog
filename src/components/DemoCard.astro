@@ -70,14 +70,38 @@ const hasFooter = locationText !== null || courses.length > 0;
   }
   <div class="card-body">
     <h2><a href={`/demos/${demo.id}/`}>{d.title}</a></h2>
+    <!-- The compact chip row carries what the photo stamp and the hazard
+         band carry at full width, because neither survives below the
+         compact breakpoint. Exactly one treatment is displayed at any
+         width, so the accessibility tree only ever reaches one of them.
+         Hazards lead and are never the chips that get truncated. -->
+    <p class="chips">
+      {
+        d.hazards.map((hazard) => (
+          <span class="compact-only">
+            <Chip label={`▲ ${humanize(hazard)}`} tone="alert" />
+          </span>
+        ))
+      }
+      <span class="compact-only">
+        <Chip label={d.status} tone={d.status === 'stub' ? 'stamp-muted' : 'stamp'} />
+      </span>
+      {
+        d.condition && d.condition !== 'good' && (
+          <span class="always">
+            <Chip label={humanize(d.condition)} tone="alert" />
+          </span>
+        )
+      }
+      {
+        d.room_requirements.map((requirement) => (
+          <span class="compact-only">
+            <Chip label={humanize(requirement)} tone="neutral" />
+          </span>
+        ))
+      }
+    </p>
     {classLine && <p class="class-line">{classLine}</p>}
-    {
-      d.condition && d.condition !== 'good' && (
-        <p class="chips">
-          <Chip label={humanize(d.condition)} tone="alert" />
-        </p>
-      )
-    }
     {
       hasFooter && (
         <p class="card-footer">
@@ -209,6 +233,17 @@ const hasFooter = locationText !== null || courses.length > 0;
     gap: 0.3rem;
   }
 
+  /* Above the compact breakpoint the row exists only for the condition
+     chip; with nothing but compact-only children it collapses entirely
+     rather than leaving a flex gap behind. */
+  .compact-only {
+    display: none;
+  }
+
+  .chips:not(:has(.always)) {
+    display: none;
+  }
+
   .card-footer {
     margin: 0;
     margin-top: auto;
@@ -220,5 +255,56 @@ const hasFooter = locationText !== null || courses.length > 0;
     font-family: var(--font-mono);
     font-size: 0.72rem;
     color: var(--muted);
+  }
+
+  /* Compact: 54 striped placeholders down a phone is noise, so the photo
+     area and the hazard band both go, and their information moves to the
+     chip row and a left accent edge. The card becomes title-first and
+     roughly 110px tall, which also makes the whole card a tap target
+     several times over the 44px floor. */
+  @media (max-width: 48rem) {
+    .photo,
+    .hazard-band {
+      display: none;
+    }
+
+    .compact-only {
+      display: inline;
+    }
+
+    .chips:not(:has(.always)) {
+      display: flex;
+    }
+
+    .card:not([data-hazards='']) {
+      border-left: 3px solid var(--accent);
+    }
+
+    .card-body {
+      padding: 0.7rem 0.8rem 0.75rem;
+      gap: 0.4rem;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+    }
+
+    .class-line {
+      font-size: 0.88rem;
+    }
+
+    /* The whole card is the tap target, not just the title. The stretched
+       pseudo-element keeps one link in the accessibility tree, named by
+       the title and nothing else. Text selection inside a card is the
+       price, and a shelf letter is worth less than the tap. */
+    .card {
+      position: relative;
+    }
+
+    h2 a::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
   }
 </style>

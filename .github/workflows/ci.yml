@@ -1,4 +1,5 @@
-# The whole gate is `npm run verify`: typecheck, tests, production build.
+# The whole gate is `npm run verify`: typecheck, unit tests, production
+# build, then the mobile layout suite against the built site.
 # The README badge claims exactly this and nothing more.
 name: CI
 
@@ -26,4 +27,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Chromium only, matching playwright.config.ts. The layout suite
+      # guards target sizes and overflow, not engine differences.
+      - run: npx playwright install --with-deps chromium
       - run: npm run verify
