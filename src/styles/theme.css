@@ -49,9 +49,10 @@
 
 @import '@fontsource-variable/atkinson-hyperlegible-next';
 @import '@fontsource-variable/atkinson-hyperlegible-mono';
-/* KaTeX math styles and fonts, bundled locally like the fonts above so the
- * site keeps making zero external requests. */
-@import 'katex/dist/katex.min.css';
+/* KaTeX styles are bundled locally too, like the fonts above, so the site
+ * keeps making zero external requests. They are imported by
+ * src/pages/demos/[slug].astro rather than here: only demo pages can
+ * render math, and the index should not carry the stylesheet. */
 
 :root {
   color-scheme: light dark;

@@ -2,12 +2,13 @@
 // The catalog index: every card baked into the HTML at build time, facets
 // as show/hide over data-* attributes, Pagefind as the URL-set oracle for
 // free text (build-plan amendment 3). With JavaScript off, the full grid
-// renders with live links and the filter form is inert.
+// renders with live links, the facet panel is open, and the form is inert.
 //
-// Layout is the 2026-08-15 design pass (amendment 12): masthead lockup,
-// full-width search band, facet sidebar, results column with removable
-// filter chips. Facet counts are baked at build time and count every
-// record carrying the value, stubs included: the sidebar describes the
+// Layout is the design round (amendments 12 and 13): masthead lockup,
+// sticky search band carrying the live count, a course rail pinned above
+// a collapsible facet panel, and a results column with removable filter
+// chips. Facet counts are baked at build time and count every record
+// carrying the value, stubs included: the sidebar describes the
 // stockroom, not the current view.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -26,7 +27,10 @@ const oosCount = demos.filter((d) => d.data.condition === 'out_of_service').leng
 // The two-level topic browse: category blocks with disclosure-revealed
 // subtopic checkboxes, comPADRE / Physics and Equity style (build-plan
 // amendment 10). Categories with nothing to show are dropped inside
-// subtopicsByCategory.
+// subtopicsByCategory. The number beside a category is its record count,
+// never its subtopic count: the subtopic count already has a home in the
+// disclosure summary text, and one number per position means one meaning
+// (amendment 13).
 const categoryGroups = subtopicsByCategory(demos).map((group) => ({
   ...group,
   count: demos.filter((d) => d.data.category === group.category).length,
@@ -79,6 +83,9 @@ const groups: {
   masthead="full"
   mastheadMeta={`${demos.length} records · ${documented} documented`}
 >
+  <!-- Sticky below the compact breakpoint: with 54 cards in one column,
+       the search box and the live count are the two things worth the
+       permanent 90px. The masthead and the facet panel scroll away. -->
   <div class="search-band">
     <div class="search-inner">
       <label class="vh" for="q">Search</label>
@@ -90,6 +97,7 @@ const groups: {
         placeholder="Search titles, topics, apparatus, procedure text"
         autocomplete="off"
       />
+      <p id="count" aria-live="polite">{demos.length} demonstrations.</p>
       <span class="search-note" id="search-note" hidden>
         Search needs the built site; run npm run preview. Filters still work.
       </span>
@@ -98,56 +106,11 @@ const groups: {
 
   <main class="wide shell">
     <form id="filters" class="sidebar" aria-label="Filter">
-      <fieldset class="toggles">
-        <legend><span class="legend-inner">Records</span></legend>
-        <label>
-          <input type="checkbox" name="stubs" value="1" />
-          show stubs
-          <span class="count">{stubCount}</span>
-        </label>
-        <label>
-          <input type="checkbox" name="oos" value="1" />
-          show out of service
-          <span class="count">{oosCount}</span>
-        </label>
-      </fieldset>
-
-      <!-- Two-level topic browse. The category checkbox sits BESIDE the
-           details element, never inside its summary: a checkbox inside a
-           summary is announced as part of a disclosure button and label
-           clicks toggle both controls. Category and topic are independent
-           facet groups; there is no tri-state parent logic. -->
-      <fieldset class="topic-facet">
-        <legend><span class="legend-inner">Topic</span></legend>
-        {
-          categoryGroups.map(({ category, subtopics, count }) => (
-            <div class="cat-block">
-              <label class="cat-label">
-                <input type="checkbox" name="cat" value={category} />
-                {humanize(category)}
-                <span class="count">{count > 0 ? count : '·'}</span>
-              </label>
-              {subtopics.length > 0 && (
-                <details class="cat-topics" data-category={category}>
-                  <summary>
-                    <span class="vh">{humanize(category)}: </span>
-                    {subtopics.length} {subtopics.length === 1 ? 'topic' : 'topics'}
-                  </summary>
-                  <div class="topic-list">
-                    {subtopics.map((subtopic) => (
-                      <label>
-                        <input type="checkbox" name="topic" value={subtopic} />
-                        {humanize(subtopic)}
-                      </label>
-                    ))}
-                  </div>
-                </details>
-              )}
-            </div>
-          ))
-        }
-      </fieldset>
-
+      <!-- Course is the fastest question an instructor asks, so it is
+           pinned above the disclosure at every width rather than folded
+           inside it (amendment 13). One fieldset, one source of truth:
+           the compact rail and the desktop sidebar are the same controls,
+           so they cannot desync. -->
       <fieldset class="course-facet">
         <legend><span class="legend-inner">Course</span></legend>
         <div class="course-chips">
@@ -162,29 +125,93 @@ const groups: {
         </div>
       </fieldset>
 
-      {
-        groups.map((group) => (
-          <fieldset data-param={group.param}>
-            <legend>
-              <span class="legend-inner">{group.legend}</span>
-            </legend>
-            {group.options.map((option) => (
-              <label>
-                <input type="checkbox" name={group.param} value={option.value} />
-                {option.label}
-                <span class="count">{option.count > 0 ? option.count : '·'}</span>
-              </label>
-            ))}
+      <!-- The disclosure exists at every width; only its default open
+           state depends on width, so a rotation across the breakpoint can
+           never strand a closed panel behind a hidden summary (amendment
+           11). Ships open, so a script-less load shows every filter. -->
+      <details class="facet-panel" id="facet-panel" open>
+        <summary class="facet-summary">
+          <span class="facet-summary-label">
+            Filters<span class="filter-count" id="filter-count" aria-hidden="true" hidden></span>
+            <span class="vh" id="filter-count-a11y"></span>
+          </span>
+        </summary>
+
+        <div class="facet-body">
+          <fieldset class="toggles">
+            <legend><span class="legend-inner">Records</span></legend>
+            <label>
+              <input type="checkbox" name="stubs" value="1" />
+              show stubs
+              <span class="count">{stubCount}</span>
+            </label>
+            <label>
+              <input type="checkbox" name="oos" value="1" />
+              show out of service
+              <span class="count">{oosCount}</span>
+            </label>
           </fieldset>
-        ))
-      }
+
+          <!-- Two-level topic browse. The category checkbox sits BESIDE the
+               details element, never inside its summary: a checkbox inside a
+               summary is announced as part of a disclosure button and label
+               clicks toggle both controls. Category and topic are independent
+               facet groups; there is no tri-state parent logic. -->
+          <fieldset class="topic-facet">
+            <legend><span class="legend-inner">Topic</span></legend>
+            {
+              categoryGroups.map(({ category, subtopics, count }) => (
+                <div class="cat-block">
+                  <label class="cat-label">
+                    <input type="checkbox" name="cat" value={category} />
+                    {humanize(category)}
+                    <span class="count">{count > 0 ? count : '·'}</span>
+                  </label>
+                  {subtopics.length > 0 && (
+                    <details class="cat-topics" data-category={category}>
+                      <summary>
+                        <span class="vh">{humanize(category)}: </span>
+                        {subtopics.length} {subtopics.length === 1 ? 'topic' : 'topics'}
+                      </summary>
+                      <div class="topic-list">
+                        {subtopics.map((subtopic) => (
+                          <label>
+                            <input type="checkbox" name="topic" value={subtopic} />
+                            {humanize(subtopic)}
+                          </label>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </div>
+              ))
+            }
+          </fieldset>
+
+          {
+            groups.map((group) => (
+              <fieldset data-param={group.param}>
+                <legend>
+                  <span class="legend-inner">{group.legend}</span>
+                </legend>
+                {group.options.map((option) => (
+                  <label>
+                    <input type="checkbox" name={group.param} value={option.value} />
+                    {option.label}
+                    <span class="count">{option.count > 0 ? option.count : '·'}</span>
+                  </label>
+                ))}
+              </fieldset>
+            ))
+          }
+        </div>
+      </details>
     </form>
 
     <section class="results" aria-label="Results">
-      <div class="results-head">
-        <p id="count" aria-live="polite">{demos.length} demonstrations.</p>
-        <ul id="active-chips" class="active-chips" hidden></ul>
-        <button type="button" id="clear-all" class="linklike" hidden>Clear all</button>
+      <div class="results-head" id="results-head" hidden>
+        <ul id="active-chips" class="active-chips"></ul>
+        <button type="button" id="clear-all" class="linklike">Clear all</button>
       </div>
 
       <div class="grid" id="grid">
@@ -221,6 +248,10 @@ const groups: {
   const searchInput = document.getElementById('q') as HTMLInputElement;
   const searchNote = document.getElementById('search-note') as HTMLElement;
   const countEl = document.getElementById('count') as HTMLElement;
+  const facetPanel = document.getElementById('facet-panel') as HTMLDetailsElement;
+  const filterCount = document.getElementById('filter-count') as HTMLElement;
+  const filterCountA11y = document.getElementById('filter-count-a11y') as HTMLElement;
+  const resultsHead = document.getElementById('results-head') as HTMLElement;
   const chipsEl = document.getElementById('active-chips') as HTMLElement;
   const clearAllButton = document.getElementById('clear-all') as HTMLButtonElement;
   const stubNoteEl = document.getElementById('stub-note') as HTMLElement;
@@ -334,13 +365,7 @@ const groups: {
   };
 
   const activeFilterCount = (state: FilterState): number =>
-    state.categories.length +
-    state.topics.length +
-    state.courses.length +
-    state.times.length +
-    state.rooms.length +
-    state.hazards.length +
-    (state.q.trim() === '' ? 0 : 1);
+    activeSelections(state).length + (state.q.trim() === '' ? 0 : 1);
 
   // Chip labels resolve the same way the sidebar renders them: humanized
   // vocabulary tokens, raw course codes, spec bucket labels for time.
@@ -348,8 +373,7 @@ const groups: {
   const chipLabel = ({ param, value }: ActiveSelection): string =>
     param === 'course' ? value : param === 'time' ? (timeLabels.get(value) ?? value) : humanize(value);
 
-  const renderChips = (state: FilterState): void => {
-    const selections = activeSelections(state);
+  const renderChips = (selections: ActiveSelection[]): void => {
     chipsEl.replaceChildren(
       ...selections.map((selection) => {
         const label = chipLabel(selection);
@@ -370,8 +394,20 @@ const groups: {
         return item;
       }),
     );
-    chipsEl.hidden = selections.length === 0;
-    clearAllButton.hidden = selections.length === 0;
+    resultsHead.hidden = selections.length === 0;
+  };
+
+  // The summary count is the panel's promise that nothing is hidden
+  // silently: the visible "(3)" and the accent border say it in pixels,
+  // the visually-hidden ", 3 selected" says it in the accessible name.
+  // Stubs and out of service are view toggles, not filters, so they stay
+  // out of the count exactly as they stay out of the chips and Clear all.
+  const renderFilterCount = (selections: ActiveSelection[]): void => {
+    const n = selections.length;
+    filterCount.hidden = n === 0;
+    filterCount.textContent = ` (${n})`;
+    filterCountA11y.textContent = n === 0 ? '' : `, ${n} selected`;
+    facetPanel.classList.toggle('has-active', n > 0);
   };
 
   const apply = (state: FilterState): void => {
@@ -389,7 +425,9 @@ const groups: {
     }
 
     countEl.textContent = `Showing ${visible} of ${cards.length} demonstrations.`;
-    renderChips(state);
+    const selections = activeSelections(state);
+    renderChips(selections);
+    renderFilterCount(selections);
 
     // The dashed note names hidden stubs matching the active filters, so a
     // thin result set does not read as "the stockroom lacks it". Unfiltered
@@ -490,14 +528,20 @@ const groups: {
   // submission still lands here.
   form.addEventListener('submit', (event) => event.preventDefault());
 
+  // Below the compact breakpoint the panel starts closed, so results are
+  // on screen before any control. Evaluated once, on load: the summary is
+  // visible at every width, so a later resize needs no correction and the
+  // reader's own open/closed choice is never overridden.
+  if (window.matchMedia('(max-width: 48rem)').matches) facetPanel.open = false;
+
   // Restore linkable state from the URL, then apply.
   writeControls(parseState(location.search));
   void refresh();
 </script>
 
 <style>
-  /* The search band spans the viewport under the masthead; the input
-     itself stays on the content column grid. */
+  /* ---- Search band ---- */
+
   .search-band {
     background: var(--panel);
     border-bottom: 1px solid var(--rule);
@@ -528,6 +572,13 @@ const groups: {
     color: var(--ink);
   }
 
+  #count {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
   .search-note {
     font-size: 0.8rem;
     color: var(--muted);
@@ -547,7 +598,7 @@ const groups: {
     background: var(--panel);
     border: 1px solid var(--rule);
     border-radius: 3px;
-    padding: 1rem 1rem 1.5rem;
+    padding: 1rem 1rem 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 1.1rem;
@@ -607,6 +658,49 @@ const groups: {
     color: var(--muted);
   }
 
+  /* ---- The disclosure ---- */
+
+  .facet-panel {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.6rem;
+  }
+
+  .facet-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .facet-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .facet-summary::after {
+    content: '▾';
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .facet-panel[open] > .facet-summary::after {
+    content: '▴';
+  }
+
+  .filter-count {
+    color: var(--accent-text);
+  }
+
+  .facet-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding-top: 0.7rem;
+  }
+
   .cat-block {
     margin-bottom: 0.2rem;
   }
@@ -633,9 +727,8 @@ const groups: {
   }
 
   .topic-list {
-    padding: 0.25rem 0 0.35rem 0.15rem;
+    padding: 0.25rem 0 0.35rem 0.7rem;
     border-left: 1px solid var(--rule);
-    padding-left: 0.7rem;
     margin: 0.1rem 0 0.2rem;
   }
 
@@ -668,7 +761,9 @@ const groups: {
   }
 
   .course-chip span {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     padding: 0.3rem 0.55rem;
@@ -702,13 +797,6 @@ const groups: {
     gap: 0.6rem;
     flex-wrap: wrap;
     margin-bottom: 0.9rem;
-  }
-
-  #count {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--muted);
   }
 
   .active-chips {
@@ -790,15 +878,153 @@ const groups: {
     color: var(--muted);
   }
 
-  /* The sidebar stacks above the results when the viewport cannot fit
-     both; the full mobile treatment is phase 6. */
+  /* ---- Compact: 48rem is where the sidebar stops fitting beside the
+     grid, which is exactly where "filters before any result" starts
+     (amendment 13). Below it: search sticks, the panel starts closed,
+     and every control clears a 44px hit area. ---- */
   @media (max-width: 48rem) {
-    .shell {
-      flex-direction: column;
+    .search-band {
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
+    .search-inner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.35rem;
+      padding: 0.6rem 1rem;
+    }
+
+    #q {
+      max-width: none;
+      min-width: 0;
+      min-height: 2.75rem;
+    }
+
+    .shell {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    /* The panel frame belongs to the disclosure at this width, not to the
+       whole form: the course rail reads as chrome sitting on the page,
+       and the collapsed Filters row is a single bordered control. */
     .sidebar {
       width: 100%;
+      gap: 0.6rem;
+      background: none;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+    }
+
+    .course-facet legend {
+      margin-bottom: 0.3rem;
+    }
+
+    .facet-panel {
+      border: 1px solid var(--muted);
+      border-radius: 2px;
+      background: var(--panel);
+      padding: 0 0.75rem;
+    }
+
+    /* A closed panel must never hide an active filter silently. */
+    .facet-panel.has-active {
+      border-color: var(--accent-text);
+    }
+
+    .facet-summary {
+      min-height: 2.75rem;
+      font-size: 1rem;
+    }
+
+    .facet-body {
+      padding-bottom: 0.75rem;
+    }
+
+    /* Targets grow by padding the label, never by inflating the control:
+       the checkbox keeps a size that reads as a checkbox. */
+    .facet-body label {
+      min-height: 2.75rem;
+      margin-bottom: 0;
+      gap: 0.75rem;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .facet-body fieldset > label:last-of-type {
+      border-bottom: none;
+    }
+
+    .facet-body input[type='checkbox'] {
+      width: 1.375rem;
+      height: 1.375rem;
+    }
+
+    .cat-topics {
+      margin-left: 0;
+      border-left: 2px solid var(--accent);
+      padding-left: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .cat-topics summary {
+      min-height: 2.75rem;
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .topic-list {
+      border-left: none;
+      padding: 0;
+    }
+
+    .topic-list label {
+      font-size: 0.95rem;
+    }
+
+    .course-chips {
+      gap: 0.5rem;
+    }
+
+    .course-chip span {
+      min-height: 2.75rem;
+      padding: 0 1rem;
+      font-size: 0.875rem;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+
+    .active-chip {
+      min-height: 2.25rem;
+      font-size: 0.8rem;
+      padding: 0 0.7rem;
+    }
+
+    .linklike {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  /* A printed index is a handout, not a filter state. */
+  @media print {
+    .search-band,
+    #filters,
+    .results-head,
+    .stub-note {
+      display: none;
+    }
+
+    .grid {
+      grid-template-columns: 1fr;
     }
   }
 

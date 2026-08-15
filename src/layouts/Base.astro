@@ -262,6 +262,44 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
     margin: 0;
   }
 
+  /* Compact: the band keeps the lockup and the counts but stops spending
+     a phone's vertical budget on them. Every pixel here is one the first
+     result does not have to scroll past. */
+  @media (max-width: 48rem) {
+    .masthead-inner {
+      padding: 0.5rem 1rem;
+      gap: 0.35rem;
+    }
+
+    .masthead-full .kicker {
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+    }
+
+    .masthead-full .site-title {
+      font-size: 1.05rem;
+    }
+
+    .masthead-meta {
+      font-size: 0.68rem;
+    }
+
+    .masthead-slim .masthead-inner {
+      padding: 0.5rem 1rem;
+    }
+
+    /* The one interactive control in the band answers to the same 44px
+       floor as every control in the facet panel. */
+    .print-button {
+      min-height: 2.75rem;
+      padding-inline: 0.85rem;
+    }
+
+    main {
+      padding: 1rem 1rem 3rem;
+    }
+  }
+
   @media print {
     /* Print tokens are forced light in theme.css. */
     .masthead,

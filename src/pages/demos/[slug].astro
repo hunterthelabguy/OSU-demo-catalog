@@ -9,6 +9,10 @@ import type { CollectionEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Chip from '../../components/Chip.astro';
+// KaTeX styles load here, not in theme.css: only demo pages can render
+// math, and the index has no business paying for the stylesheet
+// (build-plan amendment 11).
+import 'katex/dist/katex.min.css';
 import { REQUEST_URL_TEMPLATE } from '../../config';
 import { formatDate, formatMinutes, formatMinutesRange, humanize } from '../../lib/format';
 
@@ -563,6 +567,15 @@ const prepLine = [
     padding-left: 1.3rem;
   }
 
+  /* KaTeX ships display math as a plain block with no overflow rule, so a
+     wide equation runs off a narrow viewport instead of scrolling. The
+     padding keeps a scrollbar from sitting on the glyphs. */
+  .body :global(.katex-display) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block: 0.35rem;
+  }
+
   .maintenance h2,
   .curator-notes h2 {
     font-size: 1.05rem;
@@ -613,6 +626,58 @@ const prepLine = [
 
   .print-url {
     display: none;
+  }
+
+  /* Compact: the auto-fit strip becomes label/value rows. At 375px it
+     otherwise gives two columns of roughly 167px, and a 0.63rem uppercase
+     label with 0.11em tracking is past legible in a cell that narrow.
+     40rem rather than the index's 48rem: this is the width where the
+     auto-fit cells themselves stop working, which is a different question
+     from where a sidebar stops fitting (amendment 13). */
+  @media (max-width: 40rem) {
+    .strip dl {
+      display: block;
+    }
+
+    .cell {
+      display: flex;
+      gap: 0.75rem;
+      border-right: none;
+    }
+
+    .cell dt {
+      width: 6rem;
+      flex: none;
+      margin-bottom: 0;
+      padding-top: 0.2rem;
+    }
+
+    /* Chip rows need the whole width, so their label goes back on top. */
+    .cell.wide {
+      display: block;
+    }
+
+    .cell.wide dt {
+      width: auto;
+      margin-bottom: 0.35rem;
+      padding-top: 0;
+    }
+
+    .demo-header h1 {
+      font-size: 1.75rem;
+    }
+
+    .prediction {
+      padding: 0.85rem 0.9rem 1rem;
+    }
+
+    .prediction .prompt {
+      font-size: 1.125rem;
+    }
+
+    .breadcrumb {
+      margin-bottom: 0.75rem;
+    }
   }
 
   @media print {
