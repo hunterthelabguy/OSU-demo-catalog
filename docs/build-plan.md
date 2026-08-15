@@ -14,18 +14,19 @@ Last updated: 2026-08-15
 validated records, demonstration pages with print stylesheet, and the faceted
 index with Pagefind search. Since then: a dark scheme following
 `prefers-color-scheme` with print forced light, the `/reflect` and
-`/handoff` agent commands, and the desktop design pass ruled from the mockup
-round (amendment 12): masthead band, facet sidebar with counts, filter
-chips, and the predict-first detail page, with the theme's contrast pairs
-under test. 84 tests; `npm run verify` is the gate; production tracks
+`/handoff` agent commands, and the design round shipped in both halves:
+desktop as amendment 12 (masthead band, facet sidebar with counts, filter
+chips, predict-first detail page) and mobile as amendment 13 and phase 6
+(collapsible facets behind a pinned course rail, sticky search, 44px touch
+floor, photo-free compact cards). The theme's contrast pairs and the mobile
+layout contract are both under test: 84 vitest tests plus 12 Playwright
+assertions at 375x812. `npm run verify` is the gate; production tracks
 `main` at https://osu-demo-catalog.vercel.app.
 
-Remaining engineering is phase 5 (photo ingest script, cached PIRA list),
-phase 6 (mobile, ruled 2026-08-15 in amendment 11; the desktop half of the
-design round shipped as amendment 12, and the mobile half awaits the owner's
-ruling), and phase 7 (installable offline catalog). The gate on the faculty
-showing is content: 8 to 12 records at `verified` depth, which requires the
-owner, the stockroom, and a camera.
+Remaining engineering is phase 5 (photo ingest script, cached PIRA list) and
+phase 7 (installable offline catalog), neither of them urgent. The gate on
+the faculty showing is content: 8 to 12 records at `verified` depth, which
+requires the owner, the stockroom, and a camera.
 
 The latent `target_misconceptions` edge is fixed (2026-08-15): the prediction
 section now renders when either the prompt or the misconceptions exist, so
@@ -290,6 +291,44 @@ shipped:
 - New pure logic (`activeSelections`, `hiddenStubNote`) lives in
   `src/lib/filter-logic.ts` with tests; the page script stays DOM glue.
 
+**13. Mobile ruled and built, 2026-08-15.**
+The design round returned one mobile design in five views rather than five
+options, so the decision was adopt-with-adjustments, not pick-one. Adopted
+as drawn: sticky search carrying the live count, title underlined at rest
+with accent-colored titles declined, the whole card tappable via a
+stretched pseudo-element, hazard chips first and never truncated, and the
+strip reflowed to label/value rows. Four things were re-ruled:
+
+- **"Browse all 54" is dropped.** The mockup never defined it; the nearest
+  reading duplicates the Records toggles with fuzzier semantics, and a
+  large ambiguous target is the worst thing to put under a thumb.
+- **Course is pinned outside the disclosure, which amends amendment 11.**
+  The mockup drew the rail outside and a Course group inside, which is the
+  same facet in two places and a desync waiting to happen. There is one
+  course fieldset, pinned above the panel at every width. Course is the
+  question an instructor actually arrives with, so it earns the position,
+  and pinning it on desktop too keeps one layout rather than two.
+- **Counts mean records everywhere.** The mockup put a subtopic count
+  where the desktop sidebar puts a record count, in the same position. The
+  subtopic count keeps its home in the disclosure summary text.
+- **The compact breakpoint is 48rem, not the 40rem of amendment 11.**
+  40rem was derived against the pre-redesign layout where the form sat
+  full-width above the grid. With the sidebar of amendment 12, the
+  "filters before results" problem starts exactly where the sidebar stops
+  fitting beside the grid, at 48rem. The detail-page strip keeps a 40rem
+  breakpoint of its own, because when auto-fit cells stop working is a
+  different question from when a sidebar stops fitting. Two breakpoints,
+  each derived from the content it fixes.
+
+Also ruled while building: the summary count covers facet selections and
+not the stub or out-of-service toggles, matching what the chip row and
+Clear all already excluded; the compact card drops the photo area and the
+hazard band entirely, because 54 striped placeholders down a phone is
+noise, and their information moves to a chip row and a left accent edge;
+and the masthead print button answers to the same 44px floor as the facet
+controls, which it failed by 17px until the layout suite was pointed at
+it.
+
 **Queued next (ruled 2026-08-13):**
 
 1. **LaTeX math: shipped 2026-08-15.** remark-math plus rehype-katex in
@@ -405,7 +444,9 @@ data.
   styles silently defeat the `hidden` attribute, so the base stylesheet now
   carries `[hidden] { display: none !important }`.
 - Verified in a built preview: full-text hit on body prose, URL round trip,
-  empty-state hints, keyboard focus, 375px with no horizontal overflow.
+  empty-state hints, keyboard focus, 375px with no horizontal overflow. That
+  last one was a manual spot check when it was written; phase 6 turned it
+  into an assertion in `tests/e2e/mobile.spec.ts`.
 
 ### Phase 5: supporting infrastructure
 
@@ -416,10 +457,9 @@ data.
   point of use rather than only in the spec.
 - Repository homepage field set once a deploy URL exists.
 
-### Phase 6: mobile
+### Phase 6: mobile. Shipped 2026-08-15.
 
-Ruled in amendment 11, blocked on mockups rather than on engineering: the
-interaction contract is settled, the visual treatments are not.
+Ruled in amendment 11, adjusted in amendment 13 once the mockups landed.
 
 - Facet disclosure: markup change in `src/pages/index.astro`, a `matchMedia`
   close-on-load in the existing page script, and the active count folded into
@@ -439,21 +479,36 @@ interaction contract is settled, the visual treatments are not.
   compact breakpoint. Its `dt` is 0.62rem with 0.11em letter-spacing, which
   at two columns of roughly 167px is under the legibility floor on a phone.
 - Whole-card tap target via a stretched-link pseudo-element on the title
-  anchor, which makes the card tappable without adding a second link to the
-  accessibility tree. Pending mockup confirmation, because it costs text
-  selection inside the card.
-- Playwright smoke: one Chromium spec at 375x812 against the built preview,
-  asserting no horizontal overflow on the index and on a demo page carrying
-  display math, the facet disclosure closed on load with the first card
-  visible, every checkbox label at least 44px tall, `#q` computed font size
-  at least 16px, and the summary count tracking a checked box. `package.json`
-  gains `test:e2e`, and `verify` becomes check, test, build, then e2e,
-  because the e2e pass needs the built site and `verify` is documented as the
-  whole gate. CI installs Chromium only. Roughly one minute of CI and one
-  devDependency, paid so the responsive work cannot rot silently.
-- Open for the mockup and not ruled here: whether the search row sticks on
-  scroll, the visual treatment of the disclosure summary, and the card
-  title's link affordance.
+  anchor, compact widths only, which makes the card tappable without adding
+  a second link to the accessibility tree. It costs text selection inside
+  the card, which desktop keeps because that is where selecting a shelf
+  letter actually happens.
+- The compact card drops the photo area and the hazard band; the status
+  moves to an outlined chip and the hazard to a left accent edge plus a
+  leading chip. The status therefore renders twice in the markup, once per
+  treatment, with exactly one displayed at any width, so the accessibility
+  tree never carries both.
+- Search sticks below the compact breakpoint and carries the live count
+  with it, which is what keeps the count visible through a 54-card scroll.
+  Hidden entirely in print, along with the whole filter form.
+- Compact chrome is deliberately cheap: trimming the masthead and dropping
+  the sidebar's frame moved the first card from 480px down to 321px on a
+  375x812 screen, which is four cards above the fold instead of two.
+- Playwright: `tests/e2e/mobile.spec.ts`, Chromium at 375x812 against the
+  built preview. Twelve assertions covering no horizontal overflow on the
+  index and on the display-math record, the disclosure closed on load with
+  a card already on screen, sticky search pinning at the top with the count
+  in view, every facet label and course chip and the print button clearing
+  44px, `#q` at 16px or larger, the summary count in both visible text and
+  accessible name, the course rail working with the panel shut, one link
+  per card named by its title with a dead-space tap navigating, math
+  scrolling inside its own box, and the strip laid out as rows.
+  `package.json` gains `test:e2e`; `verify` becomes check, test, build,
+  e2e. `vitest.config.ts` excludes `tests/e2e` so the two gates cannot
+  swallow each other. CI installs Chromium only.
+- The suite was mutation-checked before being trusted: dropping the label
+  min-height to 1rem fails the touch-floor assertion, and it caught a real
+  defect on its first run, the masthead print button at 27px.
 
 ### Phase 7: installable offline catalog
 

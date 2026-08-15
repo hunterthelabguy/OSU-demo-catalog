@@ -8,6 +8,12 @@ dist/
 .astro/
 .output/
 
+# Playwright run artifacts: traces and error context from failed runs.
+# The suite is the contract; its scratch output is not.
+test-results/
+playwright-report/
+blob-report/
+
 # deploy
 .vercel/
 
