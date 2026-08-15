@@ -1,14 +1,15 @@
 ---
-// The demo card, spec section 6's signature element: photograph first, then
-// a dense specimen-label strip that answers "can I run this Tuesday" before
-// any prose. Every facet value rides the card as data-* attributes; the
-// index page script toggles visibility, so this component is the only
-// source of card markup.
+// The demo card, spec section 6's signature element, in its 2026-08-15
+// design-pass form (build-plan amendment 12): photograph area with the
+// status worn as a stamp, a hazard band that reads hotter than status,
+// then title, classification line, and a mono logistics footer. Every
+// facet value rides the card as data-* attributes; the index page script
+// toggles visibility, so this component is the only source of card markup.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import Chip from './Chip.astro';
-import { joinValues, timeBuckets } from '../lib/facets';
-import { formatMinutesRange, humanize } from '../lib/format';
+import { joinValues, sortCourses, timeBuckets } from '../lib/facets';
+import { humanize } from '../lib/format';
 
 interface Props {
   demo: CollectionEntry<'demos'>;
@@ -17,13 +18,23 @@ const { demo } = Astro.props;
 const d = demo.data;
 const photo = d.images[0];
 
-// Demonstration time, not setup time: the card answers the instructor's
-// question (how long in class), and prep stays a detail-page descriptor.
-const stripBits = [
-  d.pira_dcs ?? null,
-  d.demo_minutes !== undefined ? `demo ${formatMinutesRange(d.demo_minutes)}` : null,
-  d.location?.room ?? null,
-].filter((bit): bit is string => bit !== null);
+// Topics carry the physics, tags carry the apparatus-speak; one muted line,
+// topics first. Tags are searchable prose, never a facet (amendment 10).
+const classLine = [
+  d.topics.map(humanize).join(', '),
+  d.tags.length > 0 ? d.tags.join(', ') : null,
+]
+  .filter(Boolean)
+  .join(' · ');
+
+// The footer answers "where is it, which course": location left, courses
+// right. A record with neither gets no footer row rather than a row of
+// unknowns; a record with courses but no shelf says so plainly.
+const locationText = d.location
+  ? [d.location.room, d.location.shelf].filter(Boolean).join(' · ')
+  : null;
+const courses = sortCourses(d.course_tags);
+const hasFooter = locationText !== null || courses.length > 0;
 ---
 
 <article
@@ -46,32 +57,33 @@ const stripBits = [
         <p class="no-photo">No photograph yet</p>
       )
     }
+    <span class={`stamp ${d.status === 'stub' ? 'stamp-stub' : ''}`}>{d.status}</span>
   </div>
+  {
+    d.hazards.length > 0 && (
+      <p class="hazard-band">
+        <span aria-hidden="true">▲</span>
+        {d.hazards.length === 1 ? 'Hazard' : 'Hazards'}:{' '}
+        {d.hazards.map(humanize).join(' · ')}
+      </p>
+    )
+  }
   <div class="card-body">
     <h2><a href={`/demos/${demo.id}/`}>{d.title}</a></h2>
-    <p class="chips">
-      <Chip label={d.status} tone="stamp" />
-      {
-        d.condition && d.condition !== 'good' && (
-          <Chip label={humanize(d.condition)} tone="alert" />
-        )
-      }
-    </p>
-    <ul class="topics" aria-label="Topics">
-      {d.topics.map((topic) => <li>{humanize(topic)}</li>)}
-    </ul>
+    {classLine && <p class="class-line">{classLine}</p>}
     {
-      (stripBits.length > 0 || d.hazards.length > 0) && (
-        <div class="mini-strip">
-          {stripBits.length > 0 && <p>{stripBits.join(' · ')}</p>}
-          {d.hazards.length > 0 && (
-            <p class="hazards">
-              {d.hazards.map((hazard) => (
-                <Chip label={humanize(hazard)} tone="alert" />
-              ))}
-            </p>
-          )}
-        </div>
+      d.condition && d.condition !== 'good' && (
+        <p class="chips">
+          <Chip label={humanize(d.condition)} tone="alert" />
+        </p>
+      )
+    }
+    {
+      hasFooter && (
+        <p class="card-footer">
+          <span>{locationText ?? 'location not recorded'}</span>
+          {courses.length > 0 && <span>{courses.join(' · ')}</span>}
+        </p>
       )
     }
   </div>
@@ -80,19 +92,28 @@ const stripBits = [
 <style>
   .card {
     border: 1px solid var(--rule);
-    border-radius: 2px;
-    background: var(--surface);
+    border-radius: 3px;
+    background: var(--panel);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .photo {
+    position: relative;
     border-bottom: 1px solid var(--rule);
     aspect-ratio: 4 / 3;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    /* The placeholder stripes: two neutral tokens, no new hue. A real
+       photograph covers them entirely. */
+    background: repeating-linear-gradient(
+      45deg,
+      var(--panel-2) 0 7px,
+      var(--surface) 7px 14px
+    );
   }
 
   .photo :global(img) {
@@ -103,15 +124,52 @@ const stripBits = [
 
   .no-photo {
     margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
     color: var(--muted);
-    font-size: 0.8rem;
+  }
+
+  /* The status stamp wears the accent only when the record has earned it:
+     stubs stamp in muted, because a stub is not a claim. */
+  .stamp {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.63rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--paper);
+    background: var(--accent-text);
+    padding: 0.2rem 0.4rem;
+    border-radius: 2px;
+  }
+
+  .stamp-stub {
+    background: var(--muted);
+  }
+
+  .hazard-band {
+    margin: 0;
+    border-top: 2px solid var(--accent);
+    background: var(--accent-tint);
+    padding: 0.35rem 0.8rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.69rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-text);
   }
 
   .card-body {
-    padding: 0.7rem 0.8rem 0.8rem;
+    padding: 0.75rem 0.85rem 0.85rem;
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.45rem;
     flex: 1;
   }
 
@@ -121,12 +179,27 @@ const stripBits = [
     line-height: 1.25;
   }
 
+  /* Link affordance must not depend on hover (build-plan amendment 11):
+     pointers that can hover get the quiet title with a hover underline;
+     everything else reads the underline at rest. */
   h2 a {
-    text-decoration: none;
+    text-decoration: underline;
   }
 
-  h2 a:hover {
-    text-decoration: underline;
+  @media (hover: hover) {
+    h2 a {
+      text-decoration: none;
+    }
+
+    h2 a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .class-line {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
   }
 
   .chips {
@@ -136,39 +209,16 @@ const stripBits = [
     gap: 0.3rem;
   }
 
-  .topics {
-    list-style: none;
+  .card-footer {
     margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-  }
-
-  .topics li {
-    font-size: 0.75rem;
-    color: var(--muted);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 0.1em 0.45em;
-  }
-
-  .mini-strip {
     margin-top: auto;
     border-top: 1px solid var(--rule);
-    padding-top: 0.45rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-  }
-
-  .mini-strip p {
-    margin: 0;
-  }
-
-  .mini-strip .hazards {
-    margin-top: 0.3rem;
+    padding-top: 0.5rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
   }
 </style>
