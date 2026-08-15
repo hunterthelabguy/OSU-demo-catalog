@@ -18,20 +18,49 @@ spec and build-plan differ, build-plan wins; never edit the spec file.
 - Search only works against a built site: `npm run build && npm run preview`.
   Under `astro dev` the search box degrades with a note; facets still work.
 - Browser checks: `.claude/launch.json` has `dev` and `preview` configs for
-  the preview pane.
+  the preview pane. Screenshots need the pane actually displayed; when it
+  is not, assert through `read_page` and `javascript_tool` instead of
+  reporting a screenshot you could not take.
+- Chrome restores a `<details>` open state across same-tab navigation, so
+  the facet panel can read as closed on a desktop viewport when the script
+  never closed it. Reload with a fresh query string before concluding the
+  disclosure logic is wrong.
 
 ## Shipping (machine-enforced)
 
 The `main-protection` ruleset rejects every direct push to `main`, docs
 included, and requires a green `verify` check. Always:
 
-1. Branch, commit, push, `gh pr create`.
+1. Branch **from current `origin/main`**, commit, push, `gh pr create`.
 2. Sleep ~20 s after creating the PR, then `gh pr checks <n> --watch`. The
    watch exits immediately with "no checks reported" if you race check
    startup, and merging before `verify` reports is refused by the ruleset;
    the refusal is correct behavior.
 3. `gh pr merge <n> --rebase --delete-branch`, then checkout main and pull.
 4. Vercel deploys `main` to production automatically; PRs get preview URLs.
+
+Three failure modes in that tail, all of which look like other problems:
+
+- **No CI run at all means the PR is unmergeable, not that Actions is
+  broken.** GitHub does not dispatch workflows for a PR whose mergeable
+  state is `CONFLICTING`, and it reports this nowhere obvious: the Vercel
+  checks still pass, so the PR looks half-alive. The usual cause is
+  stacking a branch on a not-yet-merged branch, because `--rebase` merges
+  rewrite the SHA and the old commit then conflicts with its own rebased
+  twin. Check `gh pr view <n> --json mergeable` **first**, before
+  suspecting Actions permissions, billing, or workflow YAML;
+  `git rebase origin/main` fixes it and CI fires within seconds. Git skips
+  the duplicate commit on its own ("skipped previously applied commit").
+- **`gh pr merge` reports `fatal: 'main' is already used by worktree`.**
+  The merge itself succeeded on GitHub; only gh's local checkout step
+  failed, because `main` is checked out in the primary worktree. Confirm
+  with `gh pr view <n> --json state`, then fast-forward the primary
+  checkout directly: `git -C <primary-worktree> merge --ff-only
+  origin/main`. Do not re-run the merge.
+- **Stale `claude/*` branches accumulate locally** even though
+  `--delete-branch` removes them from the remote, because that step runs
+  in the same failed local checkout. `git fetch --prune` plus
+  `git branch -D` on the merged ones, as part of the handoff.
 
 Git identity and transport:
 
