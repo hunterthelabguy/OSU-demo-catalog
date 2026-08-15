@@ -225,10 +225,10 @@ const prepLine = [
       }
 
       {
-        d.prediction_prompt && (
+        (d.prediction_prompt || d.target_misconceptions.length > 0) && (
           <section class="prediction">
             <h2>Predict first</h2>
-            <p class="prompt">{d.prediction_prompt}</p>
+            {d.prediction_prompt && <p class="prompt">{d.prediction_prompt}</p>}
             {d.target_misconceptions.length > 0 && (
               <>
                 <p class="misconceptions-label">Targets these misconceptions:</p>

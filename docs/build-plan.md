@@ -4,7 +4,7 @@ Companion to [spec-v0.1.md](spec-v0.1.md). The spec says what is being built and
 why. This file says what exists today, what is planned next, and which spec
 decisions have been amended since it was written.
 
-Last updated: 2026-08-13
+Last updated: 2026-08-15
 
 ---
 
@@ -21,10 +21,9 @@ Remaining engineering is phase 5 (photo ingest script, cached PIRA list). The
 gate on the faculty showing is content: 8 to 12 records at `verified` depth,
 which requires the owner, the stockroom, and a camera.
 
-Known latent edge, zero current records affected: `target_misconceptions`
-renders inside the prediction block, so a record with misconceptions but no
-`prediction_prompt` would silently drop them. Fold the fix into the next code
-pass.
+The latent `target_misconceptions` edge is fixed (2026-08-15): the prediction
+section now renders when either the prompt or the misconceptions exist, so
+neither is silently dropped.
 
 The documentation pass that preceded it settled the licensing split and the
 commit-authorship discipline before any code existed, inverting spec §7, which
@@ -191,12 +190,13 @@ instructor-facing, filterable time. Ruled and shipped:
   derived category-to-course (fluids to PH212 and measurement to PH211
   flagged as judgment calls in the PR).
 
-**Queued next, in order (ruled 2026-08-13, deliberately not built yet):**
+**Queued next (ruled 2026-08-13):**
 
-1. **LaTeX math**, before the heavy content-drafting pass, since physics
-   sections want equations: remark-math plus rehype-katex rendered at build
-   time, KaTeX CSS and fonts self-hosted through npm, zero client
-   JavaScript.
+1. **LaTeX math: shipped 2026-08-15.** remark-math plus rehype-katex in
+   `astro.config.mjs`, rendered at build time; KaTeX CSS and fonts imported
+   through `src/styles/theme.css` alongside the Fontsource imports, so
+   everything stays self-hosted with zero client JavaScript. Exercised by
+   real content in the rotating-stool-dumbbells physics section.
 2. **Embedded video and simulations**, with the content pass that would use
    them: a constrained embed component (iframe with a fixed host allowlist
    for YouTube and PhET, lazy click-to-load placeholder so no third-party
