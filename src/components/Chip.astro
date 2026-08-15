@@ -3,13 +3,22 @@
 // nowhere else (spec section 6). Chips never rely on color alone: every chip
 // carries its text label and a border, so grayscale printing and color
 // blindness lose nothing.
+//
+// Every tone is outlined. The first-pass alert chip was a filled accent
+// (--paper on --accent), which measures 4.0:1 at chip size, under AA; the
+// 2026-08-15 design pass replaced the fill with --accent-text on
+// --accent-tint at 7.3:1 dark and 6.3:1 light. tests/theme-contrast.test.ts
+// now asserts the pairs.
 interface Props {
   label: string;
   // stamp: accent outline, uppercase. The status chip, worn like an
   //   inspection stamp.
-  // alert: accent filled. Hazards and out_of_service.
+  // stamp-muted: the stamp for stubs. A stub is not a claim, so it does
+  //   not wear the accent.
+  // alert: accent outline on the accent tint. Hazards, out_of_service,
+  //   needs_repair, inaccessible.
   // neutral: ink outline. Everything informational.
-  tone: 'stamp' | 'alert' | 'neutral';
+  tone: 'stamp' | 'stamp-muted' | 'alert' | 'neutral';
 }
 const { label, tone } = Astro.props;
 ---
@@ -26,19 +35,27 @@ const { label, tone } = Astro.props;
     border-radius: 2px;
     white-space: nowrap;
   }
+  .chip-stamp,
+  .chip-stamp-muted,
+  .chip-alert {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
   .chip-stamp {
     /* accent-text, not accent: chip text is small, and the raw accent
        misses AA on the paper ground in either scheme. See theme.css. */
     color: var(--accent-text);
     border: 1.5px solid var(--accent-text);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
+  }
+  .chip-stamp-muted {
+    color: var(--muted);
+    border: 1.5px solid var(--muted);
   }
   .chip-alert {
-    color: var(--paper);
-    background: var(--accent);
-    border: 1.5px solid var(--accent);
+    color: var(--accent-text);
+    background: var(--accent-tint);
+    border: 1.5px solid var(--accent-text);
   }
   .chip-neutral {
     color: var(--ink);
@@ -51,7 +68,8 @@ const { label, tone } = Astro.props;
       border-color: var(--ink);
       font-weight: 600;
     }
-    .chip-stamp {
+    .chip-stamp,
+    .chip-stamp-muted {
       color: var(--ink);
       border-color: var(--ink);
     }

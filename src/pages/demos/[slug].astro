@@ -1,8 +1,8 @@
 ---
-// One page per demonstration. The specimen-label strip answers "can I run
-// this Tuesday" before any prose; the prediction block leads the pedagogy
-// because predict-first is the half of a demonstration that produces
-// learning (see spec, Pedagogical grounding). This template stays glue:
+// One page per demonstration, in its 2026-08-15 design-pass form
+// (build-plan amendment 12): predict-first and hazard-forward. The hazard
+// band and the prediction callout lead; the boxed strip answers "can I
+// run this Tuesday" before the prose. This template stays glue:
 // formatting lives in src/lib/format.ts, validation in the schema.
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
@@ -29,6 +29,7 @@ const isStub = d.status === 'stub';
 
 // The strip renders only rows whose fields exist: a sparse record gets a
 // sparse label, not a label full of blanks (spec section 6, stub rendering).
+// Hazards moved out of the strip into the band above the fold.
 const hasLogistics =
   d.pira_dcs != null ||
   d.demo_minutes !== undefined ||
@@ -39,7 +40,6 @@ const hasLogistics =
   d.quantity !== undefined ||
   d.location !== undefined ||
   d.room_requirements.length > 0 ||
-  d.hazards.length > 0 ||
   d.consumables.length > 0 ||
   d.accessibility !== undefined;
 
@@ -71,23 +71,72 @@ const prepLine = [
     <!-- data-pagefind-body scopes the search index to demo pages only: the
          index page and any future about page stay out of search results. -->
     <article data-pagefind-body>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Catalog</a>
+        {d.category && <> / {humanize(d.category)}</>}
+        {d.topics.length > 0 && <> / {d.topics.map(humanize).join(', ')}</>}
+      </nav>
+
       <header class="demo-header">
-        <h1>{d.title}</h1>
-        <p class="chips">
-          <Chip label={d.status} tone="stamp" />
+        <div class="title-row">
+          <h1>{d.title}</h1>
+          <Chip label={d.status} tone={isStub ? 'stamp-muted' : 'stamp'} />
           {
             d.condition && d.condition !== 'good' && (
               <Chip label={humanize(d.condition)} tone="alert" />
             )
           }
           {d.condition === 'good' && <Chip label="condition: good" tone="neutral" />}
-        </p>
+        </div>
         <p class="classification">{classificationLine}</p>
       </header>
 
       {
+        d.hazards.length > 0 && (
+          <p class="hazard-band">
+            <span aria-hidden="true">▲</span>
+            <span class="hazard-label">
+              {d.hazards.length === 1 ? 'Hazard' : 'Hazards'} ·{' '}
+              {d.hazards.map(humanize).join(' · ')}
+            </span>
+          </p>
+        )
+      }
+
+      {
+        isStub && (
+          <section class="stub-band" aria-label="Documentation status">
+            <p>
+              <strong>Not yet documented.</strong> This record is a stub. What
+              appears on this page is everything the catalog knows so far.
+            </p>
+          </section>
+        )
+      }
+
+      {
+        (d.prediction_prompt || d.target_misconceptions.length > 0) && (
+          <section class="prediction">
+            <h2>Predict first · ask before you run it</h2>
+            {d.prediction_prompt && <p class="prompt">{d.prediction_prompt}</p>}
+            {d.target_misconceptions.length > 0 && (
+              <>
+                <p class="misconceptions-label">Targets these misconceptions</p>
+                <ul>
+                  {d.target_misconceptions.map((m) => (
+                    <li>{m}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
+        )
+      }
+
+      {
         hasLogistics && (
-          <section class="strip" aria-label="Logistics">
+          <section class="strip" aria-labelledby="strip-title">
+            <p class="strip-title" id="strip-title">Can I run this Tuesday</p>
             <dl>
               {d.demo_minutes !== undefined && (
                 <div class="cell">
@@ -112,8 +161,8 @@ const prepLine = [
               )}
               {d.setup_difficulty && (
                 <div class="cell">
-                  <dt>Difficulty</dt>
-                  <dd>{d.setup_difficulty}</dd>
+                  <dt>Setup difficulty</dt>
+                  <dd class="difficulty">{d.setup_difficulty}</dd>
                 </div>
               )}
               {d.quantity !== undefined && (
@@ -135,16 +184,6 @@ const prepLine = [
                     <code>
                       {[d.location.room, d.location.shelf].filter(Boolean).join(' · ')}
                     </code>
-                  </dd>
-                </div>
-              )}
-              {d.hazards.length > 0 && (
-                <div class="cell wide">
-                  <dt>Hazards</dt>
-                  <dd class="chip-row">
-                    {d.hazards.map((hazard) => (
-                      <Chip label={humanize(hazard)} tone="alert" />
-                    ))}
                   </dd>
                 </div>
               )}
@@ -201,7 +240,7 @@ const prepLine = [
       }
 
       {
-        d.images.length > 0 && (
+        d.images.length > 0 ? (
           <section class="photos">
             {d.images.map((img) => (
               <figure>
@@ -210,36 +249,12 @@ const prepLine = [
               </figure>
             ))}
           </section>
-        )
-      }
-
-      {
-        isStub && (
-          <section class="stub-band" aria-label="Documentation status">
-            <p>
-              <strong>Not yet documented.</strong> This record is a stub. What
-              appears on this page is everything the catalog knows so far.
+        ) : (
+          !isStub && (
+            <p class="photo-placeholder">
+              <span>No photograph yet</span>
             </p>
-          </section>
-        )
-      }
-
-      {
-        (d.prediction_prompt || d.target_misconceptions.length > 0) && (
-          <section class="prediction">
-            <h2>Predict first</h2>
-            {d.prediction_prompt && <p class="prompt">{d.prediction_prompt}</p>}
-            {d.target_misconceptions.length > 0 && (
-              <>
-                <p class="misconceptions-label">Targets these misconceptions:</p>
-                <ul>
-                  {d.target_misconceptions.map((m) => (
-                    <li>{m}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </section>
+          )
         )
       }
 
@@ -280,8 +295,14 @@ const prepLine = [
       <footer class="provenance">
         <p>
           <code>{d.slug}</code>
-          {d.last_verified && <> · apparatus checked {formatDate(d.last_verified)}</>}
           {d.last_updated && <> · record updated {formatDate(d.last_updated)}</>}
+          {
+            d.last_verified ? (
+              <> · apparatus checked {formatDate(d.last_verified)}</>
+            ) : (
+              <> · apparatus not yet checked</>
+            )
+          }
         </p>
         {printUrl && <p class="print-url">{printUrl}</p>}
       </footer>
@@ -290,16 +311,31 @@ const prepLine = [
 </Base>
 
 <style>
-  .demo-header h1 {
-    font-size: 2.1rem;
-    margin: 0.5rem 0 0.4rem;
+  .breadcrumb {
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
   }
 
-  .chips {
-    margin: 0 0 0.35rem;
+  .breadcrumb a {
+    color: var(--accent-text);
+  }
+
+  .title-row {
     display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .demo-header h1 {
+    font-size: 2.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0;
   }
 
   .classification {
@@ -308,12 +344,108 @@ const prepLine = [
     font-size: 0.9rem;
   }
 
-  /* The specimen label. Dense, bordered, hairline-divided: the element that
-     answers "can I actually run this Tuesday" before a word of prose. */
-  .strip {
-    border: 2px solid var(--ink);
+  /* Hazard-forward: the band outranks every chip. Accent border, accent
+     tint, accent text; hotter than the status stamp by design. */
+  .hazard-band {
+    margin: 0 0 1.4rem;
+    border: 2px solid var(--accent);
+    background: var(--accent-tint);
     border-radius: 2px;
+    padding: 0.65rem 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--accent-text);
+  }
+
+  .hazard-band .hazard-label {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+  }
+
+  .stub-band {
+    border: 2px dashed var(--muted);
+    border-radius: 2px;
+    padding: 0.8rem 1rem;
     margin-bottom: 1.5rem;
+  }
+
+  .stub-band p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  /* The prediction callout leads the page because predict-first is the
+     half of a demonstration that produces learning (spec, Pedagogical
+     grounding). */
+  .prediction {
+    border: 1px solid var(--rule);
+    border-left: 4px solid var(--accent);
+    border-radius: 2px;
+    background: var(--panel);
+    padding: 1rem 1.2rem 1.2rem;
+    margin: 0 0 1.4rem;
+  }
+
+  .prediction h2 {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent-text);
+  }
+
+  .prediction .prompt {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    text-wrap: pretty;
+    margin: 0 0 0.9rem;
+  }
+
+  .misconceptions-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.69rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: var(--muted);
+    margin: 0 0 0.3rem;
+  }
+
+  .prediction ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+
+  .prediction li {
+    margin-bottom: 0.3rem;
+  }
+
+  /* The specimen label, boxed with its own header bar. Dense, hairline
+     divided: answers "can I actually run this Tuesday" before the prose. */
+  .strip {
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    margin-bottom: 0.8rem;
+    overflow: hidden;
+  }
+
+  .strip-title {
+    margin: 0;
+    background: var(--panel);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.4rem 0.7rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.69rem;
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    color: var(--muted);
   }
 
   .strip dl {
@@ -323,7 +455,7 @@ const prepLine = [
   }
 
   .cell {
-    padding: 0.5rem 0.7rem;
+    padding: 0.55rem 0.7rem;
     border-right: 1px solid var(--rule);
     border-bottom: 1px solid var(--rule);
   }
@@ -335,7 +467,7 @@ const prepLine = [
   .strip dt {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 0.62rem;
+    font-size: 0.63rem;
     text-transform: uppercase;
     letter-spacing: 0.11em;
     color: var(--muted);
@@ -345,7 +477,11 @@ const prepLine = [
   .strip dd {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
+  }
+
+  .strip .difficulty {
+    color: var(--accent-text);
   }
 
   .strip .unverified {
@@ -354,7 +490,7 @@ const prepLine = [
   }
 
   .prep-note {
-    margin: -1rem 0 1.5rem;
+    margin: 0 0 1.5rem;
     color: var(--muted);
     font-size: 0.85rem;
   }
@@ -388,51 +524,30 @@ const prepLine = [
     margin-top: 0.35rem;
   }
 
-  .stub-band {
-    border: 2px dashed var(--muted);
+  /* The stripes stand where the apparatus photograph belongs, same
+     placeholder the cards wear. Stubs skip it: the stub band has already
+     said the record is thin. */
+  .photo-placeholder {
+    margin: 0 0 1.5rem;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--rule);
     border-radius: 2px;
-    padding: 0.8rem 1rem;
-    margin-bottom: 1.5rem;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--panel-2) 0 8px,
+      var(--surface) 8px 16px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .stub-band p {
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .prediction {
-    border-left: 3px solid var(--ink);
-    padding: 0.2rem 0 0.2rem 1.1rem;
-    margin: 1.75rem 0;
-  }
-
-  .prediction h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.05rem;
-  }
-
-  .prediction .prompt {
-    font-size: 1.15rem;
-    margin: 0 0 0.75rem;
-  }
-
-  .misconceptions-label {
-    font-family: var(--font-display);
-    font-weight: 700;
+  .photo-placeholder span {
+    font-family: var(--font-mono);
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--muted);
-    margin: 0 0 0.3rem;
-  }
-
-  .prediction ul {
-    margin: 0;
-    padding-left: 1.2rem;
-  }
-
-  .prediction li {
-    margin-bottom: 0.3rem;
   }
 
   /* Body sections: catalog-style rules above each heading. */
@@ -488,7 +603,8 @@ const prepLine = [
     border-top: 1px solid var(--rule);
     padding-top: 0.6rem;
     color: var(--muted);
-    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
   }
 
   .provenance p {
@@ -497,7 +613,6 @@ const prepLine = [
 
   .print-url {
     display: none;
-    font-family: var(--font-mono);
   }
 
   @media print {
@@ -506,11 +621,15 @@ const prepLine = [
     }
     .strip,
     .prediction,
-    .stub-band {
+    .stub-band,
+    .hazard-band {
       break-inside: avoid;
     }
     .strip {
       border-color: #000;
+    }
+    .photo-placeholder {
+      display: none;
     }
     .print-url {
       display: block;
@@ -519,6 +638,9 @@ const prepLine = [
     .demo-header h1 {
       font-size: 18pt;
       margin-top: 0;
+    }
+    .breadcrumb {
+      display: none;
     }
   }
 </style>

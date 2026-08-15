@@ -22,7 +22,25 @@
  *   orange on the dark ground (7.9:1).
  * If you swap the accent in a fork, recompute both text values.
  *
- * --surface is the slightly-raised ground for cards and panels.
+ * The neutrals, from page ground up:
+ * - --paper is the page ground, and the recessed ground for inputs that
+ *   sit on a panel.
+ * - --panel is the ground for cards, the facet sidebar, and callouts.
+ * - --surface survives from the first pass as the input ground on paper
+ *   and one of the two placeholder stripe tones.
+ * - --panel-2 is the raised tone: active filter chips and the other
+ *   stripe. In the dark scheme these four are distinct steps; in light,
+ *   --panel and --surface share a value because "barely off the paper"
+ *   is one tone there, and the roles stay distinct in the templates.
+ * - --accent-tint is the wash behind hazard bands and alert chips, so
+ *   hazard reads hotter than status. Text on it is --accent-text or
+ *   --ink, nothing lighter.
+ * - --on-accent is text on an --accent fill (the masthead band). It
+ *   clears AA at 4.6:1, but only just: keep such text bold or large.
+ *
+ * Every foreground/background pair the templates use is asserted at
+ * WCAG AA by tests/theme-contrast.test.ts, in both schemes. If you tune
+ * any value, the test tells you what you broke.
  *
  * Dark scheme follows the OS via prefers-color-scheme. Print always uses
  * the light tokens, forced at the bottom of this file, so a page printed
@@ -43,8 +61,12 @@
   --muted: #5c5852;
   --rule: #d9d2c4;
   --surface: #fbf9f5;
+  --panel: #fbf9f5;
+  --panel-2: #efe9dd;
   --accent: #d73f09;
   --accent-text: #9a2e06;
+  --accent-tint: #fae7dd;
+  --on-accent: #ffffff;
 
   --font-display: 'Atkinson Hyperlegible Next Variable', 'Helvetica Neue',
     Arial, sans-serif;
@@ -61,8 +83,12 @@
     --muted: #a39b8f;
     --rule: #3a352f;
     --surface: #211e1a;
+    --panel: #1e1b18;
+    --panel-2: #2a2622;
     --accent: #d73f09;
     --accent-text: #ff8c5f;
+    --accent-tint: #2a1a14;
+    --on-accent: #ffffff;
   }
 }
 
@@ -73,7 +99,11 @@
     --muted: #5c5852;
     --rule: #d9d2c4;
     --surface: #ffffff;
+    --panel: #ffffff;
+    --panel-2: #ffffff;
     --accent: #d73f09;
     --accent-text: #9a2e06;
+    --accent-tint: #ffffff;
+    --on-accent: #ffffff;
   }
 }

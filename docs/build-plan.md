@@ -13,15 +13,19 @@ Last updated: 2026-08-15
 **The proof-of-concept trio is complete** (spec §7 steps 1 through 3):
 validated records, demonstration pages with print stylesheet, and the faceted
 index with Pagefind search. Since then: a dark scheme following
-`prefers-color-scheme` with print forced light, and the `/reflect` and
-`/handoff` agent commands. 42 tests; `npm run verify` is the gate; production
-tracks `main` at https://osu-demo-catalog.vercel.app.
+`prefers-color-scheme` with print forced light, the `/reflect` and
+`/handoff` agent commands, and the desktop design pass ruled from the mockup
+round (amendment 12): masthead band, facet sidebar with counts, filter
+chips, and the predict-first detail page, with the theme's contrast pairs
+under test. 84 tests; `npm run verify` is the gate; production tracks
+`main` at https://osu-demo-catalog.vercel.app.
 
 Remaining engineering is phase 5 (photo ingest script, cached PIRA list),
-phase 6 (mobile, ruled 2026-08-15 in amendment 11 and waiting on mockups), and
-phase 7 (installable offline catalog). The gate on the faculty showing is
-content: 8 to 12 records at `verified` depth, which requires the owner, the
-stockroom, and a camera.
+phase 6 (mobile, ruled 2026-08-15 in amendment 11; the desktop half of the
+design round shipped as amendment 12, and the mobile half awaits the owner's
+ruling), and phase 7 (installable offline catalog). The gate on the faculty
+showing is content: 8 to 12 records at `verified` depth, which requires the
+owner, the stockroom, and a camera.
 
 The latent `target_misconceptions` edge is fixed (2026-08-15): the prediction
 section now renders when either the prompt or the misconceptions exist, so
@@ -236,6 +240,55 @@ floor becomes a target with its own phase. Ruled, not yet built:
   claims around it. Phase 6 converts it into a Playwright smoke inside
   `npm run verify`. Until that lands, read that phase 4 bullet as
   spot-checked, not tested.
+
+**12. Desktop design ruled from the mockup round, 2026-08-15.**
+The Claude Design session recreated the baseline from the repo, branded
+three index directions and a detail page over it, and the owner ruled for
+2a (sidebar facets, card grid) and 2d (predict-first, hazard-forward
+detail page). 2b (pushed orange) and 2c (search-first dense list) were
+declined as the primary browse, though 2c's hidden-stub note and its
+"location not recorded" honesty were adopted into 2a's layout. Ruled and
+shipped:
+
+- Masthead: the accent band with the OSU lockup on the index and a slim
+  one-line variant on record pages, which also carries a print button that
+  exists only once JavaScript wires it. Band text is a new `--on-accent`
+  token at 4.6:1, kept bold or large per the theme file's standing caution.
+- Three more neutrals joined the theme: `--panel` (cards, sidebar,
+  callouts), `--panel-2` (active chips, placeholder stripes), and
+  `--accent-tint` (the wash behind hazard bands and alert chips, so hazard
+  reads hotter than status). The mockups explored the dark scheme only;
+  the light values were chosen in-session and every foreground/background
+  pair the templates use is now asserted at WCAG AA by
+  `tests/theme-contrast.test.ts`, both schemes plus print.
+- That test exists because the design round's baseline recreation measured
+  the filled hazard chip (`--paper` on `--accent` at 0.72rem) at 4.0:1,
+  under AA, live since phase 3. Chips are outlined now: status stamps in
+  accent-text, stub stamps in muted because a stub is not a claim, alert
+  chips on the tint.
+- Index: full-width search band; facet sidebar with build-time counts that
+  describe the stockroom rather than the current view (stubs included, so
+  "show stubs 42" and "mechanics 16" agree with the masthead's "54
+  records"); course checkboxes wearing toggle-chip clothes; a removable
+  active-filter chip row with Clear all; and a dashed note naming hidden
+  stubs that match the active filters, capped at eight, with an Include
+  stubs shortcut. The note renders only in filtered views, because
+  unfiltered it would name all 42.
+- Cards: status worn as a stamp on the photo area, hazard band above the
+  body, topics-and-tags classification line replacing the topic pills,
+  mono footer with location and courses. Records with courses but no
+  location say "location not recorded" rather than omitting the row.
+- Detail page: breadcrumb, hazard band ahead of everything, the prediction
+  callout leading the prose, the strip boxed and titled "Can I run this
+  Tuesday" with hazards moved out of it into the band, a striped photo
+  placeholder for non-stub records, and provenance that now says
+  "apparatus not yet checked" when `last_verified` is absent.
+- Two amendment 11 items landed early because the rebuild touched those
+  exact elements: hover-gated link affordances with underlines at rest on
+  non-hover devices, and the search input at 1rem. The rest of phase 6
+  stays blocked on the mobile mockups.
+- New pure logic (`activeSelections`, `hiddenStubNote`) lives in
+  `src/lib/filter-logic.ts` with tests; the page script stays DOM glue.
 
 **Queued next (ruled 2026-08-13):**
 

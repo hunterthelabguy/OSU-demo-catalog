@@ -1,13 +1,23 @@
 ---
 // Base layout: global styles and site chrome. Fonts and every color token
 // live in src/styles/theme.css, the single file a fork edits to rebrand.
+//
+// The masthead is the accent band from the 2026-08-15 design pass
+// (build-plan amendment 12): 'full' is the index lockup with the record
+// counts, 'slim' is the one-line band every other page wears, with a
+// print button that appears only once JavaScript wires it.
 import '../styles/theme.css';
 
 interface Props {
   title: string;
   description?: string;
+  masthead?: 'full' | 'slim';
+  /** Right-aligned mono annotation in the full masthead, e.g.
+   *  "54 records · 12 documented". Computed by the page; the layout does
+   *  not query content. */
+  mastheadMeta?: string;
 }
-const { title, description } = Astro.props;
+const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
 ---
 
 <!doctype html>
@@ -25,9 +35,31 @@ const { title, description } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
-    <header class="site-header">
-      <a href="/">Physics Demonstration Catalog</a>
-    </header>
+    {
+      masthead === 'full' ? (
+        <header class="masthead masthead-full">
+          <div class="masthead-inner">
+            <p class="lockup">
+              <span class="kicker">Oregon State University · Department of Physics</span>
+              <span class="site-title">Physics Demonstration Catalog</span>
+            </p>
+            {mastheadMeta && <p class="masthead-meta">{mastheadMeta}</p>}
+          </div>
+        </header>
+      ) : (
+        <header class="masthead masthead-slim">
+          <div class="masthead-inner">
+            <p class="lockup">
+              <a href="/">Physics Demonstration Catalog</a>
+              <span class="kicker-inline"> · Oregon State University</span>
+            </p>
+            <button type="button" class="print-button" hidden>
+              Print this record
+            </button>
+          </div>
+        </header>
+      )
+    }
     <slot />
     <footer class="site-footer">
       <p>
@@ -37,6 +69,16 @@ const { title, description } = Astro.props;
     </footer>
   </body>
 </html>
+
+<script>
+  // The print button is chrome, not content: it exists only when the
+  // script that makes it work is running.
+  const printButton = document.querySelector<HTMLButtonElement>('.print-button');
+  if (printButton) {
+    printButton.hidden = false;
+    printButton.addEventListener('click', () => window.print());
+  }
+</script>
 
 <style is:global>
   * {
@@ -101,22 +143,100 @@ const { title, description } = Astro.props;
     }
   }
 
-  .site-header {
-    border-bottom: 1px solid var(--rule);
-    padding: 0.75rem 1.25rem;
+  /* The accent band. --accent is a fill here, never text: everything on
+     the band is --on-accent, asserted AA by the contrast test. Focus rings
+     inside the band switch to --on-accent because the accent-colored ring
+     vanishes against its own fill. */
+  .masthead {
+    background: var(--accent);
+    color: var(--on-accent);
   }
 
-  .site-header a {
+  .masthead :focus-visible {
+    outline-color: var(--on-accent);
+  }
+
+  .masthead-inner {
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: 0.8rem 1.25rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .masthead .lockup {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+
+  .masthead-full .kicker {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.66rem;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.2em;
+  }
+
+  .masthead-full .site-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+
+  .masthead-meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.72rem;
+  }
+
+  .masthead-slim .masthead-inner {
+    padding: 0.65rem 1.25rem;
+    align-items: center;
+  }
+
+  .masthead-slim .lockup {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0;
+    font-size: 0.82rem;
+  }
+
+  .masthead-slim a {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: 0.02em;
     text-decoration: none;
   }
 
-  .site-header a:hover {
+  .masthead-slim a:hover,
+  .masthead-slim a:focus-visible {
     text-decoration: underline;
+  }
+
+  .masthead-slim .kicker-inline {
+    font-weight: 400;
+    opacity: 0.85;
+    white-space: pre;
+  }
+
+  .print-button {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.72rem;
+    color: var(--on-accent);
+    background: none;
+    border: 1px solid var(--on-accent);
+    border-radius: 2px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
   }
 
   main {
@@ -144,7 +264,7 @@ const { title, description } = Astro.props;
 
   @media print {
     /* Print tokens are forced light in theme.css. */
-    .site-header,
+    .masthead,
     .site-footer {
       display: none;
     }

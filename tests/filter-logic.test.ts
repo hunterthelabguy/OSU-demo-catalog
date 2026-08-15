@@ -1,8 +1,10 @@
 import { expect, test } from 'vitest';
 import type { CardFacets } from '../src/lib/filter-logic';
 import {
+  activeSelections,
   cardVisible,
   emptyState,
+  hiddenStubNote,
   isDefaultHidden,
   matchesFacets,
   parseState,
@@ -115,4 +117,35 @@ test('filter state round-trips through the URL query string', () => {
   expect(query).not.toContain('setup=');
   expect(parseState('')).toEqual(emptyState());
   expect(serializeState(emptyState())).toBe('');
+});
+
+test('activeSelections lists every checked facet in group order, never the query', () => {
+  expect(activeSelections(emptyState())).toEqual([]);
+  const state = {
+    ...emptyState(),
+    q: 'induction',
+    categories: ['mechanics'],
+    topics: ['rotation', 'friction'],
+    courses: ['PH211'],
+    hazards: ['laser'],
+  };
+  expect(activeSelections(state)).toEqual([
+    { param: 'cat', value: 'mechanics' },
+    { param: 'topic', value: 'rotation' },
+    { param: 'topic', value: 'friction' },
+    { param: 'course', value: 'PH211' },
+    { param: 'hazard', value: 'laser' },
+  ]);
+});
+
+test('hiddenStubNote counts, lists, and caps matching stub titles', () => {
+  expect(hiddenStubNote([])).toBe('');
+  expect(hiddenStubNote(['Wire Rings'])).toBe('1 stub record also matches: Wire Rings.');
+  expect(hiddenStubNote(['Wire Rings', 'Ball Ramps'])).toBe(
+    '2 stub records also match: Wire Rings, Ball Ramps.',
+  );
+  const many = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  expect(hiddenStubNote(many)).toBe(
+    '10 stub records also match: A, B, C, D, E, F, G, H, and 2 more.',
+  );
 });

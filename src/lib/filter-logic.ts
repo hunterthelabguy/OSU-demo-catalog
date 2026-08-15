@@ -74,6 +74,39 @@ export const cardVisible = (
   searchSlugs: ReadonlySet<string> | null,
 ): boolean => !isDefaultHidden(card, state) && matchesFacets(card, state, searchSlugs);
 
+// The removable-chip row above the grid (2a design, build-plan amendment
+// 12). Each entry maps one checked facet box; the DOM layer renders a
+// remove button per entry and unchecks the named control. Search is not a
+// chip: the query is already visible and editable in the search box.
+export interface ActiveSelection {
+  param: 'cat' | 'topic' | 'course' | 'time' | 'room' | 'hazard';
+  value: string;
+}
+
+export const activeSelections = (state: FilterState): ActiveSelection[] => [
+  ...state.categories.map((value) => ({ param: 'cat', value }) as const),
+  ...state.topics.map((value) => ({ param: 'topic', value }) as const),
+  ...state.courses.map((value) => ({ param: 'course', value }) as const),
+  ...state.times.map((value) => ({ param: 'time', value }) as const),
+  ...state.rooms.map((value) => ({ param: 'room', value }) as const),
+  ...state.hazards.map((value) => ({ param: 'hazard', value }) as const),
+];
+
+/** The dashed note under a filtered grid naming hidden stubs that match
+ *  the active filters, so "no results" and "thin results" stop implying
+ *  the stockroom lacks the demo. Rendered only when a filter or search is
+ *  active: unfiltered, the note would name all 42 stubs. The cap keeps a
+ *  broad filter from doing the same. */
+export const hiddenStubNote = (titles: readonly string[], cap = 8): string => {
+  if (titles.length === 0) return '';
+  const shown = titles.slice(0, cap);
+  const extra = titles.length - shown.length;
+  const list = shown.join(', ') + (extra > 0 ? `, and ${extra} more` : '');
+  return titles.length === 1
+    ? `1 stub record also matches: ${list}.`
+    : `${titles.length} stub records also match: ${list}.`;
+};
+
 // URL round trip. Param names are part of the linkable-URL contract:
 // q, cat, topic, course, time, room, hazard, stubs, oos. The pre-redesign
 // `setup` param is gone; the site was pre-launch and noindex, so no

@@ -46,7 +46,9 @@ Git identity and transport:
 - **Theme contract**: all fonts and colors live in `src/styles/theme.css`,
   both schemes. `--accent` is fills-only; `--accent-text` is the AA-safe
   accent for small text. Do not hardcode colors in templates; the dark
-  scheme depends on it.
+  scheme depends on it. Every foreground/background pair the templates use
+  is asserted at WCAG AA by `tests/theme-contrast.test.ts`; extend the
+  pair list when you introduce a new combination.
 - **A repo must not lie about its verification.** Never document a command
   or badge scope that is not real and tested.
 - Every page carries `noindex` until launch (Base.astro); remove it only on
