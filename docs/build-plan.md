@@ -173,7 +173,7 @@ instructor-facing, filterable time. Ruled and shipped:
   deviations (an oscillations subarea added, fluids standalone, optics split
   from waves, a measurement category added), plain "Energy" naming without
   the justice subareas until content exists, and a local `equipment`
-  category neither portal has. New `category` field (optional in schema,
+  category neither portal has (wrong: see amendment 14). New `category` field (optional in schema,
   required by content test); `topics` became closed subtopic slugs, each
   with a home category; new free-text `tags` field, rendered and searchable,
   never a facet. This organizes topics without reversing spec section 4's
@@ -328,6 +328,64 @@ noise, and their information moves to a chip row and a left accent edge;
 and the masthead print button answers to the same 44px floor as the facet
 controls, which it failed by 17px until the layout suite was pointed at
 it.
+
+**14. Vocabulary checked against comPADRE at the source, 2026-08-21.**
+Amendment 10 adapted the classification vocabulary from a portal that builds
+on comPADRE rather than from comPADRE itself. Reading the July 2023 workbook
+directly (658 rows, 13 top subjects, 141 subareas, 504 details, both sheets
+identical) settled three things.
+
+- **One correction to the record.** Amendment 10 calls `equipment` a local
+  category "neither portal has." comPADRE has it: General Physics >
+  Equipment, PIRA 9, children Class Support 9A, Electronic Equipment 9B,
+  Mechanical Equipment 9C. The deviation is promoting it from subarea to top
+  level, which stands; the claim as written did not. The comment in
+  `src/lib/demo-schema.ts` is corrected alongside this.
+- **Structural divergences left alone.** comPADRE has no Energy top level
+  (work and energy is Classical Mechanics 1M), splits modern physics,
+  quantum, and relativity three ways, and gives mathematical tools a top
+  level with 17 subareas. None of that is worth importing. A demonstration
+  collection is not a resource library, and the coarser tree is the one
+  worth browsing. comPADRE's finer splits below the second level are
+  declined for the same reason: an unused subtopic costs the browse nothing
+  because it does not render, but every one of them costs an author a
+  decision at authoring time, and 14 electricity records do not need seven
+  circuit buckets.
+- **Eleven subtopics added**, 39 to 50, each one a comPADRE subarea with real
+  demonstrations behind it and no catalog home: `statics_and_equilibrium`
+  (1J), `properties_of_matter` (1R), `phase_transitions` (4C),
+  `electromagnetic_radiation` (5N), `polarization` (6H),
+  `vision_and_the_eye` (6J), `atomic_physics_and_spectra` (7B),
+  `nuclear_physics` (7D), and comPADRE's equipment trio `class_support`,
+  `electronic_equipment`, `mechanical_equipment` (9A-9C). No category
+  changes, no slug renamed, no record invalidated; the additions are inert
+  until the verification pass assigns them, because a subtopic no record
+  carries does not render.
+
+Two homing calls, both forced by the same absence: comPADRE's General
+Physics catch-all has no counterpart here. `properties_of_matter` goes to
+`mechanics` rather than the structurally-analogous `measurement`, because an
+instructor hunting an elasticity demo looks under mechanics and
+`measurement` is doing narrower work. The equipment trio goes under
+`equipment`. `class_support` earns its place beyond fidelity: `topics`
+requires at least one entry, so without it an AV record (demo camera,
+USB-C to HDMI dongles, the streaming box that puts the demo camera on the
+big screen) cannot be expressed at all. Specificity below that level is
+`tags`.
+
+Also landed: `CATEGORY_PIRA_PREFIXES`, transcribed from the workbook's PIRA
+column, and a content invariant asserting that a record's `pira_dcs` prefix
+agrees with its category. Only one record carries a code today, which is why
+it was cheap to add now. Every prefix in the map is attested in the source
+and none is inferred, so a real-but-unlisted code fails loudly and a human
+adds it with the source in hand. Relativity carries no PIRA prefix anywhere
+in the workbook, so `modern_physics` cannot accept one for it yet.
+
+Process note carried forward: amendment 10's error came from citing a
+standard by way of a portal's rendering of it. When a ruling cites an
+external vocabulary, the vocabulary's own artifact gets pulled into the
+repo's reach at ruling time. A ledger's authority is the authority of its
+citations.
 
 **Queued next (ruled 2026-08-13):**
 

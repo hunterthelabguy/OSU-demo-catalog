@@ -29,9 +29,11 @@ export const ROOM_REQUIREMENTS = [
 // (physicsandequity.org), which builds on the comPADRE vocabulary. Ruled
 // 2026-08-13 (build-plan amendment 10): the Physics and Equity seven top
 // levels with four deviations (oscillations subarea added, fluids standalone,
-// optics split from waves, measurement added), plain "Energy" naming, and a
-// local `equipment` extension neither portal has. Enum order is render
-// order; do not sort it.
+// optics split from waves, measurement added), plain "Energy" naming, and
+// `equipment` promoted to a top level. That last one was recorded as a local
+// invention until the comPADRE workbook was read directly on 2026-08-21:
+// comPADRE has General Physics > Equipment at PIRA 9. The deviation is the
+// promotion, not the category. Enum order is render order; do not sort it.
 export const CATEGORIES = [
   'measurement',
   'mechanics',
@@ -64,6 +66,13 @@ export const SUBTOPICS = {
   momentum: { category: 'mechanics' },
   rotation: { category: 'mechanics' },
   gravity_and_orbits: { category: 'mechanics' },
+  statics_and_equilibrium: { category: 'mechanics' },
+  // comPADRE homes properties of matter under General Physics (1R). We have
+  // no General Physics category, and `measurement` is doing narrower work
+  // here (units, estimation, mathematical tools), so an elasticity or
+  // restitution demo goes where an instructor would look for it.
+  // Ruled 2026-08-21.
+  properties_of_matter: { category: 'mechanics' },
   // fluids
   pressure: { category: 'fluids' },
   buoyancy: { category: 'fluids' },
@@ -85,30 +94,78 @@ export const SUBTOPICS = {
   ideal_gas: { category: 'thermodynamics' },
   heat_engines: { category: 'thermodynamics' },
   entropy_and_statistical_mechanics: { category: 'thermodynamics' },
+  phase_transitions: { category: 'thermodynamics' },
   // electricity and magnetism
   electrostatics: { category: 'electricity_and_magnetism' },
   circuits: { category: 'electricity_and_magnetism' },
   magnetism: { category: 'electricity_and_magnetism' },
   electromagnetism: { category: 'electricity_and_magnetism' },
   electromagnetic_induction: { category: 'electricity_and_magnetism' },
+  electromagnetic_radiation: { category: 'electricity_and_magnetism' },
   // optics
   ray_optics: { category: 'optics' },
   wave_optics: { category: 'optics' },
   color_and_spectrum: { category: 'optics' },
+  polarization: { category: 'optics' },
+  vision_and_the_eye: { category: 'optics' },
   // modern physics
   quantum_phenomena: { category: 'modern_physics' },
   relativity: { category: 'modern_physics' },
+  atomic_physics_and_spectra: { category: 'modern_physics' },
+  nuclear_physics: { category: 'modern_physics' },
   // astronomy
   solar_system: { category: 'astronomy' },
   stars: { category: 'astronomy' },
   galaxies: { category: 'astronomy' },
   cosmology: { category: 'astronomy' },
-  // equipment homes no subtopics of its own: equipment records carry
-  // subtopics from the categories their contents serve.
+  // equipment
+  // Adopted wholesale from comPADRE General Physics > Equipment (PIRA 9),
+  // 2026-08-21. Equipment records still carry subtopics from the categories
+  // their contents serve where they have one (Large Magnets is magnetism);
+  // these three exist for the gear that serves no single physics topic.
+  // class_support is what makes an AV record expressible at all: `topics`
+  // requires at least one entry, and a demo camera has no physics topic.
+  // Specificity below this level (camera, dongle, streaming box) is `tags`.
+  class_support: { category: 'equipment' },
+  electronic_equipment: { category: 'equipment' },
+  mechanical_equipment: { category: 'equipment' },
 } as const satisfies Record<string, { category: Category }>;
 
 export type Subtopic = keyof typeof SUBTOPICS;
 export const SUBTOPIC_KEYS = Object.keys(SUBTOPICS) as [Subtopic, ...Subtopic[]];
+
+/**
+ * Category to PIRA DCS prefix, transcribed from the PIRA column of the
+ * comPADRE subject vocabulary (July 2023 release) on 2026-08-21. Every
+ * prefix here is attested in that workbook; none is inferred. A code whose
+ * prefix is real but absent from the source therefore fails the check rather
+ * than passing quietly, which is the intended failure direction: a human
+ * adds it with the source in hand instead of a test guessing.
+ *
+ * Two entries depart from comPADRE's own tree, both for reasons the
+ * CATEGORIES comment records. `energy` takes 1M, which comPADRE files under
+ * Classical Mechanics > Work and Energy, because we make energy a category.
+ * `mechanics` takes 1R (Properties of Matter) and `equipment` takes 9A-9C,
+ * both of which comPADRE files under General Physics, a category we do not
+ * have. Relativity carries no PIRA prefix anywhere in the source, so
+ * `modern_physics` cannot accept one for it yet.
+ */
+export const CATEGORY_PIRA_PREFIXES = {
+  measurement: ['1A'],
+  mechanics: ['1C', '1D', '1E', '1F', '1G', '1H', '1J', '1K', '1L', '1N', '1Q', '1R'],
+  fluids: ['2A', '2B', '2C'],
+  energy: ['1M'],
+  waves: ['3A', '3B', '3C', '3D', '3E'],
+  thermodynamics: ['4A', '4B', '4C', '4D', '4E', '4F'],
+  electricity_and_magnetism: [
+    '5A', '5B', '5C', '5D', '5E', '5F', '5G',
+    '5H', '5J', '5K', '5L', '5M', '5N',
+  ],
+  optics: ['6A', '6B', '6C', '6D', '6F', '6H', '6J', '6Q'],
+  modern_physics: ['7A', '7B', '7D', '7E'],
+  astronomy: ['8A', '8B', '8C'],
+  equipment: ['9A', '9B', '9C'],
+} as const satisfies Record<Category, readonly string[]>;
 
 // Accessibility levels, per sense. `with_support` means the demonstration
 // works for the student given an accommodation the record describes in

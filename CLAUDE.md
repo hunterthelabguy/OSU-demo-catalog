@@ -12,6 +12,14 @@ spec and build-plan differ, build-plan wins; never edit the spec file.
   (which also generates the Pagefind index), then `npm run test:e2e`, the
   Playwright mobile-layout suite against the built site. Green locally
   means green in CI. First run needs `npx playwright install chromium`.
+- **On Windows the e2e step needs the preview server started first.** Astro
+  7.2.1 backgrounds `astro preview` here instead of holding the foreground,
+  so Playwright's `webServer` sees its command exit immediately and reports
+  "Process from config.webServer exited early", which reads like a test
+  failure and is not one. Run `npx astro preview --background --host`, then
+  `npm run test:e2e`; `--host` matters because the default bind is IPv6 only
+  while Playwright probes 127.0.0.1, so `reuseExistingServer` misses it.
+  `npx astro preview stop` when done. CI is ubuntu and unaffected.
 - `tests/e2e/` is Playwright and needs a built site; everything else in
   `tests/` is vitest and pure. `vitest.config.ts` excludes the e2e
   directory so the two gates cannot swallow each other.

@@ -3,7 +3,13 @@ import { join } from 'node:path';
 import { expect, test } from 'vitest';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'astro/zod';
-import { BODY_HEADINGS, CATEGORIES, SUBTOPICS, buildDemoSchema } from '../src/lib/demo-schema';
+import {
+  BODY_HEADINGS,
+  CATEGORIES,
+  CATEGORY_PIRA_PREFIXES,
+  SUBTOPICS,
+  buildDemoSchema,
+} from '../src/lib/demo-schema';
 
 // Invariants over the real records in src/content/demos/, the ones the build
 // itself cannot see. Astro validates frontmatter against the schema; it does
@@ -95,6 +101,25 @@ test('every topic is a known subtopic slug', () => {
         `${demo.dirname}/index.md: "${topic}" is not in SUBTOPICS`,
       ).toBe(true);
     }
+  }
+});
+
+test('a record PIRA code agrees with its category', () => {
+  // The comPADRE vocabulary maps every subject to a PIRA prefix, so a code
+  // and a category can be checked against each other rather than both being
+  // taken on trust. A 5-series code on a mechanics record is a
+  // copy-paste error from the neighboring row of a source table, which is
+  // exactly the mistake that survives proofreading.
+  for (const demo of demoFiles) {
+    const code = demo.frontmatter['pira_dcs'] as string | null | undefined;
+    if (typeof code !== 'string' || code.length === 0) continue;
+    const category = demo.frontmatter['category'] as keyof typeof CATEGORY_PIRA_PREFIXES;
+    const allowed: readonly string[] = CATEGORY_PIRA_PREFIXES[category] ?? [];
+    expect(
+      allowed.includes(code.slice(0, 2)),
+      `${demo.dirname}/index.md: PIRA ${code} does not belong to category ` +
+        `"${category}" (expected one of ${allowed.join(', ')})`,
+    ).toBe(true);
   }
 });
 
