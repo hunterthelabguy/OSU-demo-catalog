@@ -7,9 +7,11 @@
 // Layout is the design round (amendments 12 and 13): masthead lockup,
 // sticky search band carrying the live count, a course rail pinned above
 // a collapsible facet panel, and a results column with removable filter
-// chips. Facet counts are baked at build time and count every record
-// carrying the value, stubs included: the sidebar describes the
-// stockroom, not the current view.
+// chips. Course is scope and always narrows; the facets inside the panel
+// combine by the Match any / Match all control (amendment 15). Facet
+// counts are baked at build time and count every record carrying the
+// value, stubs included: the sidebar describes the stockroom, not the
+// current view, and under Match any that is exactly what they mean.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import DemoCard from '../components/DemoCard.astro';
@@ -65,15 +67,6 @@ const groups: {
         .length,
     })),
   },
-  {
-    param: 'hazard',
-    legend: 'Hazards',
-    options: facets.hazards.map((h) => ({
-      value: h,
-      label: humanize(h),
-      count: demos.filter((d) => (d.data.hazards as readonly string[]).includes(h)).length,
-    })),
-  },
 ].filter((group) => group.options.length > 0);
 ---
 
@@ -110,9 +103,12 @@ const groups: {
            pinned above the disclosure at every width rather than folded
            inside it (amendment 13). One fieldset, one source of truth:
            the compact rail and the desktop sidebar are the same controls,
-           so they cannot desync. -->
+           so they cannot desync. It is scope, not a facet (amendment 15):
+           a checked course always narrows, whatever the match control
+           below says, which is why it lives outside the panel. -->
       <fieldset class="course-facet">
         <legend><span class="legend-inner">Course</span></legend>
+        <p class="scope-note">Always narrows, whatever the match setting.</p>
         <div class="course-chips">
           {
             facets.courses.map((course) => (
@@ -152,11 +148,28 @@ const groups: {
             </label>
           </fieldset>
 
+          <!-- How the facets below combine across groups (amendment 15).
+               Radios, not a checkbox: two named states beat an inverted
+               boolean, and the value serializes as itself. Any is the
+               default so a widening selection widens. -->
+          <fieldset class="match-mode">
+            <legend><span class="legend-inner">Match</span></legend>
+            <label>
+              <input type="radio" name="match" value="any" checked />
+              any of these
+            </label>
+            <label>
+              <input type="radio" name="match" value="all" />
+              all of these
+            </label>
+          </fieldset>
+
           <!-- Two-level topic browse. The category checkbox sits BESIDE the
                details element, never inside its summary: a checkbox inside a
                summary is announced as part of a disclosure button and label
                clicks toggle both controls. Category and topic are independent
-               facet groups; there is no tri-state parent logic. -->
+               facet groups; there is no tri-state parent logic, and the match
+               control decides whether they AND or OR. -->
           <fieldset class="topic-facet">
             <legend><span class="legend-inner">Topic</span></legend>
             {
@@ -273,7 +286,6 @@ const groups: {
       courses: splitValues(el.dataset.courses ?? ''),
       timeBuckets: splitValues(el.dataset.timeBuckets ?? ''),
       rooms: splitValues(el.dataset.rooms ?? ''),
-      hazards: splitValues(el.dataset.hazards ?? ''),
     },
   }));
 
@@ -330,12 +342,12 @@ const groups: {
     // double-count in the URL and the filter count.
     return {
       q: searchInput.value,
+      mode: fd.get('match') === 'all' ? 'all' : 'any',
       categories: [...new Set(fd.getAll('cat').map(String))],
       topics: [...new Set(fd.getAll('topic').map(String))],
       courses: fd.getAll('course').map(String),
       times: fd.getAll('time').map(String),
       rooms: fd.getAll('room').map(String),
-      hazards: fd.getAll('hazard').map(String),
       showStubs: fd.get('stubs') === '1',
       showOutOfService: fd.get('oos') === '1',
     };
@@ -349,12 +361,14 @@ const groups: {
       course: state.courses,
       time: state.times,
       room: state.rooms,
-      hazard: state.hazards,
       stubs: state.showStubs ? ['1'] : [],
       oos: state.showOutOfService ? ['1'] : [],
     };
     for (const input of form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
       input.checked = (selected[input.name] ?? []).includes(input.value);
+    }
+    for (const radio of form.querySelectorAll<HTMLInputElement>('input[name="match"]')) {
+      radio.checked = radio.value === state.mode;
     }
     // A restored URL must show its own filters: open (never close) any
     // category disclosure whose block holds a checked box.
@@ -443,9 +457,13 @@ const groups: {
       const filters = activeFilterCount(state);
       const parts: string[] = [];
       if (filters > 0) {
-        parts.push(
-          `No demonstrations match ${filters === 1 ? 'this filter' : `all ${filters} filters`}.`,
-        );
+        const which =
+          filters === 1
+            ? 'this filter'
+            : state.mode === 'all'
+              ? `all ${filters} filters`
+              : `these ${filters} filters`;
+        parts.push(`No demonstrations match ${which}.`);
         if (lastChangedLabel) parts.push(`Try clearing "${lastChangedLabel}".`);
       } else {
         parts.push('No demonstrations to show.');
@@ -472,7 +490,11 @@ const groups: {
   form.addEventListener('change', (event) => {
     const target = event.target;
     if (target instanceof HTMLInputElement && target.type === 'checkbox') {
-      lastChangedLabel = target.closest('label')?.textContent?.trim() ?? '';
+      // The label's own words, without its count badge: "mechanics", never
+      // "mechanics16", when the empty state suggests clearing it.
+      const label = target.closest('label')?.cloneNode(true) as HTMLElement | null;
+      label?.querySelector('.count')?.remove();
+      lastChangedLabel = label?.textContent?.trim() ?? '';
       // Checking a category reveals its subtopics. Open only, never close:
       // collapsing on uncheck could hide a still-checked subtopic filter.
       if (target.name === 'cat' && target.checked) {
@@ -644,11 +666,19 @@ const groups: {
     margin-bottom: 0.3rem;
   }
 
-  fieldset input[type='checkbox'] {
+  fieldset input[type='checkbox'],
+  fieldset input[type='radio'] {
     accent-color: var(--accent-text);
     width: 1rem;
     height: 1rem;
     flex: none;
+  }
+
+  .scope-note {
+    margin: 0 0 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
   }
 
   .count {
@@ -958,7 +988,8 @@ const groups: {
       border-bottom: none;
     }
 
-    .facet-body input[type='checkbox'] {
+    .facet-body input[type='checkbox'],
+    .facet-body input[type='radio'] {
       width: 1.375rem;
       height: 1.375rem;
     }

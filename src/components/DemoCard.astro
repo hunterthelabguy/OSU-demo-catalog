@@ -5,6 +5,8 @@
 // then title, classification line, and a mono logistics footer. Every
 // facet value rides the card as data-* attributes; the index page script
 // toggles visibility, so this component is the only source of card markup.
+// `data-hazards` is not a facet (amendment 15) and rides for the compact
+// stylesheet, which draws the accent edge off it.
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import Chip from './Chip.astro';

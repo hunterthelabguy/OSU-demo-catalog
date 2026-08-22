@@ -3,12 +3,24 @@
 // module who is visible. Semantics live here so they are unit-tested; the
 // DOM layer stays glue.
 //
-// Within a group, selections are OR (two topics checked shows demos having
-// either). Across groups, AND (topic and time bucket must both match).
-// Category and topic are independent groups: checking a category does not
-// imply its subtopics, and combining a category with a subtopic homed
-// elsewhere legitimately ANDs. Stubs and out-of-service records are hidden
-// by default and revealed by their toggles, per spec section 4.
+// Two bands of controls (build-plan amendment 15):
+//
+// Scope always narrows. Course is the instructor's standing context, not a
+// topical filter, so a checked course ANDs with everything else; the search
+// query intersects the same way. Stubs and out-of-service records are
+// hidden by default and revealed by their toggles, per spec section 4.
+//
+// The topical facets (category, subtopic, time, room) combine by `mode`.
+// Within one group a selection is always OR (two topics checked shows demos
+// having either). Across groups, 'any' (the default) shows a card matching
+// any selected value in any group, so a widening selection widens; 'all'
+// is the conjunction, a card must satisfy every group with a selection.
+// Category and subtopic stay independent groups with no parent/child
+// logic: checking a category does not imply its subtopics, and under 'all'
+// a category plus a subtopic homed elsewhere legitimately ANDs to nothing,
+// which is the case that prompted the mode control.
+
+export type MatchMode = 'any' | 'all';
 
 export interface CardFacets {
   slug: string;
@@ -19,35 +31,52 @@ export interface CardFacets {
   courses: string[];
   timeBuckets: string[]; // every bucket the demo_minutes range overlaps; [] when untimed
   rooms: string[];
-  hazards: string[];
 }
 
 export interface FilterState {
   q: string;
+  mode: MatchMode;
   categories: string[];
   topics: string[];
   courses: string[];
   times: string[];
   rooms: string[];
-  hazards: string[];
   showStubs: boolean;
   showOutOfService: boolean;
 }
 
 export const emptyState = (): FilterState => ({
   q: '',
+  mode: 'any',
   categories: [],
   topics: [],
   courses: [],
   times: [],
   rooms: [],
-  hazards: [],
   showStubs: false,
   showOutOfService: false,
 });
 
 const groupMatches = (selected: string[], cardValues: string[]): boolean =>
   selected.length === 0 || selected.some((value) => cardValues.includes(value));
+
+// The topical band as (selection, card values) pairs, so both modes read
+// the same list and a new facet group is added in exactly one place.
+const topicalPairs = (card: CardFacets, state: FilterState): [string[], string[]][] => [
+  [state.categories, card.categories],
+  [state.topics, card.topics],
+  [state.times, card.timeBuckets],
+  [state.rooms, card.rooms],
+];
+
+const topicalMatches = (card: CardFacets, state: FilterState): boolean => {
+  const pairs = topicalPairs(card, state);
+  if (state.mode === 'all') return pairs.every(([selected, values]) => groupMatches(selected, values));
+  // 'any': groups with nothing selected impose nothing, and with nothing
+  // selected anywhere the band is no constraint at all.
+  const active = pairs.filter(([selected]) => selected.length > 0);
+  return active.length === 0 || active.some(([selected, values]) => groupMatches(selected, values));
+};
 
 /** The facet-only verdict, ignoring status and condition defaults. Split out
  *  so the empty state can say "hidden matches exist; show stubs". */
@@ -56,13 +85,9 @@ export const matchesFacets = (
   state: FilterState,
   searchSlugs: ReadonlySet<string> | null,
 ): boolean =>
-  groupMatches(state.categories, card.categories) &&
-  groupMatches(state.topics, card.topics) &&
   groupMatches(state.courses, card.courses) &&
-  groupMatches(state.times, card.timeBuckets) &&
-  groupMatches(state.rooms, card.rooms) &&
-  groupMatches(state.hazards, card.hazards) &&
-  (searchSlugs === null || searchSlugs.has(card.slug));
+  (searchSlugs === null || searchSlugs.has(card.slug)) &&
+  topicalMatches(card, state);
 
 export const isDefaultHidden = (card: CardFacets, state: FilterState): boolean =>
   (card.status === 'stub' && !state.showStubs) ||
@@ -77,9 +102,11 @@ export const cardVisible = (
 // The removable-chip row above the grid (2a design, build-plan amendment
 // 12). Each entry maps one checked facet box; the DOM layer renders a
 // remove button per entry and unchecks the named control. Search is not a
-// chip: the query is already visible and editable in the search box.
+// chip: the query is already visible and editable in the search box. The
+// match mode is not a chip either: it is how the chips combine, not one of
+// them.
 export interface ActiveSelection {
-  param: 'cat' | 'topic' | 'course' | 'time' | 'room' | 'hazard';
+  param: 'cat' | 'topic' | 'course' | 'time' | 'room';
   value: string;
 }
 
@@ -89,7 +116,6 @@ export const activeSelections = (state: FilterState): ActiveSelection[] => [
   ...state.courses.map((value) => ({ param: 'course', value }) as const),
   ...state.times.map((value) => ({ param: 'time', value }) as const),
   ...state.rooms.map((value) => ({ param: 'room', value }) as const),
-  ...state.hazards.map((value) => ({ param: 'hazard', value }) as const),
 ];
 
 /** The dashed note under a filtered grid naming hidden stubs that match
@@ -108,18 +134,19 @@ export const hiddenStubNote = (titles: readonly string[], cap = 8): string => {
 };
 
 // URL round trip. Param names are part of the linkable-URL contract:
-// q, cat, topic, course, time, room, hazard, stubs, oos. The pre-redesign
-// `setup` param is gone; the site was pre-launch and noindex, so no
-// compatibility shim.
+// q, match, cat, topic, course, time, room, stubs, oos. `match` appears only
+// as `match=all`; the default mode leaves the URL clean. The pre-redesign
+// `setup` param and the `hazard` facet are gone; the site was pre-launch
+// and noindex, so no compatibility shim.
 export const serializeState = (state: FilterState): string => {
   const params = new URLSearchParams();
   if (state.q) params.set('q', state.q);
+  if (state.mode === 'all') params.set('match', 'all');
   for (const c of state.categories) params.append('cat', c);
   for (const t of state.topics) params.append('topic', t);
   for (const c of state.courses) params.append('course', c);
   for (const t of state.times) params.append('time', t);
   for (const r of state.rooms) params.append('room', r);
-  for (const h of state.hazards) params.append('hazard', h);
   if (state.showStubs) params.set('stubs', '1');
   if (state.showOutOfService) params.set('oos', '1');
   return params.toString();
@@ -129,12 +156,12 @@ export const parseState = (search: string): FilterState => {
   const params = new URLSearchParams(search);
   return {
     q: params.get('q') ?? '',
+    mode: params.get('match') === 'all' ? 'all' : 'any',
     categories: params.getAll('cat'),
     topics: params.getAll('topic'),
     courses: params.getAll('course'),
     times: params.getAll('time'),
     rooms: params.getAll('room'),
-    hazards: params.getAll('hazard'),
     showStubs: params.get('stubs') === '1',
     showOutOfService: params.get('oos') === '1',
   };

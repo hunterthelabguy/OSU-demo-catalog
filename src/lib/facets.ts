@@ -47,7 +47,6 @@ type Demo = CollectionEntry<'demos'>;
 export interface FacetValues {
   courses: string[];
   rooms: string[];
-  hazards: string[];
 }
 
 const uniqueSorted = (values: string[]): string[] =>
@@ -73,7 +72,6 @@ export const sortCourses = (courses: readonly string[]): string[] =>
 export const deriveFacets = (demos: readonly Demo[]): FacetValues => ({
   courses: sortCourses(uniqueSorted(demos.flatMap((d) => d.data.course_tags))),
   rooms: uniqueSorted(demos.flatMap((d) => d.data.room_requirements)),
-  hazards: uniqueSorted(demos.flatMap((d) => d.data.hazards)),
 });
 
 export interface CategoryGroup {
