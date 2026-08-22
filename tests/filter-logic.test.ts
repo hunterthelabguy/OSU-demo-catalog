@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import type { CardFacets } from '../src/lib/filter-logic';
+import type { CardFacets, FilterState } from '../src/lib/filter-logic';
 import {
   activeSelections,
   cardVisible,
@@ -20,11 +20,17 @@ const card = (overrides: Partial<CardFacets> = {}): CardFacets => ({
   courses: ['PH211'],
   timeBuckets: ['5to15'],
   rooms: [],
-  hazards: [],
   ...overrides,
 });
 
-test('default state shows a healthy verified record', () => {
+const all = (overrides: Partial<FilterState> = {}): FilterState => ({
+  ...emptyState(),
+  mode: 'all',
+  ...overrides,
+});
+
+test('default state shows a healthy verified record, matching any', () => {
+  expect(emptyState().mode).toBe('any');
   expect(cardVisible(card(), emptyState(), null)).toBe(true);
 });
 
@@ -40,31 +46,60 @@ test('stubs and out-of-service records are hidden by default, shown by toggle', 
   expect(cardVisible(card({ condition: 'needs_repair' }), emptyState(), null)).toBe(true);
 });
 
-test('within a group selections are OR', () => {
-  const state = { ...emptyState(), topics: ['pressure', 'rotation'] };
-  expect(cardVisible(card(), state, null)).toBe(true);
-  expect(cardVisible(card({ topics: ['wave_optics'] }), state, null)).toBe(false);
+test('within a group selections are OR in both modes', () => {
+  for (const state of [{ ...emptyState(), topics: ['pressure', 'rotation'] }, all({ topics: ['pressure', 'rotation'] })]) {
+    expect(cardVisible(card(), state, null)).toBe(true);
+    expect(cardVisible(card({ topics: ['wave_optics'] }), state, null)).toBe(false);
+  }
 });
 
-test('across groups selections are AND', () => {
-  const state = { ...emptyState(), topics: ['rotation'], times: ['under5'] };
-  // Topic matches, time bucket does not: hidden.
-  expect(cardVisible(card(), state, null)).toBe(false);
-  expect(cardVisible(card({ timeBuckets: ['under5'] }), state, null)).toBe(true);
+test('across topical groups, all is AND and any is OR', () => {
+  // Topic matches, time bucket does not.
+  const selection = { topics: ['rotation'], times: ['under5'] };
+  expect(cardVisible(card(), all(selection), null)).toBe(false);
+  expect(cardVisible(card({ timeBuckets: ['under5'] }), all(selection), null)).toBe(true);
+  expect(cardVisible(card(), { ...emptyState(), ...selection }, null)).toBe(true);
+  // Matching neither group hides the card under any as well.
+  expect(cardVisible(card({ topics: ['friction'] }), { ...emptyState(), ...selection }, null)).toBe(
+    false,
+  );
 });
 
-test('category and topic are independent AND-ed groups', () => {
+test('category and subtopic are independent groups, combined by mode', () => {
   // A subtopic homed under Energy still matches a mechanics record carrying
-  // it; adding a category selection then narrows by the record's own home.
-  const energyTopic = { ...emptyState(), topics: ['conservation_of_energy'] };
-  expect(cardVisible(card(), energyTopic, null)).toBe(true);
-  const state = { ...emptyState(), categories: ['optics'], topics: ['rotation'] };
-  expect(cardVisible(card(), state, null)).toBe(false);
+  // it, in either mode.
+  const energyTopic = { topics: ['conservation_of_energy'] };
+  expect(cardVisible(card(), { ...emptyState(), ...energyTopic }, null)).toBe(true);
+  expect(cardVisible(card(), all(energyTopic), null)).toBe(true);
+  // The case the first outside feedback hit: a category plus a subtopic
+  // homed elsewhere. Under all it narrows to the record's own home and can
+  // legitimately empty; under any both sets show.
+  const foreign = { categories: ['optics'], topics: ['rotation'] };
+  expect(cardVisible(card(), all(foreign), null)).toBe(false);
+  expect(cardVisible(card(), { ...emptyState(), ...foreign }, null)).toBe(true);
+  expect(cardVisible(card({ categories: ['optics'], topics: ['wave_optics'] }), { ...emptyState(), ...foreign }, null)).toBe(true);
   expect(cardVisible(card(), { ...emptyState(), categories: ['mechanics'] }, null)).toBe(true);
   // A record with no category (none exist in this repo, by invariant) never
   // matches a category selection but is fine otherwise.
   expect(cardVisible(card({ categories: [] }), { ...emptyState(), categories: ['optics'] }, null)).toBe(false);
   expect(cardVisible(card({ categories: [] }), emptyState(), null)).toBe(true);
+});
+
+test('course is scope: it narrows in both modes and never joins the OR', () => {
+  const ph213 = { courses: ['PH213'] };
+  expect(cardVisible(card(), { ...emptyState(), ...ph213 }, null)).toBe(false);
+  expect(cardVisible(card(), all(ph213), null)).toBe(false);
+  // A matching topic cannot rescue a record outside the course under any.
+  const withTopic = { ...ph213, topics: ['rotation'] };
+  expect(cardVisible(card(), { ...emptyState(), ...withTopic }, null)).toBe(false);
+  expect(cardVisible(card({ courses: ['PH211', 'PH213'] }), { ...emptyState(), ...withTopic }, null)).toBe(true);
+  // Two courses checked is still OR within the course group.
+  expect(cardVisible(card(), { ...emptyState(), courses: ['PH211', 'PH213'] }, null)).toBe(true);
+});
+
+test('an empty topical band imposes no constraint under any', () => {
+  expect(cardVisible(card(), { ...emptyState(), courses: ['PH211'] }, null)).toBe(true);
+  expect(cardVisible(card(), { ...emptyState(), showStubs: true }, null)).toBe(true);
 });
 
 test('a multi-bucket time range matches a selection of any overlapped bucket', () => {
@@ -73,20 +108,24 @@ test('a multi-bucket time range matches a selection of any overlapped bucket', (
   expect(cardVisible(spanning, { ...emptyState(), times: ['under5'] }, null)).toBe(false);
 });
 
-test('search intersects with facets rather than replacing them', () => {
+test('search intersects with facets in both modes rather than replacing them', () => {
   const found = new Set(['rotating-stool-dumbbells']);
   expect(cardVisible(card(), emptyState(), found)).toBe(true);
   expect(cardVisible(card({ slug: 'bed-of-nails', status: 'verified' }), emptyState(), found)).toBe(
     false,
   );
-  const state = { ...emptyState(), topics: ['wave_optics'] };
-  expect(cardVisible(card(), state, found)).toBe(false);
+  const miss = { topics: ['wave_optics'] };
+  expect(cardVisible(card(), all(miss), found)).toBe(false);
+  expect(cardVisible(card(), { ...emptyState(), ...miss }, found)).toBe(false);
+  // A facet hit cannot rescue a record the search did not find.
+  expect(cardVisible(card({ slug: 'bed-of-nails' }), { ...emptyState(), topics: ['rotation'] }, found)).toBe(false);
 });
 
 test('an untimed record only vanishes when a time filter is active', () => {
   const untimed = card({ timeBuckets: [] });
   expect(cardVisible(untimed, emptyState(), null)).toBe(true);
   expect(cardVisible(untimed, { ...emptyState(), times: ['under5'] }, null)).toBe(false);
+  expect(cardVisible(untimed, all({ times: ['under5'] }), null)).toBe(false);
 });
 
 test('matchesFacets ignores the default-hidden gate, for the empty-state hint', () => {
@@ -98,43 +137,52 @@ test('matchesFacets ignores the default-hidden gate, for the empty-state hint', 
 });
 
 test('filter state round-trips through the URL query string', () => {
-  const state = {
+  const state: FilterState = {
     q: 'angular momentum',
+    mode: 'all',
     categories: ['mechanics'],
     topics: ['rotation'],
     courses: ['PH211', 'PH212'],
     times: ['5to15'],
     rooms: ['needs_dark'],
-    hazards: ['laser'],
     showStubs: true,
     showOutOfService: false,
   };
   const query = serializeState(state);
   expect(parseState(query)).toEqual(state);
-  // The pre-redesign `setup` param is gone from the contract entirely.
+  expect(query).toContain('match=all');
   expect(query).toContain('cat=');
   expect(query).toContain('time=');
+  // The pre-redesign `setup` param and the hazard facet are gone from the
+  // contract entirely; an old hazard link simply stops narrowing.
   expect(query).not.toContain('setup=');
+  expect(parseState('?hazard=laser')).toEqual(emptyState());
+  // The default mode leaves the URL clean, and anything but `all` is any.
+  expect(serializeState({ ...state, mode: 'any' })).not.toContain('match=');
+  expect(parseState('?match=any').mode).toBe('any');
+  expect(parseState('?match=nonsense').mode).toBe('any');
   expect(parseState('')).toEqual(emptyState());
   expect(serializeState(emptyState())).toBe('');
 });
 
-test('activeSelections lists every checked facet in group order, never the query', () => {
+test('activeSelections lists every checked facet in group order, never the query or mode', () => {
   expect(activeSelections(emptyState())).toEqual([]);
+  expect(activeSelections(all())).toEqual([]);
   const state = {
     ...emptyState(),
     q: 'induction',
+    mode: 'all' as const,
     categories: ['mechanics'],
     topics: ['rotation', 'friction'],
     courses: ['PH211'],
-    hazards: ['laser'],
+    rooms: ['needs_dark'],
   };
   expect(activeSelections(state)).toEqual([
     { param: 'cat', value: 'mechanics' },
     { param: 'topic', value: 'rotation' },
     { param: 'topic', value: 'friction' },
     { param: 'course', value: 'PH211' },
-    { param: 'hazard', value: 'laser' },
+    { param: 'room', value: 'needs_dark' },
   ]);
 });
 

@@ -19,8 +19,10 @@ desktop as amendment 12 (masthead band, facet sidebar with counts, filter
 chips, predict-first detail page) and mobile as amendment 13 and phase 6
 (collapsible facets behind a pinned course rail, sticky search, 44px touch
 floor, photo-free compact cards). The theme's contrast pairs and the mobile
-layout contract are both under test: 84 vitest tests plus 12 Playwright
-assertions at 375x812. `npm run verify` is the gate; production tracks
+layout contract are both under test: 87 vitest tests plus 12 Playwright
+assertions at 375x812. Filtering combines by a Match any / Match all
+control with course as always-narrowing scope and hazards no longer a
+facet (amendment 15, from the first outside feedback). `npm run verify` is the gate; production tracks
 `main` at https://osu-demo-catalog.vercel.app.
 
 Remaining engineering is phase 5 (photo ingest script, cached PIRA list) and
@@ -386,6 +388,47 @@ standard by way of a portal's rendering of it. When a ruling cites an
 external vocabulary, the vocabulary's own artifact gets pulled into the
 repo's reach at ruling time. A ledger's authority is the authority of its
 citations.
+
+**15. Match any, course as scope, hazards demoted, 2026-08-22.**
+The first outside feedback on the catalog reported that filtering "ANDs"
+and empties the grid: one course checked, then mechanics and
+electromagnetism, nothing. Reproduced against the built site before
+touching semantics, because the literal report cannot happen: categories
+already OR within their group, and `PH211 + Mechanics + E&M` returns five.
+What does return zero is a category plus a subtopic homed elsewhere
+(`?cat=mechanics&topic=electromagnetism`), the independence amendment 10
+ruled on purpose, and the feedback's words fit that pairing. A second
+empty pairing, `PH211 + E&M`, is empty because in today's content each
+course maps to exactly one category; that one stays empty by the ruling
+below. Three rulings:
+
+- **A Match any / Match all control** over the facets inside the panel
+  (category, subtopic, time, room), defaulting to any so a widening
+  selection widens. Within a group selections were always OR; the control
+  decides how groups combine. Radios, not a checkbox, because two named
+  states beat an inverted boolean and the value serializes as itself:
+  `match=all` in the URL, nothing for the default. `tests/filter-logic.test.ts`
+  asserts the feedback case both ways.
+- **Course is scope, not a facet.** It keeps narrowing in both modes and
+  stays outside the panel, next to the stub and out-of-service toggles in
+  spirit: an instructor arrives with a course, and inside a flat OR a
+  course would widen instead. The sidebar says so under the legend.
+  Declined: demoting course to a label beside the hazards, which was the
+  first instinct. Course is the most-used entry point on the site and a
+  label cannot be an entry point.
+- **Hazards stop being filterable.** A hazard is a property of the
+  apparatus nobody browses toward; it is a warning. The facet group, its
+  counts, its chip, and the `hazard` URL param are gone (an old link simply
+  stops narrowing; pre-launch, noindex, no shim). The data is untouched
+  and still renders on the card band, the compact chip row, the compact
+  accent edge, and the detail page.
+
+Search stays an intersection in both modes: a query that grows the result
+set as you type is not a search. Facet counts stay baked and
+unconditional, which under Match any is exactly what they mean. Process
+note: the report named a cause, and acting on the cause without
+reproducing the symptom would have shipped a redesign with the original
+empty grid still reachable.
 
 **Queued next (ruled 2026-08-13):**
 
