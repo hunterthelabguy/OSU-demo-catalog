@@ -64,7 +64,10 @@ Three failure modes in that tail, all of which look like other problems:
   failed, because `main` is checked out in the primary worktree. Confirm
   with `gh pr view <n> --json state`, then fast-forward the primary
   checkout directly: `git -C <primary-worktree> merge --ff-only
-  origin/main`. Do not re-run the merge.
+  origin/main`. Do not re-run the merge. `git fetch --prune` has to come
+  first: the failed step never fetched, so `origin/main` is still the old
+  SHA and the merge reports "Already up to date." while the checkout sits
+  a commit behind.
 - **Stale `claude/*` branches accumulate locally** even though
   `--delete-branch` removes them from the remote, because that step runs
   in the same failed local checkout. `git fetch --prune` plus
@@ -83,8 +86,16 @@ Git identity and transport:
 
 - **No em dashes** in anything committed here. Grep before committing:
   the owner's rule for public prose covers every file in a public repo.
+  `grep -P "\x{2014}"` fails on this machine's Git Bash ("character
+  value in \x{} is too large": the pattern is not in UTF-8 mode). What
+  works is the raw bytes: `git diff | grep $'\xe2\x80\x94'`.
 - **No invented record data.** Never fabricate PIRA codes, shelf locations,
   maintenance history, or dates. Fixture placeholders are marked in `notes`.
+- **Filter semantics live in `src/lib/filter-logic.ts`**, never in the
+  index page script, which stays DOM glue. Since amendment 15 there are
+  two bands: scope (course, search) always ANDs, and the panel facets
+  combine by the Match any / Match all mode. A new facet group goes in
+  `topicalPairs` and nowhere else; both modes read that one list.
 - **Theme contract**: all fonts and colors live in `src/styles/theme.css`,
   both schemes. `--accent` is fills-only; `--accent-text` is the AA-safe
   accent for small text. Do not hardcode colors in templates; the dark

@@ -109,7 +109,7 @@ optional, so a stub record still builds and still renders.
 | `quantity` | How many exist. |
 | `location` | `room` and `shelf`. |
 | `room_requirements` | Constraints, not room names. `needs_dark`, `needs_water`, `needs_ceiling_hook`, `needs_compressed_air`, `high_ceiling`, `no_stairs`, `needs_120v_outlet`, `needs_projector`. |
-| `hazards` | `high_voltage`, `cryogen`, `laser`, `projectile`, `open_flame`, `pressurized`, `heavy_lift`. |
+| `hazards` | `high_voltage`, `cryogen`, `laser`, `projectile`, `open_flame`, `pressurized`, `heavy_lift`. Warnings, deliberately not filterable: nobody browses toward a hazard, and they lead the card and the page instead. |
 | `consumables` | Free text, e.g. `"liquid nitrogen, ~2 L"`. |
 
 **Pedagogy**
