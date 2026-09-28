@@ -7,8 +7,9 @@ were reached is in [docs/build-plan.md](docs/build-plan.md), the ledger.
 > **Draft, 2026-09-28, awaiting the owner's line-by-line ruling.** Assembled
 > from the README, the archival spec, and the ledger. It can only restate
 > what the record already says; where the destination has moved, the record
-> has not caught up yet. Lines marked *(proposed)* are Claude's, with no
-> source in the record: rule them in or strike them.
+> has not caught up yet. Ruled in part on 2026-09-28 (the question, the
+> launch gate, success, crawlers); lines still marked *(proposed)* are
+> Claude's, with no source in the record: rule them in or strike them.
 
 ## Who it serves
 
@@ -43,25 +44,31 @@ design hypothesis this catalog can test, not settled proof).
 Launch means the faculty showing: the catalog is shown to colleagues to win
 support for the full curation effort. The gate is content, not engineering:
 
-- **8 to 12 records at `verified` depth**, prediction prompts included,
-  each checked at the shelf by a person.
-- **Depth before breadth.** Twelve deep records read as a real system;
-  fifty thin ones read as a spreadsheet with CSS.
+- **Every currently catalogued demonstration at `verified` depth**,
+  prediction prompts included. `verified` means the record's content is
+  reviewed (physics, procedure, prediction prompt, misconceptions,
+  summary); the physical check of the apparatus is tracked separately, by
+  date, and a record without one says so plainly. No new location data is
+  required: the
+  stockroom is about to be cleaned, weeded, and reorganized, and locations
+  will be collected over several physical walkthroughs after that, so
+  today's locations are not permanent.
+- **The website is not blocked by the physical work.** Records, design, and
+  tooling are digital and proceed now; the walkthroughs feed locations in as
+  they happen.
+- **Depth before breadth.** No new demonstrations join before launch; the
+  ones already catalogued go deep first.
 - **Honest partial records.** A stub renders as a stub. Gaps stated plainly
   build more trust than gaps concealed.
-- **Before launch:** the site-wide `noindex` lifts only on the owner's word,
-  the URL is not circulated beyond the preview, and the OSU palette values
-  are verified against the university brand site.
+- **Before launch:** the URL is not circulated beyond the preview, and the
+  OSU palette values are verified against the university brand site.
 
 ## What success looks like after launch
 
-*(proposed: the record names the launch gate but no post-launch measure)*
-
-- Faculty pick demonstrations from the catalog rather than by asking.
+- Faculty pick demonstrations from the catalog rather than by emailing "what demos do we have on this?"
 - A successor can run the stockroom from it without extracting knowledge
   from anyone's head: records, provenance, and the ledger survive handover.
-- The prediction prompts get used, and whether they help becomes
-  measurable.
+- Faculty can find demo equipment quickly by referencing the listed location.
 
 ## Standing commitments
 
@@ -71,6 +78,8 @@ support for the full curation effort. The gate is content, not engineering:
   provider is where it points today, not a dependency.
 - Nothing invented: no fabricated codes, locations, dates, or history.
 - No identifiable students, and no student data of any kind.
+- The site politely asks crawlers to leave, and outright rejects them when
+  possible, permanently: faculty reach it by link, never by search engine.
 
 ## Deliberately not
 

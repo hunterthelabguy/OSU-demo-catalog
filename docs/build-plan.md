@@ -654,6 +654,38 @@ facets and detail page, and 13's whole-card tap target, stand. Rulings:
   rewritten to the new contract, including a fixed-height check on a
   hazard card.
 
+**22. Launch is ungated from the stockroom, 2026-09-28.**
+Ruled on the VISION.md draft. The launch gate was 8 to 12 records at
+`verified` depth, each checked at the shelf. The owner ruled it is every
+currently catalogued record at `verified` depth, prediction prompts
+included, with no new location data: the stockroom is about to be cleaned,
+weeded, and reorganized, locations will come from several walkthroughs
+after that, and that physical work will take roughly ten times the
+website's effort. The website must not wait on it. Rulings:
+
+- **`verified` is split from the physical check.** `status: verified` now
+  means the record's content is reviewed (physics, procedure, prediction
+  prompt, misconceptions, summary). The physical check lives in the
+  existing `last_verified` date, which the README already defines as the
+  date the apparatus was checked. This supersedes the 2026-08 triage's
+  "verification requires a physical check at the shelf." No schema
+  change.
+- **The gap is disclosed, not hidden.** A `verified` record with no
+  `last_verified` date shows, on its detail page, a plain line: content
+  reviewed, apparatus not yet checked in person. It disappears when a
+  walkthrough records the date. Declined: gating `verified` on a physical
+  run, which would gate the website on the stockroom.
+- **Locations are provisional, said once.** A single site-wide line near
+  the search states that locations are provisional during the stockroom
+  reorganization; it comes down after the walkthroughs. Declined: a
+  per-record `provisional` flag, which is schema work for a temporary
+  condition.
+- **Crawlers are refused permanently.** The catalog is reached by link,
+  never by search engine: `noindex` stays forever, `robots.txt` disallows
+  everything, and known bots are blocked at the host where the host allows
+  it (a dashboard setting, the owner's action). This supersedes the rule
+  that `noindex` lifts at launch.
+
 **Queued next (ruled 2026-08-13):**
 
 The live queue is in [STATE.md](../STATE.md); this list is the 2026-08-13

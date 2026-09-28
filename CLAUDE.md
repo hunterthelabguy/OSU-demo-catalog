@@ -106,8 +106,8 @@ Git identity and transport:
   pair list when you introduce a new combination.
 - **A repo must not lie about its verification.** Never document a command
   or badge scope that is not real and tested.
-- Every page carries `noindex` until launch (Base.astro); remove it only on
-  the owner's word.
+- Every page carries `noindex`, permanently (amendment 22): the catalog is
+  reached by link, never by search engine. Never remove it.
 - `slug` equals directory name equals entry id, by test. Never rename a
   published slug.
 
