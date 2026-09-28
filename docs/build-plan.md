@@ -611,6 +611,49 @@ its label, since that is exactly the second question, asked once a
 demonstration is chosen. Whether the index serves topic-first discovery
 well enough is an open question for the owner, not yet ruled.
 
+**21. Row cards at every width, ruled from a mock, 2026-09-28.**
+Amendment 20's question (what is it, where does it live, what topic) is
+answered by reading down a list, not by scanning tiles, and the summary
+(amendment 16) needs line length a tile cannot give. A throwaway mock with
+real records, real legacy photos, and amendment 18's palette was measured
+at 1280x800 and in a 533 px pane before ruling. This supersedes amendment
+12's tile grid and amendment 13's photo-free compact card; 12's sidebar
+facets and detail page, and 13's whole-card tap target, stand. Rulings:
+
+- **One card shape, image beside prose, one card per row.** Desktop: a
+  160 px square photo on the left, then title, summary, topics, and a
+  footer of location and courses. About 169 px a row, three full cards
+  above the fold at 1280x800. Declined: a 240 px photo (241 px rows, two
+  above the fold) and keeping the tile grid on desktop.
+- **Phone is the same card shrunk**: a 64 px square thumbnail beside the
+  title, topics line, and location-and-courses line, about 101 px a row.
+  No summary on phone cards (amendment 16's compact exclusion stands).
+- **The phone trim**: room requirement chips and the status chip leave the
+  compact card entirely; room needs answer the Tuesday question and live
+  on the detail page, and the existing hide-stubs toggle carries status.
+  Location stays on every card at every width. Hazards and a non-good
+  condition stay.
+- **Hazards become a corner badge, so card height is fixed.** Top-right,
+  Beaver Orange fill, bold white. Desktop shows the icon and the hazard
+  names ("▲ High voltage · Laser"); the title reserves right padding only
+  when a badge exists. Phone shows the icon only, with the orange left
+  edge from amendment 13 and the full hazard names as the accessible
+  label. **This is a recorded, narrow exception to phase 3's rule that
+  chips always carry text**: phone cards only, because 375 px cannot fit
+  the name beside a title, and the detail page one tap away leads with the
+  full hazard band. Declined: names at every width, and icon only at every
+  width.
+- **Stubs and missing photos, as mocked.** A desktop stub shows a muted
+  "Stub record: not yet documented" line where the summary would be; a
+  phone stub shows no marker. A record without a photo shows a quiet "No
+  photograph yet" panel on desktop and is text only on phone, never a
+  striped placeholder.
+- **Placement in the queue:** the card component is rebuilt in the brand
+  pass (colors) and PR 1 (summary and row layout); photos and thumbnails
+  light up with PR 2. The mobile e2e suite's compact-card assertions are
+  rewritten to the new contract, including a fixed-height check on a
+  hazard card.
+
 **Queued next (ruled 2026-08-13):**
 
 The live queue is in [STATE.md](../STATE.md); this list is the 2026-08-13
