@@ -514,6 +514,10 @@ Rulings:
   `credit` or `representative` field waits for the notes promotion rule's
   third instance. Declined: our-apparatus-only, which leaves the tube
   most worth seeing without a photo.
+- **Equation fragments are not photographs.** Google Docs exported the
+  document's inline equations as tiny images (image1 at 8 by 18 px and
+  image2 at 23 by 18 px, both in the Standing Waves text). They are
+  excluded from the mapping and belong to amendment 19.
 - **Owner replacements in the export are recorded as such.** Two source
   files were replaced by the owner on 2026-09-28 before ingest: image6
   (the tennis racket after its rebuild) and image19 (the Rubens tube, see
@@ -531,7 +535,60 @@ Rulings:
   photo, any legacy image too small to serve as a record photo, such as
   image48 at 240 by 320, and any record still without a photo). Code and content review separately, and an image problem cannot
   block the schema. The conversion's real byte total is measured and
-  reported before the second PR commits it.
+  reported before the second PR commits it. Both PRs follow the brand
+  pass (amendment 18).
+
+**18. The OSU brand palette, strictly, and the official mark, 2026-09-28.**
+The owner supplied an OSU color style guide and the official logo files
+(kept outside this repo in the owner's brand kit folder). The guide
+forbids tints and shades: no values other than those listed, with black
+and white the only exceptions. Asked whether that covers only the
+secondary colors, Beaver Orange too, or everything, the owner ruled
+everything. This supersedes amendment 8's split accent and the neutral
+scale, and amendment 12's masthead band. Rulings:
+
+- **Every color the site renders is a listed palette value**, Paddletail
+  Black and Bucktooth White included. The light ground is pure white, the
+  dark ground pure black. `--accent-text` and `--accent-tint` (derived
+  from Beaver Orange) and the cream, warm-gray, and panel neutrals go.
+  Beaver Orange stays the accent, for fills, borders, and large text only,
+  which is the guide's own advice given its 4.56:1 on white. A test
+  asserts every color token in `theme.css` is a palette value, beside the
+  contrast test, so the rule cannot erode one token at a time.
+- **The masthead becomes the official two-color mark on the page ground**:
+  `OSU_horizontal_2C_O_over_B.png` (orange "Oregon State" over black
+  "University") on white in the light scheme, and
+  `OSU_horizontal_2C_O_over_W.png` (orange over white) on black in the
+  dark scheme, swapped by `prefers-color-scheme`; print uses the light
+  one. These two files are the ones this ruling names for the repo,
+  resized for the web. The orange band is gone: on a pure white or black
+  page a full orange band would be the loudest thing on screen, and the
+  mark now carries the orange. Declined: keeping the band with the
+  one-color white mark (`1C_W`).
+- **The mark is carved out of the content license.** It is OSU's
+  trademark, not CC BY-SA material; `LICENSE-CONTENT` and the README say
+  so explicitly.
+- **Open, for the brand pass design:** the muted text color (on white only
+  High Desert passes, at 5.33:1; on black, Till, Coastline, and Crater
+  pass), the hazard band treatment without a tint (orange fill with bold
+  white text, or black text with an orange rule), and the panel and
+  chip grounds.
+- **Watch item:** the guide says its values were not checked against the
+  university brand site. Verify them before launch; the deploy is public
+  already, though `noindex`.
+- **Sequencing:** the brand pass ships first, then amendment 16 and 17's
+  two PRs, so the Summary block is built once in palette colors, then
+  amendment 19.
+
+**19. Legacy equations re-derived in LaTeX, after the image ingest,
+2026-09-28.**
+The triage recorded that the legacy document's equations did not survive
+extraction. The HTML export shows how they did survive: as tiny inline
+images (amendment 17). Re-deriving them as KaTeX in the records they
+belong to is deferred until both image PRs land. Each equation is derived
+from the physics, not transcribed from the fragment, since the source's
+explanations are reference only; the fragments serve as pointers to where
+an equation stood.
 
 **Queued next (ruled 2026-08-13):**
 
