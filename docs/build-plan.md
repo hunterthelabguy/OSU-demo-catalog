@@ -430,6 +430,109 @@ note: the report named a cause, and acting on the cause without
 reproducing the symptom would have shipped a redesign with the original
 empty grid still reachable.
 
+**16. A summary leads the page, 2026-09-28.**
+Colleague feedback: most faculty already know what a demonstration is for
+and the physics behind it, and want a short description first, in its own
+highlighted block, without the rest of the context. Rulings:
+
+- **`summary` is a frontmatter field**, optional plain text, at most 200
+  characters (about two sentences), placed in the identity block after
+  `title`. A schema test asserts the cap. A content test requires it on
+  every `drafted` and `verified` record; `stub` records are exempt, in
+  keeping with partial rendered as partial. Declined: a `## Summary` body
+  heading, which can only render inside the body and could not lead the
+  page, feed a card, or feed the meta description.
+- **Detail page order is now hazard band, Summary block, prediction
+  callout**, then everything else unchanged. This amends amendment 12's
+  predict-first lead: a warning still outranks a summary, and the
+  prediction callout stays above all logistics. The block is labeled
+  "Summary" (ruled over "In brief" and "TL;DR"), uses theme tokens only,
+  and any new color pair joins `tests/theme-contrast.test.ts` at AA in
+  both schemes. It prints. Declined: summary above the hazard band, which
+  lets a hazard scroll off a phone screen.
+- **The summary replaces the meta description**, falling back to the
+  joined topics when absent.
+- **Full cards show it, clamped to about three lines; compact cards do
+  not.** The mobile e2e suite asserts a long summary causes no horizontal
+  overflow.
+- **Search weights it** (`data-pagefind-weight`) so a summary match ranks
+  above a body match.
+- **Drafted by Claude, reviewed by the owner.** The twelve `drafted`
+  records get summaries written from their corrected text, never from the
+  legacy source, and the owner reviews each before merge.
+
+**17. Photo ingest tool and the legacy image batch, 2026-09-28.**
+The stockroom demo library document (the source of the 2026-08-13 triage)
+was exported from Google Docs as zipped HTML, which keeps every image as
+its own file and places each `<img>` in document order under its section
+heading, so image-to-record pairing needs no hand work. Its descriptions
+are reference only, per the owner: many carry wrong physics, and the
+records already hold the corrected text. Only images are ingested.
+Rulings:
+
+- **`scripts/ingest-photo.mjs` replaces the planned `ingest-photo.sh`**
+  (phase 5). Node and `sharp`, added as a direct dev dependency rather
+  than relied on through Astro. In order: bake EXIF orientation into the
+  pixels (stripping first turns phone photos sideways), resize to a long
+  edge of at most 1600 px without enlarging, encode JPEG at quality 82,
+  strip all metadata. Output is `src/content/demos/<slug>/<slug>-NN.jpg`.
+  It refuses to overwrite without `--force`. **HEIC is refused with a
+  message**, not claimed: prebuilt `sharp` cannot decode HEVC-coded HEIC,
+  and the README says to convert first.
+- **Tests with teeth.** A unit test builds an image carrying GPS EXIF and
+  a rotated orientation and asserts that no metadata survives, that the
+  rotation was applied, and that the long edge is at most 1600. An
+  invariant test walks every image committed under `src/content/demos/`
+  and asserts the same two properties, which is what catches a photo
+  committed by hand around the tool. Declined: the tool without tests,
+  which leaves the privacy rule unchecked in a public repo.
+- **The mapping file is the provenance record.**
+  `docs/legacy-images-2026-09.json` lists each source image by base name
+  (so an owner-swapped extension still resolves), its target slug or
+  slugs, its order, per-slug alt text, and an optional caption. It stays
+  in the repo beside the triage doc and is the owner's single review
+  surface for alt text. `scripts/ingest-legacy-batch.mjs` reads it plus a
+  source directory given as an argument (the export stays outside the
+  repo) and writes `images:` into each record under a `# --- media ---`
+  block, in document order, so the first image is the card image. Stubs
+  get their images too.
+- **A photo spanning two records goes on both**, each with alt text for
+  what that record cares about (the pumps, hemispheres, and bell-jar photo
+  on `magdeburg-hemispheres` and `balloon-chamber`; the coil and capacitor
+  photo on `tesla-coil` and `large-capacitors`). Declined: one record
+  only, and cropping, which is an editorial act on the photo.
+- **People are held out.** Every source image is inspected before it
+  enters the mapping; any image with a person is held and listed for the
+  owner's ruling, not cropped, blurred, or judged unidentifiable by Claude.
+- **A representative photo is allowed when the caption says so.** The
+  legacy Rubens tube photo turned out to be a reposted vendor image with
+  no license, so it is not ingested. `physics-of-music-demos` instead
+  carries Wikimedia Commons "Flame-tube-resonance.jpg" by MikeRun,
+  CC BY-SA 4.0 (the repository's own content license), captioned as
+  representative, not the OSU apparatus, with the attribution the license
+  requires. The existing `caption` field carries it; a structured
+  `credit` or `representative` field waits for the notes promotion rule's
+  third instance. Declined: our-apparatus-only, which leaves the tube
+  most worth seeing without a photo.
+- **Owner replacements in the export are recorded as such.** Two source
+  files were replaced by the owner on 2026-09-28 before ingest: image6
+  (the tennis racket after its rebuild) and image19 (the Rubens tube, see
+  above). The mapping file notes both.
+- **The tennis racket record is redrafted for its rebuild**, maintenance
+  logged 2026-09-25: the LED string and wedged battery pack shifted the
+  center of mass and gave no single point of light; the new build is one
+  LED on a CR2032 cell through a 50 ohm resistor, taped in place, good for
+  a few hours of use. A 3D-printed clip-on housing and a switch are
+  planned. The prediction prompt and body lose their multi-light framing.
+- **Ships as two PRs.** The first carries the summary field, the ingest
+  tool, both tests, the twelve summaries, README changes, and these two
+  amendments; the second carries the images, the mapping file, the
+  racket redraft, and a reshoot list (the representative Rubens tube
+  photo, any legacy image too small to serve as a record photo, such as
+  image48 at 240 by 320, and any record still without a photo). Code and content review separately, and an image problem cannot
+  block the schema. The conversion's real byte total is measured and
+  reported before the second PR commits it.
+
 **Queued next (ruled 2026-08-13):**
 
 1. **LaTeX math: shipped 2026-08-15.** remark-math plus rehype-katex in
@@ -551,7 +654,8 @@ data.
 
 ### Phase 5: supporting infrastructure
 
-- `scripts/ingest-photo.sh`: HEIC to JPG, resize, strip EXIF.
+- `scripts/ingest-photo.sh`: HEIC to JPG, resize, strip EXIF. Superseded by
+  amendment 17: `scripts/ingest-photo.mjs`, HEIC refused.
 - `data/pira-dcs.json` derived from the CU Boulder DCS release, attributed.
 - `src/config.ts` with `REQUEST_URL_TEMPLATE` null by default, and the durable
   contract (a request system stores `slug` verbatim) recorded in a comment at the
