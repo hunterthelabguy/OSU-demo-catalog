@@ -17,13 +17,18 @@ first in the introductory sequence (PH 211, 212, 213), and the demo staff who
 prepare it. *(proposed)* Students are not the audience, though every page
 is written so a student could follow it.
 
-## The one question
+## The question it answers
 
-*Can I actually run this demonstration on Tuesday?* Every record answers it
-with the things that decide it: demonstration time, setup, room needs,
-hazards, the apparatus's condition, and where it lives. A faculty member who
-already knows the physics reads the summary and the logistics and is done;
-the rest of the page is there for whoever needs it.
+*I have class tomorrow and I'm covering this topic: what demonstrations do
+we have for it?* Monday evening, an instructor arrives with a topic or a
+course and needs, for each candidate, three things fast: **what it is, where
+it lives, and what topic it covers.** Discovery by topic comes first.
+
+Once a demonstration is chosen, the record answers the second question,
+*can I actually run it on Tuesday?*, with demonstration time, setup, room
+needs, hazards, and the apparatus's condition. A faculty member who already
+knows the physics reads the summary and the logistics and is done; the rest
+of the page is there for whoever needs it.
 
 ## What makes it more than an inventory
 
