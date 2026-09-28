@@ -599,6 +599,17 @@ belong to is deferred until both image PRs land. Each equation is derived
 from the physics, not transcribed from the fragment, since the source's
 explanations are reference only; the fragments serve as pointers to where
 an equation stood.
+**20. The primary question is discovery by topic, 2026-09-28.**
+Ruled while reviewing the first VISION.md draft. The catalog's framing
+question had been "can I actually run this demonstration on Tuesday?" The
+owner ruled that this is the second question. The first is the Monday
+evening one: *I have class tomorrow and I'm covering this topic; what
+demonstrations do we have for it?*, answered per candidate by what it is,
+where it lives, and what topic it covers. VISION.md and the README now lead
+with it. The detail page's "Can I run this Tuesday" logistics strip keeps
+its label, since that is exactly the second question, asked once a
+demonstration is chosen. Whether the index serves topic-first discovery
+well enough is an open question for the owner, not yet ruled.
 
 **Queued next (ruled 2026-08-13):**
 

@@ -21,10 +21,12 @@ current state and queue, [VISION.md](VISION.md) for the destination, and
 
 ## What this is
 
-A read-mostly reference that answers one question well: *can I actually run this
-demonstration on Tuesday?* Every record carries the things that decide that
-question, including setup time, room requirements, hazards, physical condition,
-and where the apparatus lives.
+A read-mostly reference built for the night before class: *I'm covering this
+topic tomorrow; what demonstrations do we have for it?* Browse by topic or
+course, and each record says what the demonstration is, what it shows, and
+where the apparatus lives. Once one is chosen, the record answers the second
+question, *can I actually run it on Tuesday?*, with setup time, room
+requirements, hazards, and physical condition.
 
 Each record also carries a **prediction prompt** and a list of **target
 misconceptions**. These are not decoration. Crouch, Fagen, Callan and Mazur
