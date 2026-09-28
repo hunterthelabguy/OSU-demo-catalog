@@ -13,8 +13,9 @@ production build. Nothing else is verified by it.
 validated records, demonstration pages (with print stylesheet), and an index
 with faceted browse and full-text search. A malformed record fails the build
 by construction. Remaining: the photo ingest script, the cached PIRA list,
-and above all the launch content itself. See
-[docs/build-plan.md](docs/build-plan.md) for detail.
+and above all the launch content itself. See [STATE.md](STATE.md) for the
+current state and queue, [VISION.md](VISION.md) for the destination, and
+[docs/build-plan.md](docs/build-plan.md) for the ledger of decisions.
 
 ---
 
@@ -305,8 +306,10 @@ local deviations recorded in `docs/build-plan.md`.
 ## Repository map
 
 ```
-docs/spec-v0.1.md          Full design specification, including the decisions log
-docs/build-plan.md         Phased build order and current state
+VISION.md                  Where the catalog is going; changes by owner ruling
+STATE.md                   What exists, what is in flight, the ordered queue
+docs/spec-v0.1.md          Archival design specification, including the decisions log
+docs/build-plan.md         The ledger: numbered amendments and phase history
 .github/workflows/ci.yml   The verify gate, run on every PR and on main
 src/content.config.ts      Collection definition: glob loader plus schema
 src/lib/demo-schema.ts     The record schema and controlled vocabularies

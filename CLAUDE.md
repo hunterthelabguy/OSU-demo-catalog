@@ -1,10 +1,12 @@
 # OSU-demo-catalog: agent runbook
 
 Static Astro catalog of physics lecture demonstrations. Read
-[README.md](README.md) for the content model and authoring rules,
-[docs/build-plan.md](docs/build-plan.md) for current state and amendments, and
-[docs/spec-v0.1.md](docs/spec-v0.1.md) for the archival design record. Where
-spec and build-plan differ, build-plan wins; never edit the spec file.
+[STATE.md](STATE.md) for what exists and the ordered queue,
+[VISION.md](VISION.md) for the destination (owner-ruled; propose, never
+edit), [docs/build-plan.md](docs/build-plan.md) for the ledger of rulings and
+amendments, [README.md](README.md) for the content model and authoring rules,
+and [docs/spec-v0.1.md](docs/spec-v0.1.md) as the archival design record.
+Where spec and ledger differ, the ledger wins; never edit the spec file.
 
 ## Verify
 
