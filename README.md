@@ -86,7 +86,7 @@ optional, so a stub record still builds and still renders.
 |---|---|
 | `title` | **Required.** Human-readable name. |
 | `slug` | **Required.** Stable identifier. Never renamed. See the note below. |
-| `status` | **Required.** `stub`, `drafted`, or `verified`. How complete the *record* is. |
+| `status` | **Required.** `stub`, `drafted`, or `verified`. How complete the *record* is: `verified` means its content is reviewed. The physical check of the apparatus is `last_verified`, tracked separately (amendment 22). |
 | `condition` | `good`, `needs_repair`, or `out_of_service`. How the *apparatus* is. |
 
 **Classification**

@@ -23,7 +23,7 @@ Last updated: 2026-09-28
 
 ## In flight
 
-Draft PR #22, branch `claude/summary-and-image-ingest`: amendments 16 to 21, the implementation plan at `docs/plans/2026-09-28-brand-summary-images.md`, this file,
+Draft PR #22, branch `claude/summary-and-image-ingest`: amendments 16 to 22, the implementation plan at `docs/plans/2026-09-28-brand-summary-images.md`, this file,
 `VISION.md` (drafted, awaiting the owner's line-by-line ruling), and the
 agent commands rerouted so state lands here. Docs only.
 
@@ -46,8 +46,10 @@ agent commands rerouted so state lands here. Docs only.
 5. **Named, not scheduled**: embedded video and simulations; the installable
    offline catalog (phase 7); the cached PIRA list (phase 5).
 
-The launch gate is content, not this queue: 8 to 12 records at `verified`
-depth, which takes the owner, the stockroom, and a camera.
+The launch gate is content, not this queue: every currently catalogued
+record at `verified` depth, prediction prompts included, with no new
+location data required (VISION.md). Locations come later, from walkthroughs
+after the stockroom reorganization; the website work is not blocked by it.
 
 ## Awaiting the owner
 

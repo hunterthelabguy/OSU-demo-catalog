@@ -8,7 +8,7 @@
 
 **Tech Stack:** Astro 7.2, TypeScript strict, vitest 4, Playwright 1.62, sharp 0.35, Pagefind 1.5.
 
-**Spec:** the ledger, `docs/build-plan.md`, amendments 16 (Summary), 17 (ingest tool and legacy batch), 18 (strict palette and the mark), 21 (row cards). Read all four before starting any part. Amendment 20 (discovery by topic first) is the why behind 16 and 21. `VISION.md` and `STATE.md` give the destination and the queue.
+**Spec:** the ledger, `docs/build-plan.md`, amendments 16 (Summary), 17 (ingest tool and legacy batch), 18 (strict palette and the mark), 21 (row cards), 22 (verified split from the physical check, provisional locations, crawlers refused). Read all five before starting any part. Amendment 20 (discovery by topic first) is the why behind 16 and 21. `VISION.md` and `STATE.md` give the destination and the queue.
 
 ## Global Constraints
 
@@ -380,7 +380,7 @@ git commit -m "Carve the OSU mark out of the content license"
 
 ---
 
-# Part B: Summary, row cards, ingest tool (amendments 16, 21, 17 tool half)
+# Part B: Summary, row cards, ingest tool (amendments 16, 21, 22, 17 tool half)
 
 Branch: `claude/summary-rows-ingest` from `origin/main` after Part A merges.
 
@@ -794,10 +794,83 @@ test.each(images.length > 0 ? images : ['(no images yet)'])('%s has no metadata 
 
 - [ ] **Step 8: Commit** `Add the photo ingest tool, tested at the tool and the repo`
 
-### Task B6: verify, ship Part B
+### Task B6: amendment 22 (unchecked apparatus note, provisional locations, crawlers)
+
+**Files:**
+- Modify: `src/lib/format.ts`, `tests/format.test.ts`
+- Modify: `src/pages/demos/[slug].astro` (beside the status chip in `.title-row`)
+- Modify: `src/pages/index.astro` (the search band)
+- Create: `public/robots.txt`
+- Modify: `src/layouts/Base.astro:29-33` (the noindex comment)
+- Test: `tests/e2e/mobile.spec.ts`
+
+**Interfaces:**
+- Produces: `physicalCheckNote(status: 'stub' | 'drafted' | 'verified', lastVerified: Date | undefined): string | null`
+
+- [ ] **Step 1: Failing unit test** (append to `tests/format.test.ts`, importing `physicalCheckNote` from `../src/lib/format`)
+
+```ts
+test('a verified record without a physical check says so (amendment 22)', () => {
+  expect(physicalCheckNote('verified', undefined)).toBe(
+    'Content reviewed. Apparatus not yet checked in person.',
+  );
+  expect(physicalCheckNote('verified', new Date('2026-10-15'))).toBeNull();
+  expect(physicalCheckNote('drafted', undefined)).toBeNull();
+  expect(physicalCheckNote('stub', undefined)).toBeNull();
+});
+```
+
+- [ ] **Step 2: Run; FAIL. Implement in `src/lib/format.ts`:**
+
+```ts
+// Amendment 22: `verified` means the record's content is reviewed; the
+// physical check is `last_verified`. The gap between them is disclosed.
+export const physicalCheckNote = (
+  status: 'stub' | 'drafted' | 'verified',
+  lastVerified: Date | undefined,
+): string | null =>
+  status === 'verified' && lastVerified === undefined
+    ? 'Content reviewed. Apparatus not yet checked in person.'
+    : null;
+```
+
+- [ ] **Step 3: Render it** on the detail page directly under `.title-row`: `{note && <p class="check-note">{note}</p>}` with `const note = physicalCheckNote(d.status, d.last_verified);` in the frontmatter; style `color: var(--muted); font-size: 0.9rem;`. No e2e for this line yet: no record is `verified` today, and a fixture record would be invented content.
+
+- [ ] **Step 4: Failing e2e** (new describe in `tests/e2e/mobile.spec.ts`)
+
+```ts
+test.describe('amendment 22', () => {
+  test('says once, near search, that locations are provisional', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.location-note')).toHaveCount(1);
+    await expect(page.locator('.location-note')).toContainText('provisional');
+  });
+
+  test('refuses crawlers in robots.txt and in every page head', async ({ page, request }) => {
+    const robots = await request.get('/robots.txt');
+    expect(robots.ok()).toBe(true);
+    expect(await robots.text()).toMatch(/User-agent: \*\s+Disallow: \//);
+    await page.goto('/demos/ballistic-cart/');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  });
+});
+```
+
+- [ ] **Step 5: Implement.** `public/robots.txt`:
+
+```
+User-agent: *
+Disallow: /
+```
+
+In the index search band, one line: `<p class="location-note">Locations are provisional while the stockroom is reorganized.</p>`, styled `--muted`, small. In `Base.astro`, rewrite the noindex comment: permanent by amendment 22, never remove. Host-level bot blocking is a dashboard setting: list it in the PR body under "Owner action", do not attempt it.
+
+- [ ] **Step 6: Build, serve, run all tests; PASS. Commit** `Disclose unchecked apparatus, provisional locations; refuse crawlers`
+
+### Task B7: verify, ship Part B
 
 - [ ] Full gate. Browser check as in B4 Step 6.
-- [ ] Update `STATE.md` (Part B shipped, test counts recounted, queue advances), em dash check, commit, push, PR, CI, merge. PR body: amendments 16, 21, 17 (tool half); the twelve summaries listed for owner review.
+- [ ] Update `STATE.md` (Part B shipped, test counts recounted, queue advances; add "enable host bot protection" to Awaiting the owner), em dash check, commit, push, PR, CI, merge. PR body: amendments 16, 21, 22, 17 (tool half); the twelve summaries listed for owner review.
 
 ---
 
