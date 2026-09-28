@@ -23,7 +23,7 @@ Last updated: 2026-09-28
 
 ## In flight
 
-Branch `claude/summary-and-image-ingest`: amendments 16 to 19, this file,
+Draft PR #22, branch `claude/summary-and-image-ingest`: amendments 16 to 21, the implementation plan at `docs/plans/2026-09-28-brand-summary-images.md`, this file,
 `VISION.md` (drafted, awaiting the owner's line-by-line ruling), and the
 agent commands rerouted so state lands here. Docs only.
 
@@ -33,8 +33,9 @@ agent commands rerouted so state lands here. Docs only.
    pure white and black grounds, the official two-color mark swapped by
    color scheme, a token test holding the palette, the mark carved out of
    the content license.
-2. **Summary field and ingest tool** (amendments 16, 17; first PR): the
-   `summary` field, page order, cards, meta description, search weight;
+2. **Summary field, row cards, and ingest tool** (amendments 16, 17, 21;
+   first PR): the `summary` field, page order, meta description, search
+   weight; row cards at every width with the hazard corner badge;
    `scripts/ingest-photo.mjs` with its unit and invariant tests; twelve
    drafted summaries for owner review.
 3. **Legacy images** (amendment 17; second PR): the mapping file with alt
