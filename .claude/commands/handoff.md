@@ -24,9 +24,14 @@ session, so do not defer to a confirmation round:
 - **Repo-wide operational knowledge** (the verify recipe, the PR ceremony, where things
   live, environment gotchas) goes to `CLAUDE.md` at the repo root; create it if missing.
   Keep it tight and pointer-heavy; it loads every session.
-- **Project state** goes to `docs/build-plan.md`: update the current-state section in
-  place to current truth, mark shipped phases with dates, and record design changes as
-  numbered amendments. The file is a living map, never an appended changelog.
+- **Project state** goes to `STATE.md` at the repo root: rewrite it in place to
+  current truth (what exists, in flight, the ordered queue, awaiting the owner, watch
+  items) and bump its date. It is a snapshot, never an appended changelog.
+- **Rulings and design changes** go to `docs/build-plan.md`, the ledger, as numbered,
+  dated amendments; mark shipped phases with dates. Add-only: a wrong entry is
+  corrected by a new one.
+- **Never edit `VISION.md`** except on the owner's explicit ruling; propose changes
+  instead.
 - **Never edit `docs/spec-v0.1.md`.** It is the archival record; its header routes
   amendments to build-plan.md.
 - **Successor-facing content knowledge** (authoring workflow, field semantics) goes to
@@ -72,11 +77,11 @@ did; do not re-summarize the whole conversation. Shape:
 
 - **Header**: repo path, `main @ <commit>` (pushed and merged), commit-author note, the
   production URL.
-- **Read first**: `CLAUDE.md` if present, then `README.md`, `docs/build-plan.md` (current
-  truth, including amendments), `docs/spec-v0.1.md` (archival; trust build-plan where
-  they differ).
+- **Read first**: `CLAUDE.md`, then `STATE.md` (current truth and queue), `VISION.md`
+  (the destination), `docs/build-plan.md` (the ledger of rulings), `README.md`, and
+  `docs/spec-v0.1.md` only as archive (the ledger wins where they differ).
 - **State**: which phases are shipped, test count, what production currently shows.
-- **Your task**: the next piece of work, from $ARGUMENTS or build-plan order, with the
+- **Your task**: the next piece of work, from $ARGUMENTS or the STATE.md queue, with the
   constraints that make it legitimate.
 - **Awaiting owner word**: anything ruled "hold until go" or flagged for the owner's
   judgment; do not build on these until ruled.

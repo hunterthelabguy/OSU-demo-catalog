@@ -32,10 +32,12 @@ findings or make cosmetic edits.
 - **Repo-wide operational knowledge** (commands, gotchas, where things live, the verify
   recipe, the PR ceremony) goes to `CLAUDE.md` at the repo root; create it if missing.
   Keep it tight; it loads every session. Point to deeper docs rather than duplicating.
-- **Project state and design amendments** go to `docs/build-plan.md`, the living file:
-  update the current-state section in place and add numbered amendments for design
-  changes. **Never edit `docs/spec-v0.1.md`**; it is the archival record, and its own
-  header says amendments land in build-plan.md instead.
+- **Project state** goes to `STATE.md`, rewritten in place to current truth.
+- **Rulings and design amendments** go to `docs/build-plan.md`, the ledger, as
+  numbered, dated, add-only entries. **Never edit `docs/spec-v0.1.md`**; it is the
+  archival record, and its own header says amendments land in build-plan.md instead.
+- **The destination** lives in `VISION.md` and changes only by the owner's ruling;
+  propose, never edit.
 - **Successor-facing knowledge** (how to add a demo, field semantics, the notes promotion
   rule, photo policy) goes to `README.md`, which is a runbook, not notes to self.
 - **A repeatable procedure** becomes a proposed `.claude/commands/<name>.md`, but do not

@@ -1,14 +1,18 @@
-# Build plan and current state
+# Build plan: the decision ledger
 
-Companion to [spec-v0.1.md](spec-v0.1.md). The spec says what is being built and
-why. This file says what exists today, what is planned next, and which spec
-decisions have been amended since it was written.
-
-Last updated: 2026-08-15
+Companion to [spec-v0.1.md](spec-v0.1.md), the archival spec. **Since
+2026-09-28 this file is the ledger**: numbered amendments and rulings, dated
+and add-only, plus the phase history. What exists today and what comes next
+is in [STATE.md](../STATE.md); where the catalog is going is in
+[VISION.md](../VISION.md). The name stays for now so existing links hold.
 
 ---
 
-## Current state
+## State as of 2026-08-22 (superseded by STATE.md)
+
+Kept as the historical snapshot it was. Current state lives in
+[STATE.md](../STATE.md).
+
 
 **The proof-of-concept trio is complete** (spec §7 steps 1 through 3):
 validated records, demonstration pages with print stylesheet, and the faceted
@@ -568,11 +572,17 @@ scale, and amendment 12's masthead band. Rulings:
 - **The mark is carved out of the content license.** It is OSU's
   trademark, not CC BY-SA material; `LICENSE-CONTENT` and the README say
   so explicitly.
-- **Open, for the brand pass design:** the muted text color (on white only
-  High Desert passes, at 5.33:1; on black, Till, Coastline, and Crater
-  pass), the hazard band treatment without a tint (orange fill with bold
-  white text, or black text with an orange rule), and the panel and
-  chip grounds.
+- **Muted text is High Desert on white (5.33:1) and Till on black
+  (9.16:1)**, keeping a visible hierarchy in two warm grays that sit with
+  the orange. Declined: black and white only, hierarchy by size and weight.
+- **The hazard band is a Beaver Orange fill with bold white text**, the
+  pairing the guide itself sanctions: a warning should be the loudest
+  thing on the page. Declined: black text on an orange rule.
+- **Panels, cards, chips, and the Summary block sit on the page ground**,
+  separated by 1 px rules in Crater on white and Coastline on black
+  (decorative rules carry no text-contrast requirement). Declined:
+  secondary-color panel grounds, which the guide's "use sparingly" rules
+  out for something as pervasive as panels.
 - **Watch item:** the guide says its values were not checked against the
   university brand site. Verify them before launch; the deploy is public
   already, though `noindex`.
@@ -591,6 +601,9 @@ explanations are reference only; the fragments serve as pointers to where
 an equation stood.
 
 **Queued next (ruled 2026-08-13):**
+
+The live queue is in [STATE.md](../STATE.md); this list is the 2026-08-13
+ruling as made.
 
 1. **LaTeX math: shipped 2026-08-15.** remark-math plus rehype-katex in
    `astro.config.mjs`, rendered at build time; KaTeX CSS and fonts imported
