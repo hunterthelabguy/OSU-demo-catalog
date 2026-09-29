@@ -85,6 +85,7 @@ optional, so a stub record still builds and still renders.
 | Field | Notes |
 |---|---|
 | `title` | **Required.** Human-readable name. |
+| `summary` | Plain text, 200 characters or fewer (about two sentences): what the demonstration shows and its one physical idea. Leads the detail page in a block labeled Summary, serves as the page's meta description, and is the full card's second line. Optional in the schema, but a content test requires it on every `drafted` and `verified` record (amendment 16). |
 | `slug` | **Required.** Stable identifier. Never renamed. See the note below. |
 | `status` | **Required.** `stub`, `drafted`, or `verified`. How complete the *record* is: `verified` means its content is reviewed. The physical check of the apparatus is `last_verified`, tracked separately (amendment 22). |
 | `condition` | `good`, `needs_repair`, or `out_of_service`. How the *apparatus* is. |
@@ -207,9 +208,12 @@ Fixed heading order, so pages stay scannable and printable:
 ## References
 ```
 
-Omit a heading you have nothing to say under. A stub record shows its photograph
-and its known fields plus an explicit "not yet documented" band. It does not show
-a column of empty headings.
+Omit a heading you have nothing to say under. The detail page leads with the
+hazard band, then the Summary block (from the `summary` field, not a body
+heading), then the prediction callout, and only then the body.
+
+A stub record shows its photograph and its known fields plus an explicit "not
+yet documented" band. It does not show a column of empty headings.
 
 ---
 

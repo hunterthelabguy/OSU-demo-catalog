@@ -231,6 +231,10 @@ export const buildDemoSchema = <ImageSchema extends z.ZodTypeAny>(
     .object({
       // --- identity ---
       title: z.string().min(1),
+      // Amendment 16: the lead block on the detail page, the meta
+      // description, and the full card's second line. Plain text; two
+      // sentences at most.
+      summary: z.string().min(1).max(200).optional(),
       slug: z
         .string()
         .regex(
