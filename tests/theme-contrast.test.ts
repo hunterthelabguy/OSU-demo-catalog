@@ -59,6 +59,7 @@ const PAIRS: [fg: string, bg: string, where: string][] = [
   ['muted', 'paper', 'secondary text'],
   ['on-accent', 'accent', 'hazard band, hazard badge, alert chip, checked course chip (bold)'],
   ['paper', 'ink', 'inverted status chip'],
+  ['paper', 'muted', 'stub stamp fill on card photos'],
 ];
 
 describe('theme contrast', () => {

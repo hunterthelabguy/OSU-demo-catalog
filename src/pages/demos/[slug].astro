@@ -349,8 +349,12 @@ const prepLine = [
   }
 
   /* Hazard-forward: the band outranks every chip. Accent fill, bold
-     on-accent text; hotter than the status stamp by design. */
+     on-accent text; hotter than the status stamp by design. The fill is
+     forced in print: browsers drop backgrounds by default, which would
+     print the white text on white. */
   .hazard-band {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     margin: 0 0 1.4rem;
     border: 2px solid var(--accent);
     background: var(--accent);
