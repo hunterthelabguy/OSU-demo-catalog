@@ -13,4 +13,8 @@ notes: >
   document, 2026-08-13; see docs/triage-demo-library-2026-08.md for
   disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./magnetic-braking-discs-01.jpg
+    alt: A blue U-shaped magnet with two pole blocks on a black bench beside several metal disks on swing arms, one copper, one slotted like a comb, and a large aluminum disk on a rod.
 ---

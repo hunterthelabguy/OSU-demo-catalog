@@ -16,4 +16,8 @@ notes: >
   2026-08-13; see docs/triage-demo-library-2026-08.md for disposition and
   corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./centripetal-motion-marbles-01.jpg
+    alt: A white ring with a gap standing on a clear plastic sheet marked with three numbered arrows leaving the gap, with a blue ball tied to a thread and a small orange marble inside the ring.
 ---

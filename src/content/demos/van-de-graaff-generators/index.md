@@ -10,4 +10,8 @@ notes: >
   document, 2026-08-13; see docs/triage-demo-library-2026-08.md for
   disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./van-de-graaff-generators-01.jpg
+    alt: A handheld electrical wand with a pointed metal tip and a power cord, lying beside a circular fluorescent tube on a black bench.
 ---

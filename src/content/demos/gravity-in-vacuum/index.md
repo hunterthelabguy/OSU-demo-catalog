@@ -34,6 +34,11 @@ accessibility:
     The race happens inside a glass tube; narrate the result, and let students
     nearby hear the two arrivals as a single click.
 
+# --- media ---
+images:
+  - src: ./gravity-in-vacuum-01.jpg
+    alt: A long clear plastic tube with metal end caps and a valve with a yellow handle, lying on a black bench with a small white ball and a feather inside.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13. Requires a

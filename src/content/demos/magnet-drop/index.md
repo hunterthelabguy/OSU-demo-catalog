@@ -24,6 +24,11 @@ target_misconceptions:
   - "The magnet falls slowly because it is attracted to the metal tube."
   - "If a material is not attracted to a magnet, a magnet cannot interact with it at all."
 
+# --- media ---
+images:
+  - src: ./magnet-drop-01.jpg
+    alt: A copper pipe and a white plastic pipe of similar length clamped upright to a ring stand on a speckled floor.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13. The source

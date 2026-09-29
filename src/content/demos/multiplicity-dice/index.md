@@ -26,6 +26,11 @@ target_misconceptions:
   - "Thermal equilibrium means the exchange of energy stops."
   - "Systems spread energy out because something forces them to, not because spread-out arrangements vastly outnumber concentrated ones."
 
+# --- media ---
+images:
+  - src: ./multiplicity-dice-01.jpg
+    alt: A clear plastic bag full of multicolored eight-sided dice on a white table.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13. A whole-class

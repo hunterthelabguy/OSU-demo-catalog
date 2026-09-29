@@ -25,6 +25,11 @@ target_misconceptions:
   - "Any driving frequency produces a clean wave pattern on the string."
   - "A standing wave is a wave that has stopped carrying any motion at all."
 
+# --- media ---
+images:
+  - src: ./standing-waves-01.jpg
+    alt: A clear bin with purple latches, hand-labeled Standing Waves, holding a sine wave generator with its instruction manual, a power cord, a bagged vibrator unit, a white box, and coiled yellow string.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; node and

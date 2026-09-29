@@ -16,4 +16,8 @@ notes: >
   demo library document, 2026-08-13; see docs/triage-demo-library-2026-08.md
   for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./rolling-wheels-01.jpg
+    alt: A steel hoop, a black hoop, and two solid wooden disks, one marked M2, standing on edge at the foot of a wide wooden ramp beside a clear bin labeled Moment of Inertia Rolling Wheels.
 ---

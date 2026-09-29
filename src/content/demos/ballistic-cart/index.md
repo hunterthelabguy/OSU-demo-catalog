@@ -37,6 +37,11 @@ accessibility:
     Requires a verbal description of the launch and catch for visually
     impaired students.
 
+# --- media ---
+images:
+  - src: ./ballistic-cart-01.jpg
+    alt: A black four-wheeled cart with an upright black launch tube and a steel ball resting on its deck, a loose gray cord tied to one end, beside a clear bin labeled Ballistic Cart Demo.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13. Not yet

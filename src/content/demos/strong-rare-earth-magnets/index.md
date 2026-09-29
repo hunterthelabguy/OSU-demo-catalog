@@ -9,4 +9,8 @@ notes: >
   Triaged from the stockroom demo library document, 2026-08-13; see
   docs/triage-demo-library-2026-08.md for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./strong-rare-earth-magnets-01.jpg
+    alt: Four small packets wrapped in foam and plastic with yellow warning labels, lying on a dark bench.
 ---

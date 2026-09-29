@@ -35,6 +35,11 @@ accessibility:
     students, pair it with a visible signal meter or narrate the change
     clearly, per the source document's general guidance on auditory demos.
 
+# --- media ---
+images:
+  - src: ./faraday-cage-01.jpg
+    alt: A box of wire mesh set upright on a concrete floor over a small black portable radio with its antenna extended.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; the Gauss's

@@ -16,4 +16,8 @@ notes: >
   2026-08-13; see docs/triage-demo-library-2026-08.md for disposition and
   corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./cartesian-coordinate-arrows-01.jpg
+    alt: Two sets of three-axis coordinate arrows on a speckled floor, one with yellow, red, and blue dowels meeting at a round wooden hub and the other with plain wooden arrows set into a dark wooden block.
 ---

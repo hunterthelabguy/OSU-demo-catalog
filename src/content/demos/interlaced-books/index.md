@@ -31,6 +31,11 @@ accessibility:
   hearing: accessible
   vision: accessible
 
+# --- media ---
+images:
+  - src: ./interlaced-books-01.jpg
+    alt: A thick, worn paperback catalog lying on a concrete floor beside an empty clear plastic bin labeled Interlaced Books (Friction Demo).
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; the friction

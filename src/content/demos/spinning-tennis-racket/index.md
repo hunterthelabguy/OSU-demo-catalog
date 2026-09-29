@@ -36,6 +36,11 @@ accessibility:
     against the looping white ones, and let the student handle the racket and
     find its balance point by touch beforehand.
 
+# --- media ---
+images:
+  - src: ./spinning-tennis-racket-01.jpg
+    alt: A blue tennis racket lying on a gray floor, with a small red LED in a black taped package fixed at the throat just below the strings.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; the center

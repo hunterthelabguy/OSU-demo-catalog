@@ -30,6 +30,11 @@ target_misconceptions:
   - "Pulling the masses inward requires no work, so nothing about the motion changes."
   - "Angular momentum and angular velocity are interchangeable."
 
+# --- media ---
+images:
+  - src: ./rotating-stool-dumbbells-01.jpg
+    alt: A heavy rotating stool with a wooden seat, curved metal hand rails, and a pedestal base on a wheeled dolly, holding a pair of blue dumbbells, a coil of cord, and a weighted spoked wheel with a handle at its hub.
+
 # --- curator notes ---
 notes: >
   Merged with the "Spinning Chair + Wheel" section of the stockroom demo

@@ -25,6 +25,17 @@ target_misconceptions:
   - "Insulators are completely inert to charged objects; only conductors respond."
   - "If a charged rod attracts something, that something must have been charged already."
 
+# --- media ---
+images:
+  - src: ./wood-induced-dipole-01.jpg
+    alt: A long wooden board lying on a speckled floor beside an aluminum can, a piece of white fur, a white plastic rod, and a thick glass lens resting on a bin labeled Induced Dipole (+ Long Wooden Board).
+  - src: ./wood-induced-dipole-02.jpg
+    alt: The end of a white plastic rod close to an aluminum can lying on its side on a speckled floor.
+  - src: ./wood-induced-dipole-03.jpg
+    alt: A long wooden board balanced across the top of a thick glass lens on a speckled floor.
+  - src: ./wood-induced-dipole-04.jpg
+    alt: The end of a white plastic rod close to the end of a long wooden board, both lying on a speckled floor.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; the

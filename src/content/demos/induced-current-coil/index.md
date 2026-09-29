@@ -11,4 +11,8 @@ notes: >
   from the stockroom demo library document, 2026-08-13; see docs/triage-demo-
   library-2026-08.md for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./induced-current-coil-01.jpg
+    alt: A copper wire coil wound around a bar magnet painted half blue and half red, mounted on a clear acrylic stand with a red and a black terminal post.
 ---
