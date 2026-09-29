@@ -1,5 +1,5 @@
 // Amendment 17: the unit test proves the tool; this proves the repo. Any
-// photo committed around the tool is caught here. The scan is recursive, covers
+// photo placed around the tool is caught here. The scan is recursive, covers
 // every raster type a browser or Astro could serve, and fails on any file under
 // src/content/demos/ that is neither a record (.md) nor a recognised image,
 // so a stray .heic cannot slip in unexamined.
@@ -12,6 +12,8 @@ import { describe, expect, it, test } from 'vitest';
 const DEMOS = join(__dirname, '..', 'src', 'content', 'demos');
 const IMAGE = /\.(jpe?g|png|webp|avif|gif|tiff?)$/i;
 const RECORD = /\.md$/i;
+// Dotfiles and OS junk are not content; an untracked one must not fail locally.
+const JUNK = /^(\..*|desktop\.ini|thumbs\.db)$/i;
 
 interface Walk {
   images: string[];
@@ -24,7 +26,7 @@ export function walk(root: string): Walk {
     for (const e of readdirSync(dir, { withFileTypes: true })) {
       const path = join(dir, e.name);
       if (e.isDirectory()) visit(path, depth + 1);
-      else if (!e.isFile()) continue;
+      else if (!e.isFile() || JUNK.test(e.name)) continue;
       else if (IMAGE.test(e.name)) out.images.push(path);
       else if (depth > 0 && !RECORD.test(e.name)) out.strays.push(path);
     }

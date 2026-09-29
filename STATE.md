@@ -30,8 +30,8 @@ Last updated: 2026-09-28
   `scripts/ingest-photo.mjs` with its unit test and a repo-wide image
   invariant; the unchecked-apparatus note, the provisional-locations line
   near search, and `public/robots.txt` refusing all crawlers.
-- **Verification**: 74 vitest tests in 10 files plus 27 Playwright
-  assertions (22 at 375x812, 5 at 1280x800), counted 2026-09-28. `npm run verify` is the gate; CI runs it on
+- **Verification**: 74 vitest tests in 10 files plus 29 Playwright
+  tests (23 at 375x812, 6 at 1280x800), counted 2026-09-28. `npm run verify` is the gate; CI runs it on
   every PR.
 - **Production** tracks `main` at https://osu-demo-catalog.vercel.app,
   `noindex` site-wide, permanently (amendment 22).
