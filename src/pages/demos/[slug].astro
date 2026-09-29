@@ -15,7 +15,13 @@ import Chip from '../../components/Chip.astro';
 // (build-plan amendment 11).
 import 'katex/dist/katex.min.css';
 import { REQUEST_URL_TEMPLATE } from '../../config';
-import { formatDate, formatMinutes, formatMinutesRange, humanize } from '../../lib/format';
+import {
+  formatDate,
+  formatMinutes,
+  formatMinutesRange,
+  humanize,
+  physicalCheckNote,
+} from '../../lib/format';
 
 export async function getStaticPaths() {
   const demos = await getCollection('demos');
@@ -31,6 +37,7 @@ const { Content } = await render(demo);
 
 const hasBody = (demo.body ?? '').trim().length > 0;
 const isStub = d.status === 'stub';
+const note = physicalCheckNote(d.status, d.last_verified);
 
 // The strip renders only rows whose fields exist: a sparse record gets a
 // sparse label, not a label full of blanks (spec section 6, stub rendering).
@@ -93,6 +100,7 @@ const prepLine = [
           }
           {d.condition === 'good' && <Chip label="condition: good" tone="neutral" />}
         </div>
+        {note && <p class="check-note">{note}</p>}
         <p class="classification">{classificationLine}</p>
       </header>
 
@@ -342,6 +350,12 @@ const prepLine = [
     gap: 0.6rem;
     flex-wrap: wrap;
     margin-bottom: 0.25rem;
+  }
+
+  .check-note {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 0.5rem;
   }
 
   .demo-header h1 {
