@@ -30,7 +30,13 @@ Where spec and ledger differ, the ledger wins; never edit the spec file.
 - Browser checks: `.claude/launch.json` has `dev` and `preview` configs for
   the preview pane. Screenshots need the pane actually displayed; when it
   is not, assert through `read_page` and `javascript_tool` instead of
-  reporting a screenshot you could not take.
+  reporting a screenshot you could not take. A throwaway mock opened as a
+  `file://` URL renders as a static snapshot the page tools cannot touch;
+  serve its folder over localhost (`python -m http.server <port> --bind
+  127.0.0.1`, backgrounded) so viewport and color-scheme emulation work.
+- Node one-offs that import `sharp` must run from the repo root: ESM
+  resolves packages from the script's own directory, so a script in the
+  scratchpad cannot find `node_modules/sharp`.
 - Chrome restores a `<details>` open state across same-tab navigation, so
   the facet panel can read as closed on a desktop viewport when the script
   never closed it. Reload with a fresh query string before concluding the
@@ -113,5 +119,6 @@ Git identity and transport:
 
 ## Commands
 
-- `/reflect`: mid-session knowledge capture into this file and build-plan.
+- `/reflect`: mid-session knowledge capture: operational facts here, state
+  to STATE.md, rulings to the build-plan ledger, VISION.md never.
 - `/handoff`: end-of-session ship plus fresh-session handoff block.
