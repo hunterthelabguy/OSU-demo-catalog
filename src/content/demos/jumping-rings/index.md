@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Jumping Rings"
+summary: "A solid aluminum ring shoots off an AC electromagnet's core; cut and wooden rings stay put. Changing flux induces a current in the closed ring whose field opposes the coil's."
 slug: jumping-rings
 status: drafted
 

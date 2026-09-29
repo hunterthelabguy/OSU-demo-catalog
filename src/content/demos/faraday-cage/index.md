@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Faraday Cage"
+summary: "A metal mesh cage lowered over a playing radio turns the music to static; plastic would not. Free electrons in the metal cancel the wave inside, and holes far smaller than the wavelength do not leak."
 slug: faraday-cage
 status: drafted
 

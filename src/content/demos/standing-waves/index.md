@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Standing Waves"
+summary: "A string driven at one end forms clean standing waves only at special frequencies. Fixed ends must be nodes, so only certain wavelengths fit: the fundamental and its harmonics."
 slug: standing-waves
 status: drafted
 

@@ -136,3 +136,10 @@ test('body H2 headings appear in the fixed order, with omissions allowed', () =>
     }
   }
 });
+
+test('every drafted or verified record carries a summary (amendment 16)', () => {
+  const missing = demoFiles
+    .filter((d) => d.frontmatter['status'] !== 'stub' && !d.frontmatter['summary'])
+    .map((d) => d.dirname);
+  expect(missing, `records without a summary: ${missing.join(', ')}`).toEqual([]);
+});
