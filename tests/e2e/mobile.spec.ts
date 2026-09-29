@@ -242,3 +242,19 @@ test.describe('summary block', () => {
     expect(meta).toBe(text);
   });
 });
+
+test.describe('amendment 22', () => {
+  test('says once, near search, that locations are provisional', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.location-note')).toHaveCount(1);
+    await expect(page.locator('.location-note')).toContainText('provisional');
+  });
+
+  test('refuses crawlers in robots.txt and in every page head', async ({ page, request }) => {
+    const robots = await request.get('/robots.txt');
+    expect(robots.ok()).toBe(true);
+    expect(await robots.text()).toMatch(/User-agent: \*\s+Disallow: \//);
+    await page.goto('/demos/ballistic-cart/');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
+  });
+});

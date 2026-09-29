@@ -23,3 +23,13 @@ export const formatMinutes = (minutes: number): string => `${minutes} min`;
  *  otherwise. Spelled out, house style: no dashes of any kind. */
 export const formatMinutesRange = (range: { min: number; max: number }): string =>
   range.min === range.max ? `${range.min} min` : `${range.min} to ${range.max} min`;
+
+// Amendment 22: `verified` means the record's content is reviewed; the
+// physical check is `last_verified`. The gap between them is disclosed.
+export const physicalCheckNote = (
+  status: 'stub' | 'drafted' | 'verified',
+  lastVerified: Date | undefined,
+): string | null =>
+  status === 'verified' && lastVerified === undefined
+    ? 'Content reviewed. Apparatus not yet checked in person.'
+    : null;

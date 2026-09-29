@@ -4,6 +4,7 @@ import {
   formatMinutes,
   formatMinutesRange,
   humanize,
+  physicalCheckNote,
   sentenceCase,
 } from '../src/lib/format';
 
@@ -30,4 +31,13 @@ test('durations carry their unit', () => {
 test('demonstration-time ranges spell out, house style, no dashes', () => {
   expect(formatMinutesRange({ min: 5, max: 15 })).toBe('5 to 15 min');
   expect(formatMinutesRange({ min: 10, max: 10 })).toBe('10 min');
+});
+
+test('a verified record without a physical check says so (amendment 22)', () => {
+  expect(physicalCheckNote('verified', undefined)).toBe(
+    'Content reviewed. Apparatus not yet checked in person.',
+  );
+  expect(physicalCheckNote('verified', new Date('2026-10-15'))).toBeNull();
+  expect(physicalCheckNote('drafted', undefined)).toBeNull();
+  expect(physicalCheckNote('stub', undefined)).toBeNull();
 });
