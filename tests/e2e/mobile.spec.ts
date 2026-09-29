@@ -253,7 +253,9 @@ test.describe('amendment 22', () => {
   test('refuses crawlers in robots.txt and in every page head', async ({ page, request }) => {
     const robots = await request.get('/robots.txt');
     expect(robots.ok()).toBe(true);
-    expect(await robots.text()).toMatch(/User-agent: \*\s+Disallow: \//);
+    const body = await robots.text();
+    expect(body).toMatch(/^User-agent:\s*\*\s*\r?\nDisallow:\s*\/\s*$/m);
+    expect(body).not.toMatch(/^\s*Allow:/im);
     await page.goto('/demos/ballistic-cart/');
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex');
   });
