@@ -12,6 +12,8 @@
 
 ## Global Constraints
 
+- **Unattended run (ruled 2026-09-28).** This plan runs overnight with no owner available; never wait for an answer. Parts A and B merge on green; their owner reviews (B's twelve summaries) happen afterward on the merged PR. Part C runs to completion and opens its PR **unmerged**: the mapping, alt text, faces-pass holds, byte total, and racket redraft are reviewed there. Every "STOP for owner review", "ask the owner", and "report before committing" step below becomes "record it in the PR body and continue". Images showing a person are left out and listed, never cropped. The Commons photo (Flame-tube-resonance.jpg, MikeRun, CC BY-SA 4.0) is pre-approved for download once its license is confirmed on the file page; if the license does not match, skip it. Anything else unexpected (a test you cannot fix, a ruling you would have to invent): stop that part, leave its PR unmerged with the question in the body, and do not start a part that depends on it (B depends on A, C on B).
+
 - Every change lands via PR with green `verify`; branch from current `origin/main`. Follow CLAUDE.md "Shipping" exactly, including its three failure modes.
 - Commits authored `hunterthelabguy` with the noreply email (check `git config user.name` and `user.email` before the first commit). **No Co-Authored-By trailer.** Commit subjects 72 characters or fewer, house form (imperative, no type prefix), the story in the body.
 - **No em dashes anywhere.** Before every commit: `git diff --cached | grep -c $'\xe2\x80\x94'` must print `0`.
@@ -931,7 +933,7 @@ Branch: `claude/legacy-images` from `origin/main` after Part B merges.
 | Voltmeters and Ammeters | 30 | voltmeters-and-ammeters |
 | Wire Rings | 21 | wire-rings |
 
-**Open question for the owner before Task C1 finishes:** amendment 17 sends image54 to both `tesla-coil` and `large-capacitors`, but the `tesla-coil` record's title is "Tesla Coil and Large Capacitor" and `large-capacitors` has its own photo (image56). Ask whether the gray can in image54 is the same apparatus as the `large-capacitors` record. If not, image54 goes to `tesla-coil` only, recorded as a correcting ledger entry.
+**Resolved 2026-09-28:** the gray can in image54 is the same apparatus as the `large-capacitors` record, so image54 goes on both `tesla-coil` and `large-capacitors`, as amendment 17 says.
 
 ### Task C1: faces pass and the mapping file
 
