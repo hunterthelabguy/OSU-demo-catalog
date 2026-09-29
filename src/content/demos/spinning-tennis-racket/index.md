@@ -1,7 +1,7 @@
 ---
 # --- identity ---
 title: "Light-Up Spinning Tennis Racket"
-summary: "A tennis racket with an LED at its center of mass is thrown up tumbling. The LED follows a simple projectile path, since a tumbling body rotates about its center of mass."
+summary: "A tennis racket with a light at its center of mass is thrown up tumbling. The light follows a simple projectile path, since a tumbling body rotates about its center of mass."
 slug: spinning-tennis-racket
 status: drafted
 

@@ -143,3 +143,13 @@ test('every drafted or verified record carries a summary (amendment 16)', () => 
     .map((d) => d.dirname);
   expect(missing, `records without a summary: ${missing.join(', ')}`).toEqual([]);
 });
+
+test('every summary is plain text: no math, Markdown, or em dash (amendment 16)', () => {
+  // The em dash is built from its code point so this file never holds one.
+  const forbidden = ['$', '*', '`', '[', String.fromCharCode(0x2014)];
+  const offenders = demoFiles
+    .filter((d) => typeof d.frontmatter['summary'] === 'string')
+    .filter((d) => forbidden.some((c) => (d.frontmatter['summary'] as string).includes(c)))
+    .map((d) => d.dirname);
+  expect(offenders, `summaries with math, Markdown, or an em dash: ${offenders.join(', ')}`).toEqual([]);
+});
