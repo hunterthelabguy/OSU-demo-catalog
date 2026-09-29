@@ -1,9 +1,21 @@
 import { expect, test } from 'vitest';
-import { formatDate, formatMinutes, formatMinutesRange, humanize } from '../src/lib/format';
+import {
+  formatDate,
+  formatMinutes,
+  formatMinutesRange,
+  humanize,
+  sentenceCase,
+} from '../src/lib/format';
 
 test('vocabulary tokens humanize underscores', () => {
   expect(humanize('needs_ceiling_hook')).toBe('needs ceiling hook');
   expect(humanize('laser')).toBe('laser');
+});
+
+test('standalone labels take sentence case, first letter only', () => {
+  expect(sentenceCase('high_voltage')).toBe('High voltage');
+  expect(sentenceCase('laser')).toBe('Laser');
+  expect(sentenceCase('')).toBe('');
 });
 
 test('dates render as YYYY-MM-DD', () => {

@@ -5,6 +5,14 @@
 /** Controlled-vocabulary tokens render with spaces: needs_dark -> needs dark */
 export const humanize = (token: string): string => token.replaceAll('_', ' ');
 
+/** Sentence case for a label that stands alone, such as a card's hazard
+ *  badge: high_voltage -> High voltage. Only the first letter is raised,
+ *  never every word. */
+export const sentenceCase = (token: string): string => {
+  const text = humanize(token);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
 /** Dates render as YYYY-MM-DD everywhere: unambiguous, sortable, mono-friendly. */
 export const formatDate = (date: Date): string => date.toISOString().slice(0, 10);
 
