@@ -323,7 +323,7 @@ const prepLine = [
   }
 
   .breadcrumb a {
-    color: var(--accent-text);
+    color: var(--ink);
   }
 
   .title-row {
@@ -348,18 +348,19 @@ const prepLine = [
     font-size: 0.9rem;
   }
 
-  /* Hazard-forward: the band outranks every chip. Accent border, accent
-     tint, accent text; hotter than the status stamp by design. */
+  /* Hazard-forward: the band outranks every chip. Accent fill, bold
+     on-accent text; hotter than the status stamp by design. */
   .hazard-band {
     margin: 0 0 1.4rem;
     border: 2px solid var(--accent);
-    background: var(--accent-tint);
+    background: var(--accent);
     border-radius: 2px;
     padding: 0.65rem 0.85rem;
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    color: var(--accent-text);
+    color: var(--on-accent);
+    font-weight: 700;
   }
 
   .hazard-band .hazard-label {
@@ -389,7 +390,7 @@ const prepLine = [
     border: 1px solid var(--rule);
     border-left: 4px solid var(--accent);
     border-radius: 2px;
-    background: var(--panel);
+    background: var(--paper);
     padding: 1rem 1.2rem 1.2rem;
     margin: 0 0 1.4rem;
   }
@@ -401,7 +402,7 @@ const prepLine = [
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: var(--accent-text);
+    color: var(--ink);
   }
 
   .prediction .prompt {
@@ -441,7 +442,7 @@ const prepLine = [
 
   .strip-title {
     margin: 0;
-    background: var(--panel);
+    background: var(--paper);
     border-bottom: 1px solid var(--rule);
     padding: 0.4rem 0.7rem;
     font-family: var(--font-mono);
@@ -485,7 +486,7 @@ const prepLine = [
   }
 
   .strip .difficulty {
-    color: var(--accent-text);
+    color: var(--ink);
   }
 
   .strip .unverified {
@@ -528,19 +529,15 @@ const prepLine = [
     margin-top: 0.35rem;
   }
 
-  /* The stripes stand where the apparatus photograph belongs, same
-     placeholder the cards wear. Stubs skip it: the stub band has already
+  /* A flat paper ground stands where the apparatus photograph belongs,
+     same placeholder the cards wear. Stubs skip it: the stub band has already
      said the record is thin. */
   .photo-placeholder {
     margin: 0 0 1.5rem;
     aspect-ratio: 16 / 9;
     border: 1px solid var(--rule);
     border-radius: 2px;
-    background: repeating-linear-gradient(
-      45deg,
-      var(--panel-2) 0 8px,
-      var(--surface) 8px 16px
-    );
+    background: var(--paper);
     display: flex;
     align-items: center;
     justify-content: center;

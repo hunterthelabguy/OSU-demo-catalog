@@ -4,18 +4,16 @@
 // carries its text label and a border, so grayscale printing and color
 // blindness lose nothing.
 //
-// Every tone is outlined. The first-pass alert chip was a filled accent
-// (--paper on --accent), which measures 4.0:1 at chip size, under AA; the
-// 2026-08-15 design pass replaced the fill with --accent-text on
-// --accent-tint at 7.3:1 dark and 6.3:1 light. tests/theme-contrast.test.ts
-// now asserts the pairs.
+// Every tone is outlined. Since amendment 18 the alert chip is a filled
+// accent with bold --on-accent text (4.56:1); tests/theme-contrast.test.ts
+// asserts the pair.
 interface Props {
   label: string;
   // stamp: accent outline, uppercase. The status chip, worn like an
   //   inspection stamp.
   // stamp-muted: the stamp for stubs. A stub is not a claim, so it does
   //   not wear the accent.
-  // alert: accent outline on the accent tint. Hazards, out_of_service,
+  // alert: bold on-accent text on an accent fill. Hazards, out_of_service,
   //   needs_repair, inaccessible.
   // neutral: ink outline. Everything informational.
   tone: 'stamp' | 'stamp-muted' | 'alert' | 'neutral';
@@ -43,19 +41,20 @@ const { label, tone } = Astro.props;
     font-weight: 600;
   }
   .chip-stamp {
-    /* accent-text, not accent: chip text is small, and the raw accent
-       misses AA on the paper ground in either scheme. See theme.css. */
-    color: var(--accent-text);
-    border: 1.5px solid var(--accent-text);
+    /* ink text with an accent border: chip text is small, and the raw
+       accent misses AA on the paper ground. See theme.css. */
+    color: var(--ink);
+    border: 1.5px solid var(--accent);
   }
   .chip-stamp-muted {
     color: var(--muted);
     border: 1.5px solid var(--muted);
   }
   .chip-alert {
-    color: var(--accent-text);
-    background: var(--accent-tint);
-    border: 1.5px solid var(--accent-text);
+    color: var(--on-accent);
+    background: var(--accent);
+    font-weight: 700;
+    border: 1.5px solid var(--accent);
   }
   .chip-neutral {
     color: var(--ink);
