@@ -119,7 +119,7 @@ const hasFooter = locationText !== null || courses.length > 0;
   .card {
     border: 1px solid var(--rule);
     border-radius: 3px;
-    background: var(--panel);
+    background: var(--paper);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -133,13 +133,9 @@ const hasFooter = locationText !== null || courses.length > 0;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* The placeholder stripes: two neutral tokens, no new hue. A real
-       photograph covers them entirely. */
-    background: repeating-linear-gradient(
-      45deg,
-      var(--panel-2) 0 7px,
-      var(--surface) 7px 14px
-    );
+    /* The placeholder is a flat paper ground with the "No photograph yet"
+       text. A real photograph covers it entirely. */
+    background: var(--paper);
   }
 
   .photo :global(img) {
@@ -169,7 +165,7 @@ const hasFooter = locationText !== null || courses.length > 0;
     text-transform: uppercase;
     letter-spacing: 0.11em;
     color: var(--paper);
-    background: var(--accent-text);
+    background: var(--ink);
     padding: 0.2rem 0.4rem;
     border-radius: 2px;
   }
@@ -181,14 +177,14 @@ const hasFooter = locationText !== null || courses.length > 0;
   .hazard-band {
     margin: 0;
     border-top: 2px solid var(--accent);
-    background: var(--accent-tint);
+    background: var(--accent);
     padding: 0.35rem 0.8rem;
     font-family: var(--font-mono);
     font-weight: 700;
     font-size: 0.69rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--accent-text);
+    color: var(--on-accent);
   }
 
   .card-body {
