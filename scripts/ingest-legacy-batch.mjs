@@ -7,9 +7,10 @@
 // next index after that slug's legacy images. Each record is rewritten once,
 // and a record that already has an `images:` key is refused before any file
 // is written, so a second run cannot double-ingest.
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import sharp from 'sharp';
 import { stringify } from 'yaml';
 import { ingestPhoto } from './ingest-photo.mjs';
 
@@ -51,7 +52,7 @@ function findSource(dir, name) {
 }
 
 // Pure planning: which file becomes which slug-NN.jpg, in mapping order.
-export function planBatch(mapping, { commonsPath, skipCommons }) {
+export function planBatch(mapping, { commonsPath, skipCommons } = {}) {
   const counts = new Map();
   const jobs = [];
   const next = (slug) => {
@@ -66,7 +67,7 @@ export function planBatch(mapping, { commonsPath, skipCommons }) {
   }
   for (const c of mapping.commons ?? []) {
     if (skipCommons) continue;
-    jobs.push({ kind: 'commons', input: commonsPath, slug: c.slug, index: next(c.slug), alt: c.alt, caption: c.caption, url: c.url });
+    jobs.push({ kind: commonsPath ? 'commons' : 'needs-commons', input: commonsPath, slug: c.slug, index: next(c.slug), alt: c.alt, caption: c.caption, url: c.url });
   }
   return jobs;
 }
@@ -97,49 +98,66 @@ async function main() {
       process.exit(2);
     }
   }
-  const jobs = planBatch(mapping, { commonsPath, skipCommons: skipCommons || (dryRun && !commonsPath) });
+  const jobs = planBatch(mapping, { commonsPath, skipCommons });
   if (skipCommons && hasCommons) console.log('SKIPPED commons entries (--skip-commons): ' + mapping.commons.map((c) => c.slug).join(', '));
 
-  // Preflight everything before writing anything.
+  // Preflight everything before writing anything: sources decode, no target
+  // file exists, every record accepts its block. Then JPEGs first, records last.
   const bySlug = new Map();
-  for (const j of jobs) {
+  const pending = jobs.filter((j) => j.kind !== 'needs-commons');
+  const needCommons = jobs.filter((j) => j.kind === 'needs-commons');
+  for (const j of pending) {
     j.input ??= findSource(dir, j.image);
     if (!existsSync(j.input)) throw new Error(`missing input ${j.input}`);
+    if (/\.(heic|heif)$/i.test(j.input)) throw new Error(`HEIC is not supported: convert ${j.input} to JPG first`);
+    await sharp(j.input)
+      .metadata()
+      .catch((e) => {
+        throw new Error(`cannot decode ${j.input}: ${e.message}`);
+      });
+    j.name = `${j.slug}-${String(j.index).padStart(2, '0')}.jpg`;
+    j.outDir = join('src', 'content', 'demos', j.slug);
+    if (existsSync(join(j.outDir, j.name))) throw new Error(`${join(j.outDir, j.name)} exists; refusing to run again`);
     if (!bySlug.has(j.slug)) bySlug.set(j.slug, []);
     bySlug.get(j.slug).push(j);
   }
-  const records = new Map();
-  for (const slug of bySlug.keys()) {
+  const plans = new Map();
+  for (const [slug, list] of bySlug) {
     const file = join('src', 'content', 'demos', slug, 'index.md');
     if (!existsSync(file)) throw new Error(`no record for slug ${slug}: ${file}`);
     const text = readFileSync(file, 'utf8');
-    if (/^images:/m.test((text.match(FM)?.[1] ?? '').replace(/\r\n/g, '\n'))) {
-      throw new Error(`${file} already has images; refusing to run again`);
-    }
-    records.set(slug, { file, text });
+    const images = list.map((j) => ({ src: `./${j.name}`, alt: j.alt, ...(j.caption ? { caption: j.caption } : {}) }));
+    plans.set(slug, { file, updated: insertImagesBlock(text, images) });
   }
 
   let totalBytes = 0;
-  for (const [slug, list] of bySlug) {
-    const outDir = join('src', 'content', 'demos', slug);
-    const images = [];
-    console.log(`${slug}: ${list.length} image(s)`);
-    for (const j of list) {
-      const name = `${slug}-${String(j.index).padStart(2, '0')}.jpg`;
-      if (dryRun) {
-        console.log(`  would write ${join(outDir, name)} from ${j.input}`);
-      } else {
-        const r = await ingestPhoto({ input: j.input, outDir, slug, index: j.index });
+  const written = [];
+  try {
+    for (const [slug, list] of bySlug) {
+      console.log(`${slug}: ${list.length} image(s)`);
+      for (const j of list) {
+        if (dryRun) {
+          console.log(`  would write ${join(j.outDir, j.name)} from ${j.input}`);
+          continue;
+        }
+        const r = await ingestPhoto({ input: j.input, outDir: j.outDir, slug, index: j.index });
+        written.push(r.output);
         totalBytes += r.bytes;
         console.log(`  ${r.output} ${r.width}x${r.height} ${r.bytes} bytes`);
       }
-      images.push({ src: `./${name}`, alt: j.alt, ...(j.caption ? { caption: j.caption } : {}) });
     }
-    const rec = records.get(slug);
-    const updated = insertImagesBlock(rec.text, images);
-    if (!dryRun) writeFileSync(rec.file, updated);
+  } catch (err) {
+    for (const f of written) rmSync(f, { force: true });
+    throw err;
   }
-  console.log(`${dryRun ? 'planned' : 'ingested'} ${jobs.length} image(s) across ${bySlug.size} record(s)` + (dryRun ? ' (dry run, nothing written)' : `, ${totalBytes} bytes`));
+  for (const j of needCommons) console.log(`${j.slug}: would need --commons (${j.url})`);
+  if (!dryRun) for (const p of plans.values()) writeFileSync(p.file, p.updated);
+  const tail = needCommons.length ? `; ${needCommons.length} commons job(s) would need --commons` : '';
+  console.log(
+    `${dryRun ? 'planned' : 'ingested'} ${pending.length} image(s) across ${bySlug.size} record(s)` +
+      (dryRun ? ' (dry run, nothing written)' : `, ${totalBytes} bytes`) +
+      tail,
+  );
 }
 
 const invoked = process.argv[1] && pathToFileURL(resolve(process.argv[1])).href.toLowerCase() === import.meta.url.toLowerCase();

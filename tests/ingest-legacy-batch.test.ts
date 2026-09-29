@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parse } from 'yaml';
-import { insertImagesBlock } from '../scripts/ingest-legacy-batch.mjs';
+import { insertImagesBlock, planBatch } from '../scripts/ingest-legacy-batch.mjs';
 
 const record = `---
 title: "Demo"
@@ -50,5 +50,39 @@ describe('insertImagesBlock', () => {
     expect(out.replace(/\r\n/g, '\n')).not.toContain('\r');
     expect(frontmatter(out).images).toHaveLength(1);
     expect(out.endsWith('## Physics\r\n')).toBe(true);
+  });
+});
+
+describe('planBatch', () => {
+  const mapping = {
+    entries: [
+      { image: 'a', targets: [{ slug: 'x', alt: 'A on x.' }] },
+      { image: 'shared', targets: [{ slug: 'x', alt: 'Shared on x.' }, { slug: 'y', alt: 'Shared on y.', caption: 'Cap.' }] },
+      { image: 'c', targets: [{ slug: 'y', alt: 'C on y.' }] },
+    ],
+    commons: [{ url: 'https://example.test/f', slug: 'y', alt: 'Commons.', caption: 'Credit.' }],
+    excluded: [{ image: 'gone', targets: [{ slug: 'z', alt: 'no' }] }],
+    held: [{ image: 'held', targets: [{ slug: 'z', alt: 'no' }] }],
+  };
+
+  it('never plans held or excluded entries', () => {
+    const jobs = planBatch(mapping, { commonsPath: 'f.jpg' });
+    expect(jobs.some((j) => j.slug === 'z' || j.image === 'held' || j.image === 'gone')).toBe(false);
+  });
+
+  it('gives a shared photo one job per slug with its own alt', () => {
+    const shared = planBatch(mapping, { commonsPath: 'f.jpg' }).filter((j) => j.image === 'shared');
+    expect(shared.map((j) => [j.slug, j.alt])).toEqual([['x', 'Shared on x.'], ['y', 'Shared on y.']]);
+  });
+
+  it('indexes per slug in mapping order, commons last on its slug', () => {
+    const jobs = planBatch(mapping, { commonsPath: 'f.jpg' });
+    expect(jobs.map((j) => `${j.slug}-${j.index}`)).toEqual(['x-1', 'x-2', 'y-1', 'y-2', 'y-3']);
+    expect(jobs.at(-1)).toMatchObject({ kind: 'commons', slug: 'y', index: 3, input: 'f.jpg' });
+  });
+
+  it('marks commons as needing a path, or skips it on request', () => {
+    expect(planBatch(mapping).at(-1)?.kind).toBe('needs-commons');
+    expect(planBatch(mapping, { skipCommons: true }).some((j) => j.slug === 'y' && j.index === 3)).toBe(false);
   });
 });
