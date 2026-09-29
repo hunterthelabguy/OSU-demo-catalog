@@ -6,8 +6,9 @@ A browsable catalog of the physics lecture demonstrations held in the OSU
 stockroom. One Markdown file per demonstration, validated at build time, rendered
 as a static site with faceted browse and full-text search.
 
-The badge claims exactly what CI checks: typecheck, the test suite, and a
-production build. Nothing else is verified by it.
+The badge claims exactly what CI checks: typecheck, the test suite, a
+production build, and the Playwright layout suite against that build. Nothing
+else is verified by it.
 
 **Status: v0.1, proof of concept.** The proof-of-concept trio is complete:
 validated records, demonstration pages (with print stylesheet), and an index
@@ -265,13 +266,15 @@ Developed and CI-verified on Node 24. Built on Astro 7.
 ```bash
 npm ci             # install the locked dependency tree
 npm run dev        # dev server at localhost:4321
-npm run verify     # the whole gate: typecheck, tests, production build
+npm run verify     # the whole gate: typecheck, tests, build, layout suite
 ```
 
 `verify` is exactly what CI runs on every pull request and on `main`. If it is
 green locally, CI will agree. The individual pieces are `npm run check`
 (typecheck via `astro check`), `npm run test` (vitest), and `npm run build`
-(static site into `dist/`, including the Pagefind search index).
+(static site into `dist/`, including the Pagefind search index). The last
+step of `verify`, `npm run test:e2e`, needs a built site and a running preview
+server; [CLAUDE.md](CLAUDE.md) has the Windows procedure.
 
 Search only works against a built site, because the index is generated from
 the built HTML: use `npm run preview` after a build. Under `npm run dev` the
@@ -355,7 +358,10 @@ src/content/demos/         One directory per demonstration
 src/pages/demos/           The per-demonstration page template
 src/layouts/, src/components/   Base layout (fonts, tokens), chips
 src/config.ts              Request-button gate, null until a request system exists
+scripts/ingest-photo.mjs   The one door for photographs (see Photographs)
+public/robots.txt          Refuses all crawlers, with the noindex meta tags
 tests/                     Repo, schema, content, and formatting invariants
+tests/e2e/                 Playwright layout suite, mobile and desktop
 LICENSE                    MIT, covering code
 LICENSE-CONTENT            CC BY-SA 4.0, covering catalog content
 ```
