@@ -19,7 +19,7 @@ import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import Chip from './Chip.astro';
 import { joinValues, sortCourses, timeBuckets } from '../lib/facets';
-import { humanize } from '../lib/format';
+import { humanize, sentenceCase } from '../lib/format';
 
 interface Props {
   demo: CollectionEntry<'demos'>;
@@ -45,8 +45,9 @@ const locationText = d.location
   : null;
 const courses = sortCourses(d.course_tags);
 
-// The badge's visible names and its accessible label are one string.
-const hazardNames = d.hazards.map(humanize).join(' · ');
+// The badge's visible names and its accessible label are one string, in
+// sentence case as amendment 21 shows it ("High voltage · Laser").
+const hazardNames = d.hazards.map(sentenceCase).join(' · ');
 ---
 
 <article
@@ -175,7 +176,7 @@ const hazardNames = d.hazards.map(humanize).join(' · ');
   }
 
   /* Reserves room for the widest real badge, measured in the built site
-     at 1280x800 on 2026-09-28: "▲ high voltage" is 108.9px wide and sits
+     at 1280x800 on 2026-09-28: "▲ High voltage" is 108.9px wide and sits
      0.75rem (12px) in from the card edge, so it reaches 120.9px in; the
      body's own 0.85rem padding covers 13.6px of that. 7.5rem leaves about
      12px of air. Margin, not padding: the title's box itself stays clear

@@ -26,6 +26,17 @@ test('the hazard badge names the hazard and never covers the title', async ({ pa
   expect(badge.x >= title.x + title.width || badge.y >= title.y + title.height).toBe(true);
 });
 
+// Amendment 21: a desktop stub without a summary shows the muted stub line
+// where the summary would be. Stubs are hidden by default, so reveal one.
+test('a stub card shows its stub line', async ({ page }) => {
+  await page.goto('/');
+  const stub = page.locator('.card:has(.stub-line)').first();
+  await stub.evaluate((el) => el.removeAttribute('hidden'));
+  await expect(stub.locator('.summary')).toHaveCount(0);
+  await expect(stub.locator('.stub-line')).toBeVisible();
+  await expect(stub.locator('.stub-line')).toHaveText('Stub record: not yet documented.');
+});
+
 // Amendment 16: a long summary causes no horizontal overflow. The twelve
 // real summaries are on the index; no fixture summary is invented.
 test('the index does not scroll horizontally', async ({ page }) => {

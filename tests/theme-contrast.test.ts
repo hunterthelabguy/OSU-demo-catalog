@@ -57,14 +57,21 @@ const contrast = (fg: string, bg: string): number => {
 const PAIRS: [fg: string, bg: string, where: string][] = [
   ['ink', 'paper', 'all reading text on the page, cards, panels, inputs'],
   ['muted', 'paper', 'secondary text'],
-  ['on-accent', 'accent', 'hazard band, hazard badge, alert chip, checked course chip (bold)'],
-  ['paper', 'ink', 'inverted status chip'],
-  ['paper', 'muted', 'stub stamp fill on card photos'],
+  [
+    'on-accent',
+    'accent',
+    'detail-page hazard band, card hazard badge, alert chip, checked course chip (bold)',
+  ],
 ];
+
+// The six-token contract (amendment 18), checked by name rather than
+// derived from PAIRS, so retiring a pair never silently drops a token from
+// the definition check. --rule is border-only and in no text pair.
+const TOKENS = ['paper', 'ink', 'muted', 'rule', 'accent', 'on-accent'];
 
 describe('theme contrast', () => {
   it('defines every token this test depends on, in every scheme', () => {
-    const names = [...new Set(PAIRS.flatMap(([fg, bg]) => [fg, bg]))];
+    const names = [...new Set([...TOKENS, ...PAIRS.flatMap(([fg, bg]) => [fg, bg])])];
     for (const [scheme, tokens] of Object.entries(schemes)) {
       for (const name of names) {
         expect(tokens[name], `${scheme} is missing --${name}`).toMatch(/^#[0-9a-fA-F]{6}$/);

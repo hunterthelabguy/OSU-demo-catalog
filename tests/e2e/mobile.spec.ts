@@ -151,8 +151,18 @@ test.describe('index at 375px', () => {
   test('compact cards carry location and no status or room chips', async ({ page }) => {
     const card = page.locator('.card:not([hidden])').first();
     await expect(card.locator('.card-footer')).toBeVisible();
-    await expect(card.locator('.chip-stamp, .chip-stamp-muted')).toHaveCount(0);
-    await expect(card.locator('.summary')).toBeHidden();
+    await expect(card.locator('.chip-stamp, .chip-stamp-muted, .chip-neutral')).toHaveCount(0);
+    // Amendment 16's compact exclusion: a card that has a summary hides it.
+    await expect(page.locator('.card:has(.summary)').first().locator('.summary')).toBeHidden();
+  });
+
+  // Amendment 21: a phone stub shows no marker. Stubs are hidden by default,
+  // so the check reveals one first.
+  test('a stub card shows no stub marker on phone', async ({ page }) => {
+    const stub = page.locator('.card:has(.stub-line)').first();
+    await stub.evaluate((el) => el.removeAttribute('hidden'));
+    await expect(stub.locator('.stub-line')).toHaveCount(1);
+    await expect(stub.locator('.stub-line')).toBeHidden();
   });
 });
 

@@ -92,7 +92,7 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
   }
 
   /* The hidden attribute must always win. Without this, any component that
-     sets its own display (the demo card is display: flex) silently defeats
+     sets its own display (the demo card is display: grid) silently defeats
      hidden, because author styles outrank the UA's [hidden] rule. */
   [hidden] {
     display: none !important;
