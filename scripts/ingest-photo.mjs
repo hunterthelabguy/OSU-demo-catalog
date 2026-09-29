@@ -14,6 +14,12 @@ export async function ingestPhoto({ input, outDir, slug, index, force = false })
   if (/\.(heic|heif)$/i.test(input)) {
     throw new Error(`HEIC is not supported: convert ${input} to JPG first`);
   }
+  if (!/^[a-z0-9-]+$/.test(String(slug))) {
+    throw new Error(`invalid slug ${JSON.stringify(slug)}: use lowercase letters, digits, and hyphens`);
+  }
+  if (!Number.isInteger(index) || index < 1) {
+    throw new Error(`invalid index ${JSON.stringify(index)}: use a positive integer`);
+  }
   const output = join(outDir, `${slug}-${String(index).padStart(2, '0')}.jpg`);
   if (!force && existsSync(output)) {
     throw new Error(`${output} exists; pass --force to overwrite`);
@@ -37,6 +43,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(2);
   }
   const outDir = join('src', 'content', 'demos', slug);
-  const r = await ingestPhoto({ input, outDir, slug, index: Number(index), force });
-  console.log(`${r.output} ${r.width}x${r.height} ${r.bytes} bytes`);
+  try {
+    const r = await ingestPhoto({ input, outDir, slug, index: Number(index), force });
+    console.log(`${r.output} ${r.width}x${r.height} ${r.bytes} bytes`);
+  } catch (err) {
+    console.error(`error: ${err.message}`);
+    console.error('usage: node scripts/ingest-photo.mjs <input> <slug> <index> [--force]');
+    process.exit(2);
+  }
 }

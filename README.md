@@ -248,9 +248,13 @@ shoot JPEG.
 
 Two tests hold this. `tests/ingest-photo.test.ts` builds a rotated image
 carrying GPS EXIF and proves the tool strips it and applies the rotation.
-`tests/image-invariants.test.ts` walks every JPG and PNG committed under
-`src/content/demos/` and asserts no EXIF and a long edge of 1600 px or less,
-which catches a photo committed by hand around the tool.
+`tests/image-invariants.test.ts` walks `src/content/demos/` recursively and
+asserts that every raster image (JPG, PNG, WebP, AVIF, GIF, TIFF) carries no
+EXIF, orientation, XMP, IPTC, or ICC data and has a long edge of 1600 px or
+less, and that no file under a slug directory is anything other than a record
+(`.md`) or a recognised image, so a hand-committed photo or a stray `.heic`
+fails the build. The slug must be lowercase letters, digits, and hyphens, and
+the index a positive integer; anything else is refused before writing.
 
 ---
 
