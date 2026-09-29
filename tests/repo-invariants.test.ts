@@ -84,4 +84,5 @@ test('LICENSE-CONTENT carries the CC BY-SA scope and names its counterpart', () 
   expect(text).toContain('MIT');
   expect(text).toContain('src/assets/brand/');
   expect(text).toContain('trademark');
+  expect(text).toContain('Flame-tube-resonance.jpg');
 });

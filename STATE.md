@@ -14,10 +14,8 @@ Last updated: 2026-09-28
   any / Match all, course as scope) and Pagefind search. Desktop and mobile
   designs shipped (amendments 12, 13, 15). Build-time LaTeX via KaTeX.
 - **Content: 54 records**, 12 `drafted` and 42 `stub`, none `verified`.
-  On `main`, no record has a photograph yet. On `claude/legacy-images`
-  (unmerged PR, pending review), 44 records carry at least one photograph:
-  51 JPEGs, 8,285,610 bytes, from the legacy export through
-  `scripts/ingest-legacy-batch.mjs`, including one Wikimedia Commons image
+  44 records carry at least one photograph: 51 JPEGs, 8,285,610 bytes,
+  from the legacy export through `scripts/ingest-legacy-batch.mjs`, including one Wikimedia Commons image
   (CC BY-SA 4.0, MikeRun) standing in on `physics-of-music-demos`. Mapping
   and alt text: `docs/legacy-images-2026-09.json`. The twelve drafted
   records carry a `summary`, for owner review.
@@ -35,10 +33,8 @@ Last updated: 2026-09-28
   `scripts/ingest-photo.mjs` with its unit test and a repo-wide image
   invariant; the unchecked-apparatus note, the provisional-locations line
   near search, and `public/robots.txt` refusing all crawlers.
-- **Verification**: on `claude/legacy-images` (pending merge), 132 vitest
-  tests in 11 files plus 29 Playwright tests (23 at 375x812, 6 at
-  1280x800), observed 2026-09-28; `main` carries fewer vitest tests until
-  the PR merges. `npm run verify` is the gate; CI runs it on
+- **Verification**: 132 vitest tests in 11 files plus 29 Playwright tests
+  (23 at 375x812, 6 at 1280x800), observed 2026-09-28. `npm run verify` is the gate; CI runs it on
   every PR.
 - **Production** tracks `main` at https://osu-demo-catalog.vercel.app,
   `noindex` site-wide, permanently (amendment 22).
@@ -46,8 +42,7 @@ Last updated: 2026-09-28
 ## In flight
 
 Parts A (brand pass) and B (summary field, row cards, ingest tool) shipped
-2026-09-28. Part C is on `claude/legacy-images` in an unmerged PR awaiting
-owner review (amendment 23); the build is planned in
+2026-09-28. Part C awaits owner review in an unmerged PR (amendment 23); the build is planned in
 `docs/plans/2026-09-28-brand-summary-images.md`. Amendments 16 to 22 merged
 2026-09-28 in PR #22.
 
