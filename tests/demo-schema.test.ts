@@ -181,3 +181,15 @@ test('minutes and quantity reject nonsense', () => {
   expect(parses(withChanges({ setup_minutes: 2.5 }))).toBe(false);
   expect(parses(withChanges({ quantity: 0 }))).toBe(false);
 });
+
+test('summary is optional plain text up to 200 characters', () => {
+  expect(schema.safeParse({ ...validRecord, summary: 'A short summary.' }).success).toBe(true);
+  expect(schema.safeParse({ ...validRecord, summary: 'x'.repeat(200) }).success).toBe(true);
+  const { summary: _omit, ...withoutSummary } = { ...validRecord, summary: '' };
+  expect(schema.safeParse(withoutSummary).success).toBe(true);
+});
+
+test('summary rejects empty and over-length text', () => {
+  expect(schema.safeParse({ ...validRecord, summary: '' }).success).toBe(false);
+  expect(schema.safeParse({ ...validRecord, summary: 'x'.repeat(201) }).success).toBe(false);
+});
