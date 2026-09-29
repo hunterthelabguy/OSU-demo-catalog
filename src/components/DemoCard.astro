@@ -174,7 +174,11 @@ const hasFooter = locationText !== null || courses.length > 0;
     background: var(--muted);
   }
 
+  /* White text on the orange fill: browsers drop backgrounds in print by
+     default, which would print it white on white, so the fill is forced. */
   .hazard-band {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
     margin: 0;
     border-top: 2px solid var(--accent);
     background: var(--accent);
