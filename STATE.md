@@ -19,13 +19,14 @@ Last updated: 2026-09-28
   375x812, counted 2026-09-28. `npm run verify` is the gate; CI runs it on
   every PR.
 - **Production** tracks `main` at https://osu-demo-catalog.vercel.app,
-  `noindex` site-wide until launch.
+  `noindex` site-wide, permanently (amendment 22).
 
 ## In flight
 
-Draft PR #22, branch `claude/summary-and-image-ingest`: amendments 16 to 22, the implementation plan at `docs/plans/2026-09-28-brand-summary-images.md`, this file,
-`VISION.md` (drafted, awaiting the owner's line-by-line ruling), and the
-agent commands rerouted so state lands here. Docs only.
+Nothing on a branch. The build is fully planned in
+`docs/plans/2026-09-28-brand-summary-images.md` (Parts A, B, C, one PR
+each, in order) and has not started. Amendments 16 to 22 merged 2026-09-28
+in PR #22.
 
 ## Queue, in order
 
@@ -33,9 +34,10 @@ agent commands rerouted so state lands here. Docs only.
    pure white and black grounds, the official two-color mark swapped by
    color scheme, a token test holding the palette, the mark carved out of
    the content license.
-2. **Summary field, row cards, and ingest tool** (amendments 16, 17, 21;
-   first PR): the `summary` field, page order, meta description, search
-   weight; row cards at every width with the hazard corner badge;
+2. **Summary field, row cards, and ingest tool** (amendments 16, 17, 21,
+   22; first PR): the `summary` field, page order, meta description, search
+   weight; row cards at every width with the hazard corner badge; the
+   unchecked-apparatus note, provisional-location line, and robots.txt;
    `scripts/ingest-photo.mjs` with its unit and invariant tests; twelve
    drafted summaries for owner review.
 3. **Legacy images** (amendment 17; second PR): the mapping file with alt
@@ -53,9 +55,17 @@ after the stockroom reorganization; the website work is not blocked by it.
 
 ## Awaiting the owner
 
-- Line-by-line ruling on `VISION.md`, including the lines marked proposed.
-- Review of the twelve summaries and the image alt text, as each PR opens.
-- Any legacy image showing a person, once the faces pass runs.
+- The one line in `VISION.md` still marked proposed ("students are not the
+  audience"): rule it in or strike it.
+- Part C: is the gray can capacitor in legacy image54 the same apparatus as
+  the `large-capacitors` record? Decides whether image54 goes on one record
+  or two (amendment 17 said two).
+- Enable host-level bot blocking in the Vercel dashboard (amendment 22).
+- Review, as each PR opens: the twelve summaries (Part B), the image alt
+  text and anything held from the faces pass (Part C), the tennis racket
+  redraft (Part C).
+- The user-level OSU addendum still names `docs/build-plan.md` as this
+  repo's living plan; state now lives in STATE.md.
 
 ## Watch items
 
