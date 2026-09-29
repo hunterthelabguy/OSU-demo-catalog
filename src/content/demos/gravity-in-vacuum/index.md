@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Gravity in Vacuum"
+summary: "A marble and a feather fall in a tube, first with air, then evacuated. Without air they land together: gravity accelerates both equally, and air resistance alone separated them."
 slug: gravity-in-vacuum
 status: drafted
 

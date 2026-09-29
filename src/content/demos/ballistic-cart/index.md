@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Ballistic Cart"
+summary: "A rolling cart launches a ball straight up, and the ball lands back in the cart. In flight the ball keeps the cart's horizontal velocity: relative motion and Newton's first law."
 slug: ballistic-cart
 status: drafted
 

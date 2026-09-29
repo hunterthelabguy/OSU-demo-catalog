@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Multiplicity Dice Activity"
+summary: "Students pass dice, as units of energy, between groups by random rolls. Energy spreads out and does not re-concentrate, because spread-out microstates overwhelmingly outnumber concentrated ones."
 slug: multiplicity-dice
 status: drafted
 

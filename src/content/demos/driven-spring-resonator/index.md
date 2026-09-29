@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Driven Spring Resonator"
+summary: "A motor drives a hanging spring and mass at a rising frequency. The amplitude peaks at resonance, set by the spring and the mass, then falls again as the drive speeds past it."
 slug: driven-spring-resonator
 status: drafted
 

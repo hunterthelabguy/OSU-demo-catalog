@@ -1,6 +1,7 @@
 ---
 # --- identity ---
 title: "Magnet Drop"
+summary: "A strong magnet falls slowly through a metal tube that does not attract it, while its twin drops quickly through plastic. Eddy currents induced in the metal oppose the magnet's motion."
 slug: magnet-drop
 status: drafted
 
