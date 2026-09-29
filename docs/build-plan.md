@@ -820,7 +820,7 @@ data.
 ### Phase 5: supporting infrastructure
 
 - `scripts/ingest-photo.sh`: HEIC to JPG, resize, strip EXIF. Superseded by
-  amendment 17: `scripts/ingest-photo.mjs`, HEIC refused.
+  amendment 17: `scripts/ingest-photo.mjs`, HEIC refused. Shipped 2026-09-28.
 - `data/pira-dcs.json` derived from the CU Boulder DCS release, attributed.
 - `src/config.ts` with `REQUEST_URL_TEMPLATE` null by default, and the durable
   contract (a request system stores `slug` verbatim) recorded in a comment at the
