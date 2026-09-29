@@ -23,8 +23,16 @@ const normalize = (hex: string): string => {
 };
 
 const root = fileURLToPath(new URL('..', import.meta.url));
+// 4- and 8-digit hex carry an alpha channel, which is a tint the brand guide
+// forbids; they are returned as-is so the palette check fails on them.
 const hexes = (text: string): string[] =>
-  [...text.matchAll(/#[0-9a-fA-F]{6}\b|#[0-9a-fA-F]{3}\b/g)].map((m) => normalize(m[0]));
+  [...text.matchAll(/#(?:[0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})\b/g)].map((m) =>
+    m[0].length === 5 || m[0].length === 9 ? m[0].toUpperCase() : normalize(m[0]),
+  );
+const verdict = (hex: string): string =>
+  hex.length === 5 || hex.length === 9
+    ? `${hex} has an alpha channel (4 or 8 digits), which is a tint; use a listed palette value`
+    : `${hex} is not an OSU palette value`;
 
 const walk = (dir: string): string[] =>
   readdirSync(dir).flatMap((name) => {
@@ -37,14 +45,17 @@ describe('OSU palette', () => {
     const css = readFileSync(join(root, 'src/styles/theme.css'), 'utf8');
     const found = hexes(css);
     expect(found.length).toBeGreaterThan(0);
-    for (const hex of found) expect(PALETTE.has(hex), `${hex} is not an OSU palette value`).toBe(true);
+    for (const hex of found) expect(PALETTE.has(hex), verdict(hex)).toBe(true);
   });
 
-  it('no template or stylesheet hardcodes a non-palette color', () => {
-    const files = walk(join(root, 'src')).filter((f) => /\.(astro|css|ts)$/.test(f));
+  it('no template, stylesheet, or public svg hardcodes a non-palette color', () => {
+    const files = [
+      ...walk(join(root, 'src')).filter((f) => /\.(astro|css|ts)$/.test(f)),
+      ...walk(join(root, 'public')).filter((f) => /\.svg$/.test(f)),
+    ];
     for (const file of files) {
       for (const hex of hexes(readFileSync(file, 'utf8'))) {
-        expect(PALETTE.has(hex), `${hex} in ${file} is not an OSU palette value`).toBe(true);
+        expect(PALETTE.has(hex), `${verdict(hex)} (in ${file})`).toBe(true);
       }
     }
   });
