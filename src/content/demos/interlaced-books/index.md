@@ -1,7 +1,7 @@
 ---
 # --- identity ---
 title: "Interlaced Books"
-summary: "Two books with interleaved pages resist being pulled apart far beyond what ordinary friction explains. Pulling tensions the angled pages and presses them together: friction self-amplifies."
+summary: "Two interleaved books resist being pulled apart far beyond what friction under their own weight predicts. Pulling puts tension along the angled pages, pressing them together: friction self-amplifies."
 slug: interlaced-books
 status: drafted
 

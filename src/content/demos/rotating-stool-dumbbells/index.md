@@ -1,7 +1,7 @@
 ---
 # --- identity ---
 title: "Rotating Stool and Dumbbells"
-summary: "A student on a rotating stool pulls dumbbells inward and spins faster. Angular momentum is conserved, so a smaller moment of inertia means a higher angular velocity."
+summary: "A student on a rotating stool pulls dumbbells inward and spins faster. Angular momentum is approximately conserved, so a smaller moment of inertia means a higher angular velocity."
 slug: rotating-stool-dumbbells
 status: drafted
 

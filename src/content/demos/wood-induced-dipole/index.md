@@ -1,7 +1,7 @@
 ---
 # --- identity ---
 title: "Wood Induced Dipole"
-summary: "A charged rod rolls a metal can, then slowly turns a wooden board balanced on a point. Wood has no free charge but polarizes, and a long lever arm makes the tiny force visible."
+summary: "A charged rod rolls a metal can, then slowly turns a wooden board balanced on a point. Wood has essentially no free charge but polarizes, and a long lever arm makes the tiny force visible."
 slug: wood-induced-dipole
 status: drafted
 
