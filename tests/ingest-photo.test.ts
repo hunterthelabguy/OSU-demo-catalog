@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
@@ -76,5 +76,17 @@ describe('ingestPhoto', () => {
     await ingestPhoto({ input, outDir: dir, slug: 'demo', index: 1 });
     await expect(ingestPhoto({ input, outDir: dir, slug: 'demo', index: 1 })).rejects.toThrow(/--force/);
     await expect(ingestPhoto({ input, outDir: dir, slug: 'demo', index: 1, force: true })).resolves.toBeDefined();
+  });
+
+  it('rejects a bad slug or index before writing anything', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'ingest-'));
+    const input = await makeFixture(dir);
+    for (const slug of ['../evil', 'Has Space', 'UPPER', '']) {
+      await expect(ingestPhoto({ input, outDir: dir, slug, index: 1 })).rejects.toThrow(/invalid slug/);
+    }
+    for (const index of [0, -1, 1.5, Number.NaN]) {
+      await expect(ingestPhoto({ input, outDir: dir, slug: 'demo', index })).rejects.toThrow(/invalid index/);
+    }
+    expect(readdirSync(dir)).toEqual(['phone.jpg']);
   });
 });
