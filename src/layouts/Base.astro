@@ -2,11 +2,15 @@
 // Base layout: global styles and site chrome. Fonts and every color token
 // live in src/styles/theme.css, the single file a fork edits to rebrand.
 //
-// The masthead is the accent band from the 2026-08-15 design pass
-// (build-plan amendment 12): 'full' is the index lockup with the record
-// counts, 'slim' is the one-line band every other page wears, with a
-// print button that appears only once JavaScript wires it.
+// The masthead wears the official OSU horizontal mark (build-plan
+// amendment 18) on the paper background: 'full' is the index lockup with
+// the record counts, 'slim' is the one-line header every other page wears,
+// with a print button that appears only once JavaScript wires it. Two
+// pre-colored marks swap by color scheme; print always takes the light one.
+import { Image } from 'astro:assets';
 import '../styles/theme.css';
+import markLight from '../assets/brand/osu-horizontal-2c-o-over-b.png';
+import markDark from '../assets/brand/osu-horizontal-2c-o-over-w.png';
 
 interface Props {
   title: string;
@@ -40,7 +44,8 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
         <header class="masthead masthead-full">
           <div class="masthead-inner">
             <p class="lockup">
-              <span class="kicker">Oregon State University · Department of Physics</span>
+              <Image src={markLight} alt="Oregon State University" height={48} class="mark logo-light" loading="eager" />
+              <Image src={markDark} alt="Oregon State University" height={48} class="mark logo-dark" loading="eager" />
               <span class="site-title">Physics Demonstration Catalog</span>
             </p>
             {mastheadMeta && <p class="masthead-meta">{mastheadMeta}</p>}
@@ -50,8 +55,9 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
         <header class="masthead masthead-slim">
           <div class="masthead-inner">
             <p class="lockup">
-              <a href="/">Physics Demonstration Catalog</a>
-              <span class="kicker-inline"> · Oregon State University</span>
+              <Image src={markLight} alt="Oregon State University" height={32} class="mark logo-light" loading="eager" />
+              <Image src={markDark} alt="Oregon State University" height={32} class="mark logo-dark" loading="eager" />
+              <a href="/" class="site-title">Physics Demonstration Catalog</a>
             </p>
             <button type="button" class="print-button" hidden>
               Print this record
@@ -143,17 +149,14 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
     }
   }
 
-  /* The accent band. --accent is a fill here, never text: everything on
-     the band is --on-accent, asserted AA by the contrast test. Focus rings
-     inside the band switch to --on-accent because the accent-colored ring
-     vanishes against its own fill. */
+  /* The masthead sits on paper and carries the official mark, not a fill.
+     The mark files are pre-colored for each scheme; display swaps them.
+     Print comes last so it wins: a dark-scheme browser still prints the
+     light mark. */
   .masthead {
-    background: var(--accent);
-    color: var(--on-accent);
-  }
-
-  .masthead :focus-visible {
-    outline-color: var(--on-accent);
+    background: var(--paper);
+    color: var(--ink);
+    border-bottom: 1px solid var(--rule);
   }
 
   .masthead-inner {
@@ -161,7 +164,7 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
     margin-inline: auto;
     padding: 0.8rem 1.25rem;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
@@ -170,24 +173,55 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
   .masthead .lockup {
     margin: 0;
     display: flex;
-    flex-direction: column;
-    gap: 0.05rem;
+    align-items: center;
+    gap: 1rem;
   }
 
-  .masthead-full .kicker {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
+  .mark {
+    width: auto;
+    display: block;
   }
 
-  .masthead-full .site-title {
+  .logo-dark {
+    display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .logo-light {
+      display: none;
+    }
+    .logo-dark {
+      display: block;
+    }
+  }
+
+  @media print {
+    .logo-light {
+      display: block;
+    }
+    .logo-dark {
+      display: none;
+    }
+  }
+
+  .masthead .site-title {
+    border-left: 1px solid var(--rule);
+    padding-left: 1rem;
     font-family: var(--font-display);
     font-weight: 800;
     font-size: 1.25rem;
     letter-spacing: -0.015em;
     line-height: 1.2;
+  }
+
+  .masthead-slim .site-title {
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+
+  .masthead-slim a.site-title:hover,
+  .masthead-slim a.site-title:focus-visible {
+    text-decoration: underline;
   }
 
   .masthead-meta {
@@ -199,41 +233,15 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
 
   .masthead-slim .masthead-inner {
     padding: 0.65rem 1.25rem;
-    align-items: center;
-  }
-
-  .masthead-slim .lockup {
-    flex-direction: row;
-    align-items: baseline;
-    gap: 0;
-    font-size: 0.82rem;
-  }
-
-  .masthead-slim a {
-    font-family: var(--font-display);
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    text-decoration: none;
-  }
-
-  .masthead-slim a:hover,
-  .masthead-slim a:focus-visible {
-    text-decoration: underline;
-  }
-
-  .masthead-slim .kicker-inline {
-    font-weight: 400;
-    opacity: 0.85;
-    white-space: pre;
   }
 
   .print-button {
     font-family: var(--font-mono);
     font-weight: 600;
     font-size: 0.72rem;
-    color: var(--on-accent);
+    color: var(--ink);
     background: none;
-    border: 1px solid var(--on-accent);
+    border: 1px solid var(--ink);
     border-radius: 2px;
     padding: 0.3rem 0.6rem;
     cursor: pointer;
@@ -262,7 +270,7 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
     margin: 0;
   }
 
-  /* Compact: the band keeps the lockup and the counts but stops spending
+  /* Compact: the header keeps the mark and the counts but stops spending
      a phone's vertical budget on them. Every pixel here is one the first
      result does not have to scroll past. */
   @media (max-width: 48rem) {
@@ -271,13 +279,20 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
       gap: 0.35rem;
     }
 
-    .masthead-full .kicker {
-      font-size: 0.6rem;
-      letter-spacing: 0.16em;
+    .masthead-full .mark {
+      height: 32px;
     }
 
     .masthead-full .site-title {
       font-size: 1.05rem;
+    }
+
+    .masthead .lockup {
+      gap: 0.75rem;
+    }
+
+    .masthead .site-title {
+      padding-left: 0.75rem;
     }
 
     .masthead-meta {
@@ -288,7 +303,7 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
       padding: 0.5rem 1rem;
     }
 
-    /* The one interactive control in the band answers to the same 44px
+    /* The one interactive control in the header answers to the same 44px
        floor as every control in the facet panel. */
     .print-button {
       min-height: 2.75rem;
@@ -301,10 +316,15 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
   }
 
   @media print {
-    /* Print tokens are forced light in theme.css. */
-    .masthead,
+    /* Print tokens are forced light in theme.css. The printed record keeps
+       the official mark; the button and the counts are screen chrome. */
+    .print-button,
+    .masthead-meta,
     .site-footer {
       display: none;
+    }
+    .masthead-inner {
+      padding-inline: 0;
     }
     body {
       font-size: 10.5pt;

@@ -161,3 +161,27 @@ test.describe('demo page at 375px', () => {
     expect(display).toBe('block');
   });
 });
+
+test.describe('masthead mark', () => {
+  test('shows the light mark on the light scheme, and only that one', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/');
+    await expect(page.locator('.logo-light')).toBeVisible();
+    await expect(page.locator('.logo-dark')).toBeHidden();
+    await expect(page.getByRole('img', { name: 'Oregon State University' })).toHaveCount(1);
+  });
+
+  test('swaps to the dark mark on the dark scheme', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('/demos/ballistic-cart/');
+    await expect(page.locator('.logo-dark')).toBeVisible();
+    await expect(page.locator('.logo-light')).toBeHidden();
+  });
+
+  test('prints the light mark even from a dark-scheme browser', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark', media: 'print' });
+    await page.goto('/demos/ballistic-cart/');
+    await expect(page.locator('.logo-light')).toBeVisible();
+    await expect(page.locator('.logo-dark')).toBeHidden();
+  });
+});
