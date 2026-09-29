@@ -1,8 +1,9 @@
 ---
 // One page per demonstration, in its 2026-08-15 design-pass form
 // (build-plan amendment 12): predict-first and hazard-forward. The hazard
-// band and the prediction callout lead; the boxed strip answers "can I
-// run this Tuesday" before the prose. This template stays glue:
+// band, the Summary block (amendment 16), and the prediction callout
+// lead, in that order; the boxed strip answers "can I run this Tuesday"
+// before the prose. This template stays glue:
 // formatting lives in src/lib/format.ts, validation in the schema.
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
@@ -70,7 +71,7 @@ const prepLine = [
   .join(', ');
 ---
 
-<Base title={`${d.title} · Physics Demonstration Catalog`} description={d.topics.join(', ')}>
+<Base title={`${d.title} · Physics Demonstration Catalog`} description={d.summary ?? d.topics.join(', ')}>
   <main>
     <!-- data-pagefind-body scopes the search index to demo pages only: the
          index page and any future about page stay out of search results. -->
@@ -104,6 +105,15 @@ const prepLine = [
               {d.hazards.map(humanize).join(' · ')}
             </span>
           </p>
+        )
+      }
+
+      {
+        d.summary && (
+          <section class="summary-block" aria-labelledby="summary-heading">
+            <h2 id="summary-heading">Summary</h2>
+            <p data-pagefind-weight="5">{d.summary}</p>
+          </section>
         )
       }
 
@@ -373,6 +383,31 @@ const prepLine = [
     font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.11em;
+  }
+
+  /* The Summary leads the page for faculty who already know the physics
+     (amendment 16). Same label heading as the prediction callout; prints. */
+  .summary-block {
+    border-left: 4px solid var(--accent);
+    padding: 0.75rem 1rem;
+    margin: 0 0 1.4rem;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .summary-block h2 {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--ink);
+  }
+
+  .summary-block p {
+    margin: 0;
+    font-size: 1.05rem;
   }
 
   .stub-band {
@@ -687,6 +722,7 @@ const prepLine = [
     }
     .strip,
     .prediction,
+    .summary-block,
     .stub-band,
     .hazard-band {
       break-inside: avoid;

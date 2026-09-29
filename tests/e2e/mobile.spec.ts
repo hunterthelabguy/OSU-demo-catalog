@@ -185,3 +185,24 @@ test.describe('masthead mark', () => {
     await expect(page.locator('.logo-dark')).toBeHidden();
   });
 });
+
+test.describe('summary block', () => {
+  test('sits after the hazard band and before the prediction callout', async ({ page }) => {
+    await page.goto('/demos/ballistic-cart/');
+    const order = await page.evaluate(() => {
+      const pos = (sel: string) =>
+        [...document.querySelectorAll('article *')].indexOf(document.querySelector(sel)!);
+      return [pos('.hazard-band'), pos('.summary-block'), pos('.prediction')];
+    });
+    expect(order[0]).toBeLessThan(order[1]);
+    expect(order[1]).toBeLessThan(order[2]);
+    await expect(page.locator('.summary-block h2')).toHaveText('Summary');
+  });
+
+  test('feeds the meta description', async ({ page }) => {
+    await page.goto('/demos/ballistic-cart/');
+    const meta = await page.locator('meta[name="description"]').getAttribute('content');
+    const text = await page.locator('.summary-block p').innerText();
+    expect(meta).toBe(text);
+  });
+});
