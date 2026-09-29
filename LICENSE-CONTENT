@@ -36,5 +36,10 @@ this repository as classification metadata and in any cached lookup table. They
 are not original to this work and are not covered by the license above. See
 https://physicslearning.colorado.edu/
 
+The Oregon State University logo files in `src/assets/brand/` are
+trademarks of Oregon State University. They appear here as the site's
+identification only. They are not covered by the license above or by the
+MIT license, and no right to use them is granted.
+
 Attribution for any individual demonstration whose design originates elsewhere
 is recorded in that record's `## References` section.

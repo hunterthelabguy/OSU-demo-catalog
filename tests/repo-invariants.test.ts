@@ -82,4 +82,6 @@ test('LICENSE-CONTENT carries the CC BY-SA scope and names its counterpart', () 
   expect(text).toContain('Attribution-ShareAlike 4.0');
   expect(text).toContain('src/content/');
   expect(text).toContain('MIT');
+  expect(text).toContain('src/assets/brand/');
+  expect(text).toContain('trademark');
 });

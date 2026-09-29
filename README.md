@@ -288,6 +288,9 @@ This repository is licensed in two parts.
 - **Content** (demonstration records under `src/content/` and their photographs)
   is CC BY-SA 4.0. See [LICENSE-CONTENT](LICENSE-CONTENT).
 
+The Oregon State University logo files in `src/assets/brand/` are university
+trademarks, used here only to identify the site; neither license covers them.
+
 `LICENSE` holds the MIT text and nothing else, deliberately. GitHub detects a
 license by matching the file against known license bodies, and any appended
 scope note defeats that match, which costs the repository its license
