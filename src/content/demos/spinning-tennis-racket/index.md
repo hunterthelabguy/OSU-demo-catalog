@@ -21,8 +21,8 @@ location:
 # --- pedagogy ---
 prediction_prompt: >
   A tennis racket with a single red LED taped at one particular spot is
-  thrown up while tumbling end over end. What path does the LED trace while
-  the racket turns around it, and what is special about where it sits?
+  thrown up while tumbling end over end. What path does the LED trace, and
+  what is special about where it sits?
 target_misconceptions:
   - "A thrown object rotates about whatever point you held it by when you let go."
   - "When something tumbles, every point on it moves in an equally complicated way."
@@ -68,10 +68,7 @@ vertically, a parabola otherwise. Gravity accelerates the center of mass the
 whole flight; what it cannot do, acting effectively at that point, is torque
 the racket about it. A single red LED is taped at the racket's center of
 mass, so while every other point on the frame loops around it, the LED
-follows the clean thrown trajectory. The single point of light is the
-design: the old build, a string of LED lights bundled around the racket with
-a battery pack wedged in the throat, shifted the center of mass and gave no
-single point of light to follow.
+follows the clean thrown trajectory.
 
 ## Setup
 
@@ -82,8 +79,8 @@ single point of light to follow.
 2. Find an open space where the racket cannot hit anything. Darkening the
    room makes the LED far easier to see, so practice the throw in the light
    first.
-3. Balance the racket on a finger for the audience to prove the LED sits at
-   the balance point.
+3. Balance the racket on a finger to check, and show the audience, that the
+   LED sits at the balance point.
 
 ## Procedure
 
@@ -95,8 +92,6 @@ single point of light to follow.
 3. Catch it if possible so the taped LED and cell are not knocked loose; a
    floor landing is survivable since it lands on the thin edge, and
    something soft on the ground lets you throw higher in comfort.
-4. With no switch, the LED keeps drawing on the cell after class until its
-   taped connection is broken.
 
 ## Quirks and caveats
 
@@ -105,7 +100,8 @@ the LED marks the center of mass, the effect reads as decoration. The light
 has no switch and the cell lasts only a few hours, so a racket left taped up
 since the last use may be dark: check it before class. A 3D-printed clip-on
 housing to hold the LED at the center of mass, and a switch, are planned but
-not yet built. The demonstration video linked below shows the intended look.
+not yet built. The demonstration video linked below was in the record before
+the 2026-09-25 rebuild and may show the earlier light arrangement.
 
 ## Pedagogical notes
 
