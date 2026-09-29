@@ -57,11 +57,9 @@ after the stockroom reorganization; the website work is not blocked by it.
 
 - The one line in `VISION.md` still marked proposed ("students are not the
   audience"): rule it in or strike it.
-- Part C: is the gray can capacitor in legacy image54 the same apparatus as
-  the `large-capacitors` record? Decides whether image54 goes on one record
-  or two (amendment 17 said two).
 - Enable host-level bot blocking in the Vercel dashboard (amendment 22).
-- Review, as each PR opens: the twelve summaries (Part B), the image alt
+- The build runs unattended (plan, Global Constraints): A and B merge on
+  green, C's PR waits unmerged. Review afterward: the twelve summaries (Part B), the image alt
   text and anything held from the faces pass (Part C), the tennis racket
   redraft (Part C).
 - The user-level OSU addendum still names `docs/build-plan.md` as this

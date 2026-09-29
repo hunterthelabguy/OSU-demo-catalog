@@ -686,6 +686,15 @@ website's effort. The website must not wait on it. Rulings:
   it (a dashboard setting, the owner's action). This supersedes the rule
   that `noindex` lifts at launch.
 
+**23. The build runs unattended, 2026-09-28.**
+Confirmed: legacy image54's capacitor is the `large-capacitors` apparatus,
+so amendment 17's two-record placement stands. Ruled: the plan executes
+overnight without the owner. Parts A and B merge on green and are reviewed
+afterward; Part C opens its PR unmerged for review of the mapping, alt text,
+held images, byte total, and racket redraft. The Commons photo is
+pre-approved once its license is confirmed. Anything unexpected stops that
+part with its question in the PR body, and no dependent part starts.
+
 **Queued next (ruled 2026-08-13):**
 
 The live queue is in [STATE.md](../STATE.md); this list is the 2026-08-13
