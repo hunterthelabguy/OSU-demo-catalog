@@ -44,8 +44,8 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
         <header class="masthead masthead-full">
           <div class="masthead-inner">
             <p class="lockup">
-              <Image src={markLight} alt="Oregon State University" height={48} class="mark logo-light" loading="eager" />
-              <Image src={markDark} alt="Oregon State University" height={48} class="mark logo-dark" loading="eager" />
+              <Image src={markLight} alt="Oregon State University" height={48} class="mark logo-light" loading="eager" densities={[1, 2, 3]} format="png" />
+              <Image src={markDark} alt="Oregon State University" height={48} class="mark logo-dark" loading="eager" densities={[1, 2, 3]} format="png" />
               <span class="site-title">Physics Demonstration Catalog</span>
             </p>
             {mastheadMeta && <p class="masthead-meta">{mastheadMeta}</p>}
@@ -55,8 +55,8 @@ const { title, description, masthead = 'slim', mastheadMeta } = Astro.props;
         <header class="masthead masthead-slim">
           <div class="masthead-inner">
             <p class="lockup">
-              <Image src={markLight} alt="Oregon State University" height={32} class="mark logo-light" loading="eager" />
-              <Image src={markDark} alt="Oregon State University" height={32} class="mark logo-dark" loading="eager" />
+              <Image src={markLight} alt="Oregon State University" height={32} class="mark logo-light" loading="eager" densities={[1, 2, 3]} format="png" />
+              <Image src={markDark} alt="Oregon State University" height={32} class="mark logo-dark" loading="eager" densities={[1, 2, 3]} format="png" />
               <a href="/" class="site-title">Physics Demonstration Catalog</a>
             </p>
             <button type="button" class="print-button" hidden>

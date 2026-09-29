@@ -271,13 +271,21 @@ and no environment variables; a fork deploys the same way.
 All fonts and every color token live in one file:
 [src/styles/theme.css](src/styles/theme.css). Edit the tokens, swap the font
 `@import` lines (installing the matching `@fontsource` package), and the whole
-site follows. No template names a font or a color directly.
+site follows. Color is six tokens (`--paper`, `--ink`, `--muted`, `--rule`,
+`--accent`, `--on-accent`) declared in three schemes: light, dark, and print.
+No template names a font or a color directly.
 
 The defaults are Atkinson Hyperlegible Next (a typeface commissioned by the
-Braille Institute for low-vision legibility) and OSU Beaver Orange. The orange
-ships as two tokens because it misses WCAG AA for small text on the paper
-ground: `--accent` for fills and large elements, `--accent-deep` for colored
-text at reading sizes. If you swap the accent, keep or recompute that pair.
+Braille Institute for low-vision legibility) and the OSU brand palette.
+[tests/brand-palette.test.ts](tests/brand-palette.test.ts) holds every color
+in the theme, the templates, and the public SVGs to a strict palette list; a
+fork edits that test's `PALETTE` list for its own brand.
+[tests/theme-contrast.test.ts](tests/theme-contrast.test.ts) asserts the
+contrast pairs, so a new palette has to pass WCAG AA before it ships.
+
+The masthead mark lives in `src/assets/brand/` as two PNG files (light and
+dark). A fork swaps them for its own mark. They are OSU trademarks and are
+excluded from both licenses below.
 
 ## Licensing
 

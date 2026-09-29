@@ -15,8 +15,7 @@ Last updated: 2026-09-28
   designs shipped (amendments 12, 13, 15). Build-time LaTeX via KaTeX.
 - **Content: 54 records**, 12 `drafted` and 42 `stub`, none `verified`.
   No record has a photograph yet.
-- **Brand pass** (amendment 18), shipped on the `claude/brand-pass` branch
-  and landing in its PR on 2026-09-28: six theme tokens, every color a
+- **Brand pass** (amendment 18), shipped 2026-09-28: six theme tokens, every color a
   listed OSU palette value on pure white and black grounds, held by
   `tests/brand-palette.test.ts`; the official two-color mark swapped by
   color scheme, replacing the orange masthead band, and printing with the
@@ -30,8 +29,8 @@ Last updated: 2026-09-28
 
 ## In flight
 
-Part A (the brand pass) is landing in its PR today, 2026-09-28. Parts B
-and C follow, one PR each, in order; the build is planned in
+Part A (the brand pass) shipped 2026-09-28. Part B (summary field, row
+cards, ingest tool) is next, then Part C, one PR each; the build is planned in
 `docs/plans/2026-09-28-brand-summary-images.md`. Amendments 16 to 22 merged
 2026-09-28 in PR #22.
 
