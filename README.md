@@ -12,7 +12,7 @@ production build. Nothing else is verified by it.
 **Status: v0.1, proof of concept.** The proof-of-concept trio is complete:
 validated records, demonstration pages (with print stylesheet), and an index
 with faceted browse and full-text search. A malformed record fails the build
-by construction. Remaining: the photo ingest script, the cached PIRA list,
+by construction. Remaining: the cached PIRA list,
 and above all the launch content itself. See [STATE.md](STATE.md) for the
 current state and queue, [VISION.md](VISION.md) for the destination, and
 [docs/build-plan.md](docs/build-plan.md) for the ledger of decisions.
@@ -231,9 +231,26 @@ Commit JPG or PNG only. HEIC is not committed: Chrome and Firefox cannot decode
 it, and the image build pipeline needs libheif to touch it. Convert at ingest or
 shoot JPEG.
 
-An ingest script (`scripts/ingest-photo.sh`, converting HEIC to JPG, resizing, and
-stripping EXIF) is planned but not yet written. Until it exists, strip metadata by
-hand.
+Photographs come through one door, `scripts/ingest-photo.mjs`:
+
+```
+node scripts/ingest-photo.mjs <input> <slug> <index> [--force]
+```
+
+It writes `src/content/demos/<slug>/<slug>-NN.jpg` and prints the path, size,
+and byte count. In order, it bakes the EXIF orientation into the pixels (so a
+phone photo does not land sideways), caps the long edge at 1600 px without ever
+enlarging, encodes JPEG at quality 82, and strips all metadata, GPS and device
+serials included. It refuses to overwrite an existing file unless `--force` is
+given. HEIC is refused with a message rather than converted, because the
+prebuilt image library cannot decode HEVC-coded HEIC: convert to JPG first, or
+shoot JPEG.
+
+Two tests hold this. `tests/ingest-photo.test.ts` builds a rotated image
+carrying GPS EXIF and proves the tool strips it and applies the rotation.
+`tests/image-invariants.test.ts` walks every JPG and PNG committed under
+`src/content/demos/` and asserts no EXIF and a long edge of 1600 px or less,
+which catches a photo committed by hand around the tool.
 
 ---
 
