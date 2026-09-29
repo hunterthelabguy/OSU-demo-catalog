@@ -17,13 +17,34 @@ test('the photo column is 160px and the summary is visible', async ({ page }) =>
   await expect(card.locator('.summary')).toBeVisible();
 });
 
-test('the hazard badge names the hazard and never covers the title', async ({ page }) => {
+test('every hazard badge names its hazard and never covers a title', async ({ page }) => {
   await page.goto('/');
-  const card = page.locator('.card:not([data-hazards=""])').first();
+  // The real control, so stubs and out-of-service records are all shown.
+  await page.getByLabel(/show stubs/i).check();
+  const cards = page.locator('.card.has-hazard:not([hidden])');
+  const n = await cards.count();
+  expect(n).toBeGreaterThan(0);
+  for (let i = 0; i < n; i++) {
+    const card = cards.nth(i);
+    await expect(card.locator('.hazard-names')).toBeVisible();
+    const badge = (await card.locator('.hazard-badge').boundingBox())!;
+    const title = (await card.locator('h2').boundingBox())!;
+    expect(
+      badge.x >= title.x + title.width || badge.y >= title.y + title.height,
+      await card.locator('h2').innerText(),
+    ).toBe(true);
+  }
+});
+
+// A printed index is about 720px wide, under the compact breakpoint. A
+// handout must still name the hazards, so print gets the full row.
+test('print keeps the hazard names visible', async ({ page }) => {
+  await page.setViewportSize({ width: 720, height: 1000 });
+  await page.emulateMedia({ media: 'print' });
+  await page.goto('/');
+  const card = page.locator('.card.has-hazard:not([hidden])').first();
+  await expect(card).toBeVisible();
   await expect(card.locator('.hazard-names')).toBeVisible();
-  const badge = (await card.locator('.hazard-badge').boundingBox())!;
-  const title = (await card.locator('h2').boundingBox())!;
-  expect(badge.x >= title.x + title.width || badge.y >= title.y + title.height).toBe(true);
 });
 
 // Amendment 21: a desktop stub without a summary shows the muted stub line

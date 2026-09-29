@@ -1,5 +1,5 @@
 # The whole gate is `npm run verify`: typecheck, unit tests, production
-# build, then the mobile layout suite against the built site.
+# build, then the Playwright layout suite (mobile and desktop) against the built site.
 # The README badge claims exactly this and nothing more.
 name: CI
 

@@ -243,6 +243,14 @@ test.describe('summary block', () => {
   });
 });
 
+test.describe('a stub record without a summary', () => {
+  test('has no summary block and describes itself by its topics', async ({ page }) => {
+    await page.goto('/demos/ballistic-pendulum/');
+    await expect(page.locator('.summary-block')).toHaveCount(0);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', 'momentum, kinematics');
+  });
+});
+
 test.describe('amendment 22', () => {
   test('says once, near search, that locations are provisional', async ({ page }) => {
     await page.goto('/');
