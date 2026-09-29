@@ -1,19 +1,12 @@
 {
   "source": "Old Reference Material/Legacy Demo Catalog/Physics Demo Library (Google Docs HTML export)",
-  "note": "Descriptions in the export are reference only (owner ruling 2026-09-28). image6 and image19 were replaced by the owner on 2026-09-28 before ingest. Every image was viewed before mapping; any image showing a person, a part of a person, or a reflection of one is held, never cropped. Alt text is a draft for owner review on the Part C PR.",
+  "note": "Descriptions in the export are reference only (owner ruling 2026-09-28). image6 and image19 were replaced by the owner on 2026-09-28 before ingest. Every image was viewed before mapping; any image showing a person, a part of a person, or a reflection of one is held, never cropped. Alt text is a draft for owner review on the Part C PR. A held entry may carry draft targets (slug and alt) so the owner can release it without rewriting.",
   "entries": [
     {
       "image": "image23",
       "section": "Interlaced Books",
       "targets": [
         { "slug": "interlaced-books", "alt": "A thick, worn paperback catalog lying on a concrete floor beside an empty clear plastic bin labeled Interlaced Books (Friction Demo)." }
-      ]
-    },
-    {
-      "image": "image31",
-      "section": "Friction Block",
-      "targets": [
-        { "slug": "friction-block", "alt": "A rectangular wooden block with a sandpaper top face, tied by a cord to a round-dial spring scale, beside an empty clear bin labeled Friction Block." }
       ]
     },
     {
@@ -90,7 +83,7 @@
       "image": "image6",
       "section": "Light-Up Spinning Tennis Racket",
       "targets": [
-        { "slug": "spinning-tennis-racket", "alt": "Blue tennis racket lying on a gray floor, with a small red LED in a black taped package fixed at the throat just below the strings." }
+        { "slug": "spinning-tennis-racket", "alt": "A blue tennis racket lying on a gray floor, with a small red LED in a black taped package fixed at the throat just below the strings." }
       ]
     },
     {
@@ -129,14 +122,6 @@
       ]
     },
     {
-      "image": "image13",
-      "section": "Pressure Vessels",
-      "targets": [
-        { "slug": "magdeburg-hemispheres", "alt": "A pair of red-lined metal hemispheres, one on a stand with a hose fitting, connected by tubing to a tall gray hand pump on a black base." },
-        { "slug": "balloon-chamber", "alt": "A glass jar with a blue lid and a small dark object inside, connected by amber tubing to a tall chrome hand pump on a wooden base." }
-      ]
-    },
-    {
       "image": "image25",
       "section": "Doppler Football",
       "targets": [
@@ -147,7 +132,7 @@
       "image": "image48",
       "section": "Driven Spring Resonator",
       "targets": [
-        { "slug": "driven-spring-resonator", "alt": "A tall ring stand with a small motor and wheel on its crossbar, a weight wrapped in blue tape hanging below it, and a bench power supply wired to the motor." }
+        { "slug": "driven-spring-resonator", "alt": "A tall ring stand with a small motor and wheel on its crossbar, a small blue and white mass hanging on a line below it, and a bench power supply with a red lead running up to the motor." }
       ]
     },
     {
@@ -175,7 +160,7 @@
       "image": "image5",
       "section": "PH 20X \"Physics of Rock 'n' Roll\" Demos",
       "targets": [
-        { "slug": "physics-of-music-demos", "alt": "Shelves of music demonstration equipment, including a metronome, glasses, a bottle, cardboard and tin can resonators, a black box of knobs, a small solar panel, and lidded bins, with a handwritten sign reading Physics of Music (2 shelves), Do not separate." }
+        { "slug": "physics-of-music-demos", "alt": "Shelves of music demonstration equipment, including a metronome, glasses, a bottle, a cardboard tube wound with string, a tin can, a black box of knobs, a small solar panel, and lidded bins, with a handwritten sign reading Physics of Music (2 shelves), Do not separate." }
       ]
     },
     {
@@ -196,7 +181,7 @@
       "image": "image27",
       "section": "Wood Induced Dipole",
       "targets": [
-        { "slug": "wood-induced-dipole", "alt": "The end of a white plastic rod close to an empty aluminum can lying on its side on a speckled floor." }
+        { "slug": "wood-induced-dipole", "alt": "The end of a white plastic rod close to an aluminum can lying on its side on a speckled floor." }
       ]
     },
     {
@@ -231,7 +216,7 @@
       "image": "image33",
       "section": "Magnetic Braking Discs",
       "targets": [
-        { "slug": "magnetic-braking-discs", "alt": "A blue U-shaped electromagnet with two pole blocks on a black bench beside several metal disks on swing arms, one copper, one slotted like a comb, and a large aluminum disk on a rod." }
+        { "slug": "magnetic-braking-discs", "alt": "A blue U-shaped magnet with two pole blocks on a black bench beside several metal disks on swing arms, one copper, one slotted like a comb, and a large aluminum disk on a rod." }
       ]
     },
     {
@@ -377,12 +362,66 @@
     { "image": "image19", "reason": "Reposted vendor image with no license; replaced by the Commons photo" }
   ],
   "held": [
-    { "image": "image9", "section": "Ballistic Cart", "candidates": ["ballistic-cart"], "reason": "Shows a hand: fingers pressing into the cart's launch tube" },
-    { "image": "image29", "section": "Ballistic Cart", "candidates": ["ballistic-cart"], "reason": "Shows a hand: pulling the cart's release cord" },
-    { "image": "image24", "section": "Ball Ramps", "candidates": ["ball-ramps"], "reason": "Dark object at the lower-left edge that may be the photographer's shoe; owner to rule whether it is part of a person" },
-    { "image": "image58", "section": "Driven Spring Resonator", "candidates": ["driven-spring-resonator"], "reason": "Not a photograph: a data plot titled LRC Vout/Vin Dependence on Frequency, measured points against a theoretical curve; an electrical circuit plot on a mechanical record, and the data's origin is unknown" },
-    { "image": "image61", "section": "Driven Spring Resonator", "candidates": ["driven-spring-resonator"], "reason": "Not a photograph: a data plot titled LRC Phase Dependence on Frequency, measured points against a theoretical curve; an electrical circuit plot on a mechanical record, and the data's origin is unknown" },
-    { "image": "image40", "section": "Magnet Drop", "candidates": ["magnet-drop"], "reason": "Shows a hand: fingers holding the slotted copper tube at its lower end" },
-    { "image": "image16", "section": "Van De Graff Generators", "candidates": ["van-de-graaff-generators"], "reason": "Reflection of a person (the photographer) visible in the chrome spheres" }
+    {
+      "image": "image31",
+      "section": "Friction Block",
+      "candidates": ["friction-block"],
+      "reason": "Shows a hand: probable fingertip over the lens at the lower-left corner",
+      "targets": [
+        { "slug": "friction-block", "alt": "A rectangular wooden block with a sandpaper top face, tied by a cord to a round-dial spring scale, beside an empty clear bin labeled Friction Block." }
+      ]
+    },
+    {
+      "image": "image9",
+      "section": "Ballistic Cart",
+      "candidates": ["ballistic-cart"],
+      "reason": "Shows a hand: fingers pressing into the cart's launch tube"
+    },
+    {
+      "image": "image29",
+      "section": "Ballistic Cart",
+      "candidates": ["ballistic-cart"],
+      "reason": "Shows a hand: pulling the cart's release cord"
+    },
+    {
+      "image": "image24",
+      "section": "Ball Ramps",
+      "candidates": ["ball-ramps"],
+      "reason": "Dark object at the lower-left edge that may be the photographer's shoe; owner to rule whether it is part of a person"
+    },
+    {
+      "image": "image13",
+      "section": "Pressure Vessels",
+      "candidates": ["magdeburg-hemispheres", "balloon-chamber"],
+      "reason": "Possible reflection of the photographer in the chrome pump barrel; same kind of evidence as image16",
+      "targets": [
+        { "slug": "magdeburg-hemispheres", "alt": "A pair of red-lined metal hemispheres, one on a stand with a hose fitting, connected by tubing to a tall gray hand pump on a black base." },
+        { "slug": "balloon-chamber", "alt": "A glass jar with a blue lid and a small dark object inside, connected by amber tubing to a tall chrome hand pump on a wooden base." }
+      ]
+    },
+    {
+      "image": "image58",
+      "section": "Driven Spring Resonator",
+      "candidates": ["driven-spring-resonator"],
+      "reason": "Not a photograph: a data plot titled LRC Vout/Vin Dependence on Frequency, measured points against a theoretical curve; an electrical circuit plot on a mechanical record, and the data's origin is unknown"
+    },
+    {
+      "image": "image61",
+      "section": "Driven Spring Resonator",
+      "candidates": ["driven-spring-resonator"],
+      "reason": "Not a photograph: a data plot titled LRC Phase Dependence on Frequency, measured points against a theoretical curve; an electrical circuit plot on a mechanical record, and the data's origin is unknown"
+    },
+    {
+      "image": "image40",
+      "section": "Magnet Drop",
+      "candidates": ["magnet-drop"],
+      "reason": "Shows a hand: fingers holding the slotted copper tube at its lower end"
+    },
+    {
+      "image": "image16",
+      "section": "Van De Graff Generators",
+      "candidates": ["van-de-graaff-generators"],
+      "reason": "Reflection of a person (the photographer) visible in the chrome spheres"
+    }
   ]
 }
