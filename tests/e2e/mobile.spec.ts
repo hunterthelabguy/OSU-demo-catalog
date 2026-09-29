@@ -128,6 +128,32 @@ test.describe('index at 375px', () => {
     await page.mouse.click(box.x + box.width - 12, box.y + box.height - 10);
     await page.waitForURL(/\/demos\/[^/]+\/$/);
   });
+
+  // Amendment 21: the phone badge is the icon alone, with the full names as
+  // its accessible label, and it floats, so a hazard never grows the card.
+  test('hazard badge is icon only, labelled, and does not change card height', async ({ page }) => {
+    const card = page.locator('.card:not([data-hazards=""])').first();
+    await expect(card.locator('.hazard-names')).toBeHidden();
+    await expect(card.locator('.hazard-badge')).toHaveAccessibleName(/Hazard/);
+    expect(await card.locator('.hazard-badge').evaluate((el) => getComputedStyle(el).position)).toBe('absolute');
+
+    const withBadge = await boxHeight(card);
+    await card.locator('.hazard-badge').evaluate((el) => {
+      (el as HTMLElement).style.display = 'none';
+    });
+    const withoutBadge = await boxHeight(card);
+    await card.locator('.hazard-badge').evaluate((el) => {
+      (el as HTMLElement).style.display = '';
+    });
+    expect(withoutBadge).toBe(withBadge);
+  });
+
+  test('compact cards carry location and no status or room chips', async ({ page }) => {
+    const card = page.locator('.card:not([hidden])').first();
+    await expect(card.locator('.card-footer')).toBeVisible();
+    await expect(card.locator('.chip-stamp, .chip-stamp-muted')).toHaveCount(0);
+    await expect(card.locator('.summary')).toBeHidden();
+  });
 });
 
 test.describe('demo page at 375px', () => {

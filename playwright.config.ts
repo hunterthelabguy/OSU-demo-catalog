@@ -1,4 +1,4 @@
-// The mobile layout gate. Everything here runs against the built site
+// The layout gate, mobile and (since amendment 21) desktop. Everything here runs against the built site
 // served by `astro preview`, because the compact rules and Pagefind both
 // need real layout and a real index; jsdom cannot lay out, so it cannot
 // answer the only question this suite asks.
@@ -26,7 +26,15 @@ export default defineConfig({
       // iPhone-class portrait viewport: the 375px the build plan has
       // claimed since phase 4.
       name: 'mobile-chromium',
+      testIgnore: /desktop\.spec\.ts/,
       use: { ...devices['Desktop Chrome'], viewport: { width: 375, height: 812 } },
+    },
+    {
+      // Amendment 21's row card at a laptop viewport: one spec, so the
+      // desktop layout contract has a gate of its own.
+      name: 'desktop-chromium',
+      testMatch: /desktop\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } },
     },
   ],
   webServer: {

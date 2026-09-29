@@ -874,10 +874,11 @@ const groups: {
     margin-left: auto;
   }
 
+  /* One card per row at every width (amendment 21). */
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    gap: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .stub-note,
@@ -1028,7 +1029,6 @@ const groups: {
     }
 
     .grid {
-      grid-template-columns: 1fr;
       gap: 0.6rem;
     }
 
@@ -1052,10 +1052,6 @@ const groups: {
     .results-head,
     .stub-note {
       display: none;
-    }
-
-    .grid {
-      grid-template-columns: 1fr;
     }
   }
 

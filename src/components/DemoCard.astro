@@ -1,12 +1,20 @@
 ---
-// The demo card, spec section 6's signature element, in its 2026-08-15
-// design-pass form (build-plan amendment 12): photograph area with the
-// status worn as a stamp, a hazard band that reads hotter than status,
-// then title, classification line, and a mono logistics footer. Every
-// facet value rides the card as data-* attributes; the index page script
-// toggles visibility, so this component is the only source of card markup.
-// `data-hazards` is not a facet (amendment 15) and rides for the compact
-// stylesheet, which draws the accent edge off it.
+// The demo card, spec section 6's signature element, as a row (build-plan
+// amendment 21, superseding amendment 12's tile and amendment 13's
+// photo-free compact card). One shape at every width: a square photo
+// beside the prose, one card per row. Desktop: 160px photo (or a quiet
+// "No photograph yet" panel), then title, summary clamped to three lines
+// (amendment 16), classification line, and a footer of location and
+// courses. Phone: the same card shrunk to a 64px thumbnail, no summary, no
+// stub marker, and a photo-less card is text only. Room requirement and
+// status chips left the card by amendment 21; room needs live on the
+// detail page and the hide-stubs toggle carries status. Hazards are a
+// top-right corner badge, absolutely placed so a hazard never changes card
+// height: names at desktop, icon only on phone with the names as its
+// accessible label (amendment 21's recorded exception to "chips always
+// carry text"). Every facet value rides the card as data-* attributes; the
+// index page script toggles visibility, so this component is the only
+// source of card markup. `data-hazards` is not a facet (amendment 15).
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import Chip from './Chip.astro';
@@ -30,17 +38,19 @@ const classLine = [
   .join(' · ');
 
 // The footer answers "where is it, which course": location left, courses
-// right. A record with neither gets no footer row rather than a row of
-// unknowns; a record with courses but no shelf says so plainly.
+// right. Location stays on every card at every width (amendment 21), so
+// a record without one says so plainly rather than dropping the row.
 const locationText = d.location
   ? [d.location.room, d.location.shelf].filter(Boolean).join(' · ')
   : null;
 const courses = sortCourses(d.course_tags);
-const hasFooter = locationText !== null || courses.length > 0;
+
+// The badge's visible names and its accessible label are one string.
+const hazardNames = d.hazards.map(humanize).join(' · ');
 ---
 
 <article
-  class="card"
+  class={`card ${d.hazards.length > 0 ? 'has-hazard' : ''}`}
   data-slug={demo.id}
   data-status={d.status}
   data-condition={d.condition ?? 'unknown'}
@@ -51,101 +61,76 @@ const hasFooter = locationText !== null || courses.length > 0;
   data-rooms={joinValues(d.room_requirements)}
   data-hazards={joinValues(d.hazards)}
 >
-  <div class="photo">
-    {
-      photo ? (
-        <Image src={photo.src} alt={photo.alt} widths={[400, 800]} sizes="(max-width: 40rem) 100vw, 20rem" />
-      ) : (
-        <p class="no-photo">No photograph yet</p>
-      )
-    }
-    <span class={`stamp ${d.status === 'stub' ? 'stamp-stub' : ''}`}>{d.status}</span>
-  </div>
+  {
+    photo ? (
+      <Image
+        class="thumb"
+        src={photo.src}
+        alt={photo.alt}
+        width={160}
+        height={160}
+        widths={[64, 128, 160, 320]}
+        sizes="(max-width: 48rem) 64px, 160px"
+      />
+    ) : (
+      <p class="no-photo">No photograph yet</p>
+    )
+  }
   {
     d.hazards.length > 0 && (
-      <p class="hazard-band">
+      <p class="hazard-badge" role="img" aria-label={`Hazard: ${hazardNames}`}>
         <span aria-hidden="true">▲</span>
-        {d.hazards.length === 1 ? 'Hazard' : 'Hazards'}:{' '}
-        {d.hazards.map(humanize).join(' · ')}
+        <span class="hazard-names" aria-hidden="true">
+          {hazardNames}
+        </span>
       </p>
     )
   }
   <div class="card-body">
     <h2><a href={`/demos/${demo.id}/`}>{d.title}</a></h2>
-    <!-- The compact chip row carries what the photo stamp and the hazard
-         band carry at full width, because neither survives below the
-         compact breakpoint. Exactly one treatment is displayed at any
-         width, so the accessibility tree only ever reaches one of them.
-         Hazards lead and are never the chips that get truncated. -->
-    <p class="chips">
-      {
-        d.hazards.map((hazard) => (
-          <span class="compact-only">
-            <Chip label={`▲ ${humanize(hazard)}`} tone="alert" />
-          </span>
-        ))
-      }
-      <span class="compact-only">
-        <Chip label={d.status} tone={d.status === 'stub' ? 'stamp-muted' : 'stamp'} />
-      </span>
-      {
-        d.condition && d.condition !== 'good' && (
-          <span class="always">
-            <Chip label={humanize(d.condition)} tone="alert" />
-          </span>
-        )
-      }
-      {
-        d.room_requirements.map((requirement) => (
-          <span class="compact-only">
-            <Chip label={humanize(requirement)} tone="neutral" />
-          </span>
-        ))
-      }
-    </p>
-    {classLine && <p class="class-line">{classLine}</p>}
+    {d.summary && <p class="summary">{d.summary}</p>}
+    {!d.summary && d.status === 'stub' && <p class="stub-line">Stub record: not yet documented.</p>}
     {
-      hasFooter && (
-        <p class="card-footer">
-          <span>{locationText ?? 'location not recorded'}</span>
-          {courses.length > 0 && <span>{courses.join(' · ')}</span>}
+      d.condition && d.condition !== 'good' && (
+        <p class="chips">
+          <Chip label={humanize(d.condition)} tone="alert" />
         </p>
       )
     }
+    {classLine && <p class="class-line">{classLine}</p>}
+    <p class="card-footer">
+      <span>{locationText ?? 'location not recorded'}</span>
+      {courses.length > 0 && <span>{courses.join(' · ')}</span>}
+    </p>
   </div>
 </article>
 
 <style>
   .card {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    position: relative;
     border: 1px solid var(--rule);
     border-radius: 3px;
     background: var(--paper);
-    display: flex;
-    flex-direction: column;
     overflow: hidden;
   }
 
-  .photo {
-    position: relative;
-    border-bottom: 1px solid var(--rule);
-    aspect-ratio: 4 / 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    /* The placeholder is a flat paper ground with the "No photograph yet"
-       text. A real photograph covers it entirely. */
-    background: var(--paper);
-  }
-
-  .photo :global(img) {
-    width: 100%;
-    height: 100%;
+  /* The Image component renders the <img>, so its class is not scoped. */
+  .card :global(.thumb),
+  .no-photo {
+    width: 160px;
+    height: 160px;
     object-fit: cover;
+    border-right: 1px solid var(--rule);
   }
 
   .no-photo {
     margin: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-family: var(--font-mono);
     font-size: 0.66rem;
     text-transform: uppercase;
@@ -153,56 +138,50 @@ const hasFooter = locationText !== null || courses.length > 0;
     color: var(--muted);
   }
 
-  /* The status stamp wears the accent only when the record has earned it:
-     stubs stamp in muted, because a stub is not a claim. */
-  .stamp {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 0.63rem;
-    text-transform: uppercase;
-    letter-spacing: 0.11em;
-    color: var(--paper);
-    background: var(--ink);
-    padding: 0.2rem 0.4rem;
-    border-radius: 2px;
-  }
-
-  .stamp-stub {
-    background: var(--muted);
-  }
-
-  /* White text on the orange fill: browsers drop backgrounds in print by
+  /* Bold on-accent text on the accent fill (asserted in
+     tests/theme-contrast.test.ts). Browsers drop backgrounds in print by
      default, which would print it white on white, so the fill is forced. */
-  .hazard-band {
+  .hazard-badge {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
     margin: 0;
-    border-top: 2px solid var(--accent);
+    display: flex;
+    gap: 0.35em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
     background: var(--accent);
-    padding: 0.35rem 0.8rem;
-    font-family: var(--font-mono);
-    font-weight: 700;
-    font-size: 0.69rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
     color: var(--on-accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    white-space: nowrap;
   }
 
   .card-body {
     padding: 0.75rem 0.85rem 0.85rem;
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
-    flex: 1;
+    gap: 0.4rem;
+    min-width: 0;
   }
 
   h2 {
     font-size: 1.05rem;
     margin: 0;
     line-height: 1.25;
+  }
+
+  /* Reserves room for the widest real badge, measured in the built site
+     at 1280x800 on 2026-09-28: "▲ high voltage" is 108.9px wide and sits
+     0.75rem (12px) in from the card edge, so it reaches 120.9px in; the
+     body's own 0.85rem padding covers 13.6px of that. 7.5rem leaves about
+     12px of air. Margin, not padding: the title's box itself stays clear
+     of the badge. The reservation exists only when a badge does. */
+  .has-hazard h2 {
+    margin-right: 7.5rem;
   }
 
   /* Link affordance must not depend on hover (build-plan amendment 11):
@@ -222,6 +201,25 @@ const hasFooter = locationText !== null || courses.length > 0;
     }
   }
 
+  .summary {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+  }
+
+  .stub-line {
+    margin: 0;
+    font-size: 0.88rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+
   .class-line {
     margin: 0;
     font-size: 0.85rem;
@@ -233,17 +231,6 @@ const hasFooter = locationText !== null || courses.length > 0;
     display: flex;
     flex-wrap: wrap;
     gap: 0.3rem;
-  }
-
-  /* Above the compact breakpoint the row exists only for the condition
-     chip; with nothing but compact-only children it collapses entirely
-     rather than leaving a flex gap behind. */
-  .compact-only {
-    display: none;
-  }
-
-  .chips:not(:has(.always)) {
-    display: none;
   }
 
   .card-footer {
@@ -259,27 +246,51 @@ const hasFooter = locationText !== null || courses.length > 0;
     color: var(--muted);
   }
 
-  /* Compact: 54 striped placeholders down a phone is noise, so the photo
-     area and the hazard band both go, and their information moves to the
-     chip row and a left accent edge. The card becomes title-first and
-     roughly 110px tall, which also makes the whole card a tap target
-     several times over the 44px floor. */
+  /* Compact: the same card shrunk. A 64px thumbnail beside the text; the
+     column carries the thumbnail's left margin so the image never spills
+     into the prose. No summary, no stub marker, and no photo panel: a
+     photo-less card is a single text column. The hazard badge keeps only
+     its icon, the names stay in the accessible label, and the orange left
+     edge from amendment 13 returns. */
   @media (max-width: 48rem) {
-    .photo,
-    .hazard-band {
+    .card {
+      grid-template-columns: calc(64px + 0.75rem) 1fr;
+    }
+
+    .card:has(.no-photo) {
+      grid-template-columns: 1fr;
+    }
+
+    .card :global(.thumb) {
+      width: 64px;
+      height: 64px;
+      margin: 0.75rem 0 0 0.75rem;
+      border: 1px solid var(--rule);
+    }
+
+    .no-photo,
+    .summary,
+    .stub-line {
       display: none;
     }
 
-    .compact-only {
-      display: inline;
+    /* The names drop from sight only. The badge itself is never removed,
+       and its accessible name comes from aria-label, not from this span
+       (which is aria-hidden at every width), so hiding the span outright
+       costs a screen reader nothing. A 1px clip box would still read as
+       visible to layout and to the e2e gate. */
+    .hazard-names {
+      display: none;
     }
 
-    .chips:not(:has(.always)) {
-      display: flex;
-    }
-
-    .card:not([data-hazards='']) {
+    .has-hazard {
       border-left: 3px solid var(--accent);
+    }
+
+    /* The icon-only badge measures 30.3px and reaches 42.3px in; the
+       body padding covers 12.8px, so 2.25rem leaves about 6px of air. */
+    .has-hazard h2 {
+      margin-right: 2.25rem;
     }
 
     .card-body {
@@ -299,10 +310,6 @@ const hasFooter = locationText !== null || courses.length > 0;
        pseudo-element keeps one link in the accessibility tree, named by
        the title and nothing else. Text selection inside a card is the
        price, and a shelf letter is worth less than the tap. */
-    .card {
-      position: relative;
-    }
-
     h2 a::after {
       content: '';
       position: absolute;
