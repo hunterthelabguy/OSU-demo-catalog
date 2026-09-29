@@ -105,11 +105,14 @@ Git identity and transport:
   combine by the Match any / Match all mode. A new facet group goes in
   `topicalPairs` and nowhere else; both modes read that one list.
 - **Theme contract**: all fonts and colors live in `src/styles/theme.css`,
-  both schemes. `--accent` is fills-only; `--accent-text` is the AA-safe
-  accent for small text. Do not hardcode colors in templates; the dark
-  scheme depends on it. Every foreground/background pair the templates use
-  is asserted at WCAG AA by `tests/theme-contrast.test.ts`; extend the
-  pair list when you introduce a new combination.
+  both schemes, as six tokens: `--paper`, `--ink`, `--muted`, `--rule`,
+  `--accent`, `--on-accent`. The palette is strict by amendment 18: only
+  listed OSU values appear, held by `tests/brand-palette.test.ts` beside
+  `tests/theme-contrast.test.ts`. `--accent` is fills-only. Do not hardcode
+  colors in templates; the dark scheme depends on it. Every
+  foreground/background pair the templates use is asserted at WCAG AA by
+  the contrast test; extend the pair list when you introduce a new
+  combination.
 - **A repo must not lie about its verification.** Never document a command
   or badge scope that is not real and tested.
 - Every page carries `noindex`, permanently (amendment 22): the catalog is

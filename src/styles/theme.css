@@ -22,8 +22,8 @@
  * - --muted is secondary text: High Desert on white, Till on black.
  * - --rule is 1 px rules and borders: Crater on white, Coastline on black.
  *   It is decorative, so it is exempt from text contrast.
- * - --on-accent is always bold on an --accent fill (the masthead band,
- *   hazard band, alert chip, checked course chip).
+ * - --on-accent is always bold on an --accent fill (the hazard band, hazard
+ *   badge, alert chip, checked course chip).
  * - --paper is the ground for the page, cards, panels, and inputs alike.
  *
  * Every foreground/background pair the templates use is asserted at
