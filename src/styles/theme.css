@@ -13,30 +13,18 @@
  * legibility: unambiguous letterforms (I/l/1, O/0, b/d all distinct),
  * friendly without being casual. One family, weights carry the hierarchy.
  *
- * The accent is OSU Beaver Orange (#D73F09), and it needs care:
- * - --accent is for fills and large elements only. White text on it
- *   clears WCAG AA (4.6:1); the raw orange as small text does not, on
- *   either scheme's ground.
- * - --accent-text is the text-safe accent: any accent-colored text at
- *   reading size uses it. Dark orange on the light ground (6.9:1), light
- *   orange on the dark ground (7.9:1).
- * If you swap the accent in a fork, recompute both text values.
- *
- * The neutrals, from page ground up:
- * - --paper is the page ground, and the recessed ground for inputs that
- *   sit on a panel.
- * - --panel is the ground for cards, the facet sidebar, and callouts.
- * - --surface survives from the first pass as the input ground on paper
- *   and one of the two placeholder stripe tones.
- * - --panel-2 is the raised tone: active filter chips and the other
- *   stripe. In the dark scheme these four are distinct steps; in light,
- *   --panel and --surface share a value because "barely off the paper"
- *   is one tone there, and the roles stay distinct in the templates.
- * - --accent-tint is the wash behind hazard bands and alert chips, so
- *   hazard reads hotter than status. Text on it is --accent-text or
- *   --ink, nothing lighter.
- * - --on-accent is text on an --accent fill (the masthead band). It
- *   clears AA at 4.6:1, but only just: keep such text bold or large.
+ * The palette is strict by amendment 18: only listed OSU values appear,
+ * and tests/brand-palette.test.ts enforces it.
+ * - --accent is Beaver Orange (#D73F09), for fills, borders, focus rings,
+ *   and large text, never small text (4.56:1 on white). White text on an
+ *   orange fill clears WCAG AA at the same 4.56:1.
+ * - All reading text is --ink, including what used to be accent text.
+ * - --muted is secondary text: High Desert on white, Till on black.
+ * - --rule is 1 px rules and borders: Crater on white, Coastline on black.
+ *   It is decorative, so it is exempt from text contrast.
+ * - --on-accent is always bold on an --accent fill (the masthead band,
+ *   hazard band, alert chip, checked course chip).
+ * - --paper is the ground for the page, cards, panels, and inputs alike.
  *
  * Every foreground/background pair the templates use is asserted at
  * WCAG AA by tests/theme-contrast.test.ts, in both schemes. If you tune
@@ -57,16 +45,11 @@
 :root {
   color-scheme: light dark;
 
-  --paper: #f7f4ee;
-  --ink: #1c1a17;
-  --muted: #5c5852;
-  --rule: #d9d2c4;
-  --surface: #fbf9f5;
-  --panel: #fbf9f5;
-  --panel-2: #efe9dd;
+  --paper: #ffffff;
+  --ink: #000000;
+  --muted: #7a6855;
+  --rule: #8e9089;
   --accent: #d73f09;
-  --accent-text: #9a2e06;
-  --accent-tint: #fae7dd;
   --on-accent: #ffffff;
 
   --font-display: 'Atkinson Hyperlegible Next Variable', 'Helvetica Neue',
@@ -79,16 +62,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #171512;
-    --ink: #ece7de;
-    --muted: #a39b8f;
-    --rule: #3a352f;
-    --surface: #211e1a;
-    --panel: #1e1b18;
-    --panel-2: #2a2622;
+    --paper: #000000;
+    --ink: #ffffff;
+    --muted: #b7a99a;
+    --rule: #a7aca2;
     --accent: #d73f09;
-    --accent-text: #ff8c5f;
-    --accent-tint: #2a1a14;
     --on-accent: #ffffff;
   }
 }
@@ -96,15 +74,10 @@
 @media print {
   :root {
     --paper: #ffffff;
-    --ink: #1c1a17;
-    --muted: #5c5852;
-    --rule: #d9d2c4;
-    --surface: #ffffff;
-    --panel: #ffffff;
-    --panel-2: #ffffff;
+    --ink: #000000;
+    --muted: #7a6855;
+    --rule: #8e9089;
     --accent: #d73f09;
-    --accent-text: #9a2e06;
-    --accent-tint: #ffffff;
     --on-accent: #ffffff;
   }
 }

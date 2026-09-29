@@ -55,19 +55,10 @@ const contrast = (fg: string, bg: string): number => {
 // Foreground on background, as the templates use them. Additions here are
 // cheap; removals mean a template stopped using the pair.
 const PAIRS: [fg: string, bg: string, where: string][] = [
-  ['ink', 'paper', 'body text on the page ground'],
-  ['ink', 'panel', 'card and sidebar text'],
-  ['ink', 'panel-2', 'active filter chip text'],
-  ['ink', 'surface', 'input text'],
-  ['ink', 'accent-tint', 'ink on the hazard wash'],
-  ['muted', 'paper', 'secondary text on the page ground'],
-  ['muted', 'panel', 'secondary text on cards and panels'],
-  ['accent-text', 'paper', 'accent text on the page ground'],
-  ['accent-text', 'panel', 'accent text on cards and panels'],
-  ['accent-text', 'accent-tint', 'hazard chip and band text'],
-  ['on-accent', 'accent', 'masthead band text'],
-  ['paper', 'accent-text', 'status stamp fill on card photos'],
-  ['paper', 'muted', 'stub stamp fill on card photos'],
+  ['ink', 'paper', 'all reading text on the page, cards, panels, inputs'],
+  ['muted', 'paper', 'secondary text'],
+  ['on-accent', 'accent', 'hazard band, hazard badge, alert chip, checked course chip (bold)'],
+  ['paper', 'ink', 'inverted status chip'],
 ];
 
 describe('theme contrast', () => {
