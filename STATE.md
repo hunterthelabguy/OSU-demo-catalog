@@ -15,7 +15,14 @@ Last updated: 2026-09-28
   designs shipped (amendments 12, 13, 15). Build-time LaTeX via KaTeX.
 - **Content: 54 records**, 12 `drafted` and 42 `stub`, none `verified`.
   No record has a photograph yet.
-- **Verification**: 87 vitest tests plus 12 Playwright assertions at
+- **Brand pass** (amendment 18), shipped on the `claude/brand-pass` branch
+  and landing in its PR on 2026-09-28: six theme tokens, every color a
+  listed OSU palette value on pure white and black grounds, held by
+  `tests/brand-palette.test.ts`; the official two-color mark swapped by
+  color scheme, replacing the orange masthead band, and printing with the
+  page; the mark carved out of the content license as a university
+  trademark.
+- **Verification**: 65 vitest tests plus 15 Playwright assertions at
   375x812, counted 2026-09-28. `npm run verify` is the gate; CI runs it on
   every PR.
 - **Production** tracks `main` at https://osu-demo-catalog.vercel.app,
@@ -23,29 +30,25 @@ Last updated: 2026-09-28
 
 ## In flight
 
-Nothing on a branch. The build is fully planned in
-`docs/plans/2026-09-28-brand-summary-images.md` (Parts A, B, C, one PR
-each, in order) and has not started. Amendments 16 to 22 merged 2026-09-28
-in PR #22.
+Part A (the brand pass) is landing in its PR today, 2026-09-28. Parts B
+and C follow, one PR each, in order; the build is planned in
+`docs/plans/2026-09-28-brand-summary-images.md`. Amendments 16 to 22 merged
+2026-09-28 in PR #22.
 
 ## Queue, in order
 
-1. **Brand pass** (amendment 18): every color a listed OSU palette value,
-   pure white and black grounds, the official two-color mark swapped by
-   color scheme, a token test holding the palette, the mark carved out of
-   the content license.
-2. **Summary field, row cards, and ingest tool** (amendments 16, 17, 21,
+1. **Summary field, row cards, and ingest tool** (amendments 16, 17, 21,
    22; first PR): the `summary` field, page order, meta description, search
    weight; row cards at every width with the hazard corner badge; the
    unchecked-apparatus note, provisional-location line, and robots.txt;
    `scripts/ingest-photo.mjs` with its unit and invariant tests; twelve
    drafted summaries for owner review.
-3. **Legacy images** (amendment 17; second PR): the mapping file with alt
+2. **Legacy images** (amendment 17; second PR): the mapping file with alt
    text for owner review, the batch ingest, the tennis racket redraft for
    its 2026-09-25 rebuild, the reshoot list. Byte total reported before
    commit.
-4. **Legacy equations in KaTeX** (amendment 19).
-5. **Named, not scheduled**: embedded video and simulations; the installable
+3. **Legacy equations in KaTeX** (amendment 19).
+4. **Named, not scheduled**: embedded video and simulations; the installable
    offline catalog (phase 7); the cached PIRA list (phase 5).
 
 The launch gate is content, not this queue: every currently catalogued
