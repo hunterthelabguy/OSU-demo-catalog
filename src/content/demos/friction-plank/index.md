@@ -15,4 +15,8 @@ notes: >
   document, 2026-08-13; see docs/triage-demo-library-2026-08.md for
   disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./friction-plank-01.jpg
+    alt: A long wooden plank lying on a concrete floor with a smaller rectangular wooden block beside it and a thin wire running from the block.
 ---

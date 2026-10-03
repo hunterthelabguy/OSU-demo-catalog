@@ -13,4 +13,8 @@ notes: >
   stockroom demo library document, 2026-08-13; see docs/triage-demo-
   library-2026-08.md for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./doppler-football-01.jpg
+    alt: A black and yellow foam football patched with gray duct tape and a red tab, beside an empty clear bin labeled Doppler Football and its white lid.
 ---

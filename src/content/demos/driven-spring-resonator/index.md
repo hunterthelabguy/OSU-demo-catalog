@@ -25,6 +25,11 @@ target_misconceptions:
   - "Resonance is a property of the power supply, something measured in volts."
   - "At resonance the mass moves in step with the driver."
 
+# --- media ---
+images:
+  - src: ./driven-spring-resonator-01.jpg
+    alt: A tall ring stand with a small motor and wheel on its crossbar, a small blue and white mass hanging on a line below it, and a bench power supply with a red lead running up to the motor.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; the

@@ -24,4 +24,8 @@ notes: >
   stockroom demo library document, 2026-08-13; see docs/triage-demo-
   library-2026-08.md for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./falling-duck-shot-01.jpg
+    alt: A yellow plush duck tangled in a long length of tan string with a metal carabiner, lying on a black bench beside a blue and orange foam-dart blaster.
 ---

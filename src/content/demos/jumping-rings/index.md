@@ -26,6 +26,11 @@ target_misconceptions:
   - "A ring with a thin cut in it behaves the same as a solid ring."
   - "Once the field is on and steady, nothing more can be induced."
 
+# --- media ---
+images:
+  - src: ./jumping-rings-01.jpg
+    alt: A metal cart holding an upright copper coil on a wooden base with a tall rod in a white sleeve, a switch box and power cord, and a spread of aluminum and copper rings, washers, and short tubes.
+
 # --- curator notes ---
 notes: >
   Extracted from the stockroom demo library document, 2026-08-13; the

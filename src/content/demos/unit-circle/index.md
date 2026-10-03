@@ -13,4 +13,8 @@ notes: >
   lectures. Triaged from the stockroom demo library document, 2026-08-13; see
   docs/triage-demo-library-2026-08.md for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./unit-circle-01.jpg
+    alt: A cardboard ring hand-marked with angles in degrees and radians, including 0, 90 degrees and pi over 2, and 180 degrees and pi, around a scratched metal disk with a short rod standing at its center.
 ---

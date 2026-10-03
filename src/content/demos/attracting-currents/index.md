@@ -11,4 +11,8 @@ notes: >
   document, 2026-08-13; see docs/triage-demo-library-2026-08.md for
   disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./attracting-currents-01.jpg
+    alt: Two stands, each holding a pair of long, thin parallel wires hanging from a clear acrylic bar on metal posts, with yellow leads at the top connections.
 ---

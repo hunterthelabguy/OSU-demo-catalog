@@ -1,0 +1,427 @@
+{
+  "source": "Old Reference Material/Legacy Demo Catalog/Physics Demo Library (Google Docs HTML export)",
+  "note": "Descriptions in the export are reference only (owner ruling 2026-09-28). image6 and image19 were replaced by the owner on 2026-09-28 before ingest. Every image was viewed before mapping; any image showing a person, a part of a person, or a reflection of one is held, never cropped. Alt text is a draft for owner review on the Part C PR. A held entry may carry draft targets (slug and alt) so the owner can release it without rewriting.",
+  "entries": [
+    {
+      "image": "image23",
+      "section": "Interlaced Books",
+      "targets": [
+        { "slug": "interlaced-books", "alt": "A thick, worn paperback catalog lying on a concrete floor beside an empty clear plastic bin labeled Interlaced Books (Friction Demo)." }
+      ]
+    },
+    {
+      "image": "image26",
+      "section": "Ballistic Cart",
+      "targets": [
+        { "slug": "ballistic-cart", "alt": "A black four-wheeled cart with an upright black launch tube and a steel ball resting on its deck, a loose gray cord tied to one end, beside a clear bin labeled Ballistic Cart Demo." }
+      ]
+    },
+    {
+      "image": "image50",
+      "section": "Newton's Cradle",
+      "targets": [
+        { "slug": "newtons-cradle", "alt": "A floor-standing aluminum frame with five steel balls hanging in a row, each suspended by two strings from the top rails." }
+      ]
+    },
+    {
+      "image": "image34",
+      "section": "Ballistic Pendulum",
+      "targets": [
+        { "slug": "ballistic-pendulum", "alt": "A ballistic pendulum stand with a spring-loaded short-range projectile launcher at its base and a swinging arm over a degree scale, with a bag of yellow and steel balls and an instruction manual on a black bench." }
+      ]
+    },
+    {
+      "image": "image17",
+      "section": "Falling Duck Shot",
+      "targets": [
+        { "slug": "falling-duck-shot", "alt": "A yellow plush duck tangled in a long length of tan string with a metal carabiner, lying on a black bench beside a blue and orange foam-dart blaster." }
+      ]
+    },
+    {
+      "image": "image45",
+      "section": "Mass Carts",
+      "targets": [
+        { "slug": "mass-carts", "alt": "A black metal track with a green cart on it, laid on a concrete floor, beside a four-wheeled aluminum cart carrying a foil-wrapped block labeled 416.6g." }
+      ]
+    },
+    {
+      "image": "image55",
+      "section": "Friction Plank",
+      "targets": [
+        { "slug": "friction-plank", "alt": "A long wooden plank lying on a concrete floor with a smaller rectangular wooden block beside it and a thin wire running from the block." }
+      ]
+    },
+    {
+      "image": "image59",
+      "section": "Gravity in Vacuum",
+      "targets": [
+        { "slug": "gravity-in-vacuum", "alt": "A long clear plastic tube with metal end caps and a valve with a yellow handle, lying on a black bench with a small white ball and a feather inside." }
+      ]
+    },
+    {
+      "image": "image32",
+      "section": "Unit Circle",
+      "targets": [
+        { "slug": "unit-circle", "alt": "A cardboard ring hand-marked with angles in degrees and radians, including 0, 90 degrees and pi over 2, and 180 degrees and pi, around a scratched metal disk with a short rod standing at its center." }
+      ]
+    },
+    {
+      "image": "image38",
+      "section": "Cartesian Coordinate Arrows",
+      "targets": [
+        { "slug": "cartesian-coordinate-arrows", "alt": "Two sets of three-axis coordinate arrows on a speckled floor, one with yellow, red, and blue dowels meeting at a round wooden hub and the other with plain wooden arrows set into a dark wooden block." }
+      ]
+    },
+    {
+      "image": "image57",
+      "section": "Centripetal Motion Marbles",
+      "targets": [
+        { "slug": "centripetal-motion-marbles", "alt": "A white ring with a gap standing on a clear plastic sheet marked with three numbered arrows leaving the gap, with a blue ball tied to a thread and a small orange marble inside the ring." }
+      ]
+    },
+    {
+      "image": "image6",
+      "section": "Light-Up Spinning Tennis Racket",
+      "targets": [
+        { "slug": "spinning-tennis-racket", "alt": "A blue tennis racket lying on a gray floor, with a small red LED in a black taped package fixed at the throat just below the strings." }
+      ]
+    },
+    {
+      "image": "image39",
+      "section": "Rolling Wheels",
+      "targets": [
+        { "slug": "rolling-wheels", "alt": "A steel hoop, a black hoop, and two solid wooden disks, one marked M2, standing on edge at the foot of a wide wooden ramp beside a clear bin labeled Moment of Inertia Rolling Wheels." }
+      ]
+    },
+    {
+      "image": "image47",
+      "section": "Physics Toys",
+      "targets": [
+        { "slug": "physics-toys", "alt": "Toys set out on a large storage bin labeled Physics Toys: a metal coiled spring toy, a wooden spinning top on a wooden launcher frame, a boxed Euler's Disk, and a box of UV-sensitive beads." }
+      ]
+    },
+    {
+      "image": "image12",
+      "section": "Pendulum Stand",
+      "targets": [
+        { "slug": "pendulum-stand", "alt": "A tall ring stand with a horizontal crossbar from which four light blue balls hang on strings of different lengths." }
+      ]
+    },
+    {
+      "image": "image44",
+      "section": "Spinning Chair + Wheel",
+      "targets": [
+        { "slug": "rotating-stool-dumbbells", "alt": "A heavy rotating stool with a wooden seat, curved metal hand rails, and a pedestal base on a wheeled dolly, holding a pair of blue dumbbells, a coil of cord, and a weighted spoked wheel with a handle at its hub." }
+      ]
+    },
+    {
+      "image": "image22",
+      "section": "Torque Gun",
+      "targets": [
+        { "slug": "torque-gun", "alt": "A clamp-on hand-crank drive with two crossed flexible brass bands forming a sphere on its spindle, lying on a concrete floor." }
+      ]
+    },
+    {
+      "image": "image25",
+      "section": "Doppler Football",
+      "targets": [
+        { "slug": "doppler-football", "alt": "A black and yellow foam football patched with gray duct tape and a red tab, beside an empty clear bin labeled Doppler Football and its white lid." }
+      ]
+    },
+    {
+      "image": "image48",
+      "section": "Driven Spring Resonator",
+      "targets": [
+        { "slug": "driven-spring-resonator", "alt": "A tall ring stand with a small motor and wheel on its crossbar, a small blue and white mass hanging on a line below it, and a bench power supply with a red lead running up to the motor." }
+      ]
+    },
+    {
+      "image": "image11",
+      "section": "Resonant Frequency Water Glasses",
+      "targets": [
+        { "slug": "resonant-water-glasses", "alt": "Three drinking glasses on a black bench, a tall tumbler and two stemmed glasses, each filled with water to a different level." }
+      ]
+    },
+    {
+      "image": "image7",
+      "section": "Stringed Cups",
+      "targets": [
+        { "slug": "stringed-cups", "alt": "Two cardboard tubes with blue plastic ends, joined by a string threaded through the center of each end, with spare string wound around one tube." }
+      ]
+    },
+    {
+      "image": "image42",
+      "section": "Standing Waves",
+      "targets": [
+        { "slug": "standing-waves", "alt": "A clear bin with purple latches, hand-labeled Standing Waves, holding a sine wave generator with its instruction manual, a power cord, a bagged vibrator unit, a white box, and coiled yellow string." }
+      ]
+    },
+    {
+      "image": "image5",
+      "section": "PH 20X \"Physics of Rock 'n' Roll\" Demos",
+      "targets": [
+        { "slug": "physics-of-music-demos", "alt": "Shelves of music demonstration equipment, including a metronome, glasses, a bottle, a cardboard tube wound with string, a tin can, a black box of knobs, a small solar panel, and lidded bins, with a handwritten sign reading Physics of Music (2 shelves), Do not separate." }
+      ]
+    },
+    {
+      "image": "image51",
+      "section": "Faraday Cage",
+      "targets": [
+        { "slug": "faraday-cage", "alt": "A box of wire mesh set upright on a concrete floor over a small black portable radio with its antenna extended." }
+      ]
+    },
+    {
+      "image": "image41",
+      "section": "Wood Induced Dipole",
+      "targets": [
+        { "slug": "wood-induced-dipole", "alt": "A long wooden board lying on a speckled floor beside an aluminum can, a piece of white fur, a white plastic rod, and a thick glass lens resting on a bin labeled Induced Dipole (+ Long Wooden Board)." }
+      ]
+    },
+    {
+      "image": "image27",
+      "section": "Wood Induced Dipole",
+      "targets": [
+        { "slug": "wood-induced-dipole", "alt": "The end of a white plastic rod close to an aluminum can lying on its side on a speckled floor." }
+      ]
+    },
+    {
+      "image": "image60",
+      "section": "Wood Induced Dipole",
+      "targets": [
+        { "slug": "wood-induced-dipole", "alt": "A long wooden board balanced across the top of a thick glass lens on a speckled floor." }
+      ]
+    },
+    {
+      "image": "image62",
+      "section": "Wood Induced Dipole",
+      "targets": [
+        { "slug": "wood-induced-dipole", "alt": "The end of a white plastic rod close to the end of a long wooden board, both lying on a speckled floor." }
+      ]
+    },
+    {
+      "image": "image20",
+      "section": "Jumping Rings",
+      "targets": [
+        { "slug": "jumping-rings", "alt": "A metal cart holding an upright copper coil on a wooden base with a tall rod in a white sleeve, a switch box and power cord, and a spread of aluminum and copper rings, washers, and short tubes." }
+      ]
+    },
+    {
+      "image": "image15",
+      "section": "Magnet Drop",
+      "targets": [
+        { "slug": "magnet-drop", "alt": "A copper pipe and a white plastic pipe of similar length clamped upright to a ring stand on a speckled floor." }
+      ]
+    },
+    {
+      "image": "image33",
+      "section": "Magnetic Braking Discs",
+      "targets": [
+        { "slug": "magnetic-braking-discs", "alt": "A blue U-shaped magnet with two pole blocks on a black bench beside several metal disks on swing arms, one copper, one slotted like a comb, and a large aluminum disk on a rod." }
+      ]
+    },
+    {
+      "image": "image37",
+      "section": "Induced Current Coil",
+      "targets": [
+        { "slug": "induced-current-coil", "alt": "A copper wire coil wound around a bar magnet painted half blue and half red, mounted on a clear acrylic stand with a red and a black terminal post." }
+      ]
+    },
+    {
+      "image": "image3",
+      "section": "Attracting Currents",
+      "targets": [
+        { "slug": "attracting-currents", "alt": "Two stands, each holding a pair of long, thin parallel wires hanging from a clear acrylic bar on metal posts, with yellow leads at the top connections." }
+      ]
+    },
+    {
+      "image": "image35",
+      "section": "Van De Graff Generators",
+      "targets": [
+        { "slug": "van-de-graaff-generators", "alt": "A handheld electrical wand with a pointed metal tip and a power cord, lying beside a circular fluorescent tube on a black bench." }
+      ]
+    },
+    {
+      "image": "image54",
+      "section": "Tesla Coil + Large Capacitor",
+      "targets": [
+        { "slug": "tesla-coil", "alt": "A Tesla coil with a copper-wound secondary inside a spiral of copper tubing and a curved copper discharge arm, on a cart beside a blue transformer and a gray capacitor can." },
+        { "slug": "large-capacitors", "alt": "A large gray capacitor can with a black lid carrying terminal posts and a lever, on a cart beside a blue transformer and a copper coil apparatus." }
+      ]
+    },
+    {
+      "image": "image53",
+      "section": "Static Repulsion",
+      "targets": [
+        { "slug": "static-repulsion", "alt": "A glass-sided electroscope box with a metal ball on a rod through the top and thin metal leaves hanging inside." }
+      ]
+    },
+    {
+      "image": "image52",
+      "section": "Cathode Ray Tube",
+      "targets": [
+        { "slug": "cathode-ray-tube", "alt": "A glass cathode ray tube in a yellow and black mount, wired with colored leads to a power supply box, beside an empty clear bin labeled Cathode Ray Tube." }
+      ]
+    },
+    {
+      "image": "image10",
+      "section": "Cathode Ray Tube",
+      "targets": [
+        { "slug": "cathode-ray-tube", "alt": "A hand-cranked generator with a large toothed wheel on a wooden base, wired to a clear light bulb in a porcelain socket on a separate wooden board." }
+      ]
+    },
+    {
+      "image": "image36",
+      "section": "Cathode Ray Tube",
+      "targets": [
+        { "slug": "cathode-ray-tube", "alt": "A clear plastic hand-crank generator with a red and a brown lead on a black bench." }
+      ]
+    },
+    {
+      "image": "image43",
+      "section": "Thermal Expansion",
+      "targets": [
+        { "slug": "thermal-expansion", "alt": "A brass plug and a brass ring, each on a long rod with a wooden handle, lying on a concrete floor in front of a bin labeled Thermal Expansion Demo." }
+      ]
+    },
+    {
+      "image": "image4",
+      "section": "Multiplicity Dice Activity",
+      "targets": [
+        { "slug": "multiplicity-dice", "alt": "A clear plastic bag full of multicolored eight-sided dice on a white table." }
+      ]
+    },
+    {
+      "image": "image18",
+      "section": "Poisson Spot",
+      "targets": [
+        { "slug": "poisson-spot", "alt": "A green module with a foam block and pin on top, a pen-shaped pointer clamped upright in a black stand, and a gold tin of colored pins, beside a bin labeled Poisson spot demo." }
+      ]
+    },
+    {
+      "image": "image28",
+      "section": "Holograms",
+      "targets": [
+        { "slug": "holograms", "alt": "Four closed black mirror domes with openings at the top, one showing a small red object and another a small dark object, on a wooden bench beside a pencil." }
+      ]
+    },
+    {
+      "image": "image14",
+      "section": "Strong Rare Earth Magnets",
+      "targets": [
+        { "slug": "strong-rare-earth-magnets", "alt": "Four small packets wrapped in foam and plastic with yellow warning labels, lying on a dark bench." }
+      ]
+    },
+    {
+      "image": "image8",
+      "section": "Large Magnets",
+      "targets": [
+        { "slug": "large-magnets", "alt": "Two heavy horseshoe-style magnets with pole pieces facing across a gap, one black with a paper label and one gray, on a black bench." }
+      ]
+    },
+    {
+      "image": "image56",
+      "section": "Large Capacitors",
+      "targets": [
+        { "slug": "large-capacitors", "alt": "Two tall aluminum can capacitors standing on a black bench, with terminal posts on their black tops." }
+      ]
+    },
+    {
+      "image": "image46",
+      "section": "Metal Filings",
+      "targets": [
+        { "slug": "metal-filings", "alt": "A glass jar with a black lid holding a layer of fine metal filings, beside an empty clear plastic container." }
+      ]
+    },
+    {
+      "image": "image30",
+      "section": "Voltmeters and Ammeters",
+      "targets": [
+        { "slug": "voltmeters-and-ammeters", "alt": "Two large demonstration meters on red bases, a 0 to 10 volt voltmeter and a 0 to 30 mA milliammeter, with two smaller panel meters between them." }
+      ]
+    },
+    {
+      "image": "image21",
+      "section": "Wire Rings",
+      "targets": [
+        { "slug": "wire-rings", "alt": "Two large loops of black cable wound with red wire, lying on a black bench." }
+      ]
+    }
+  ],
+  "commons": [
+    {
+      "url": "https://commons.wikimedia.org/wiki/File:Flame-tube-resonance.jpg",
+      "slug": "physics-of-music-demos",
+      "alt": "A long Rubens tube on a bench beside a signal generator, its flames rising in five evenly spaced peaks along the tube.",
+      "caption": "Representative photo, not the OSU apparatus. Photo: MikeRun, CC BY-SA 4.0, via Wikimedia Commons (commons.wikimedia.org/wiki/File:Flame-tube-resonance.jpg), resized."
+    }
+  ],
+  "excluded": [
+    { "image": "image49", "reason": "Document header banner above the first section heading: a building exterior photograph, not a demo" },
+    { "image": "image1", "reason": "Equation fragment, 8 by 18 px (amendment 19)" },
+    { "image": "image2", "reason": "Equation fragment, 23 by 18 px (amendment 19)" },
+    { "image": "image19", "reason": "Reposted vendor image with no license; replaced by the Commons photo" }
+  ],
+  "held": [
+    {
+      "image": "image31",
+      "section": "Friction Block",
+      "candidates": ["friction-block"],
+      "reason": "Shows a hand: probable fingertip over the lens at the lower-left corner",
+      "targets": [
+        { "slug": "friction-block", "alt": "A rectangular wooden block with a sandpaper top face, tied by a cord to a round-dial spring scale, beside an empty clear bin labeled Friction Block." }
+      ]
+    },
+    {
+      "image": "image9",
+      "section": "Ballistic Cart",
+      "candidates": ["ballistic-cart"],
+      "reason": "Shows a hand: fingers pressing into the cart's launch tube"
+    },
+    {
+      "image": "image29",
+      "section": "Ballistic Cart",
+      "candidates": ["ballistic-cart"],
+      "reason": "Shows a hand: pulling the cart's release cord"
+    },
+    {
+      "image": "image24",
+      "section": "Ball Ramps",
+      "candidates": ["ball-ramps"],
+      "reason": "Dark object at the lower-left edge that may be the photographer's shoe; owner to rule whether it is part of a person"
+    },
+    {
+      "image": "image13",
+      "section": "Pressure Vessels",
+      "candidates": ["magdeburg-hemispheres", "balloon-chamber"],
+      "reason": "Possible reflection of the photographer in the chrome pump barrel; same kind of evidence as image16",
+      "targets": [
+        { "slug": "magdeburg-hemispheres", "alt": "A pair of red-lined metal hemispheres, one on a stand with a hose fitting, connected by tubing to a tall gray hand pump on a black base." },
+        { "slug": "balloon-chamber", "alt": "A glass jar with a blue lid and a small dark object inside, connected by amber tubing to a tall chrome hand pump on a wooden base." }
+      ]
+    },
+    {
+      "image": "image58",
+      "section": "Driven Spring Resonator",
+      "candidates": ["driven-spring-resonator"],
+      "reason": "Not a photograph: a data plot titled LRC Vout/Vin Dependence on Frequency, measured points against a theoretical curve; an electrical circuit plot on a mechanical record, and the data's origin is unknown"
+    },
+    {
+      "image": "image61",
+      "section": "Driven Spring Resonator",
+      "candidates": ["driven-spring-resonator"],
+      "reason": "Not a photograph: a data plot titled LRC Phase Dependence on Frequency, measured points against a theoretical curve; an electrical circuit plot on a mechanical record, and the data's origin is unknown"
+    },
+    {
+      "image": "image40",
+      "section": "Magnet Drop",
+      "candidates": ["magnet-drop"],
+      "reason": "Shows a hand: fingers holding the slotted copper tube at its lower end"
+    },
+    {
+      "image": "image16",
+      "section": "Van De Graff Generators",
+      "candidates": ["van-de-graaff-generators"],
+      "reason": "Reflection of a person (the photographer) visible in the chrome spheres"
+    }
+  ]
+}

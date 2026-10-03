@@ -257,6 +257,15 @@ less, and that no file under a slug directory is anything other than a record
 fails the build. The slug must be lowercase letters, digits, and hyphens, and
 the index a positive integer; anything else is refused before writing.
 
+A whole batch from the legacy export goes through `scripts/ingest-legacy-batch.mjs`,
+which drives `ingest-photo.mjs` from `docs/legacy-images-2026-09.json`:
+
+```
+node scripts/ingest-legacy-batch.mjs <export-images-dir> [--commons <file>] [--skip-commons] [--dry-run]
+```
+
+It refuses a record that already has `images` before writing any file.
+
 ---
 
 ## Building and running

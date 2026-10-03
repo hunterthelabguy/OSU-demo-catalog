@@ -16,4 +16,8 @@ notes: >
   2026-08-13; see docs/triage-demo-library-2026-08.md for disposition and
   corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./tesla-coil-01.jpg
+    alt: A Tesla coil with a copper-wound secondary inside a spiral of copper tubing and a curved copper discharge arm, on a cart beside a blue transformer and a gray capacitor can.
 ---

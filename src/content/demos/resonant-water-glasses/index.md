@@ -12,4 +12,8 @@ notes: >
   stockroom demo library document, 2026-08-13; see docs/triage-demo-
   library-2026-08.md for disposition and corrections.
 last_updated: 2026-08-13
+# --- media ---
+images:
+  - src: ./resonant-water-glasses-01.jpg
+    alt: Three drinking glasses on a black bench, a tall tumbler and two stemmed glasses, each filled with water to a different level.
 ---

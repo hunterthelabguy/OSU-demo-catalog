@@ -14,8 +14,11 @@ Last updated: 2026-09-28
   any / Match all, course as scope) and Pagefind search. Desktop and mobile
   designs shipped (amendments 12, 13, 15). Build-time LaTeX via KaTeX.
 - **Content: 54 records**, 12 `drafted` and 42 `stub`, none `verified`.
-  No record has a photograph yet. The twelve drafted records carry a
-  `summary`, for owner review.
+  44 records carry at least one photograph: 51 JPEGs, 8,285,610 bytes,
+  from the legacy export through `scripts/ingest-legacy-batch.mjs`, including one Wikimedia Commons image
+  (CC BY-SA 4.0, MikeRun) standing in on `physics-of-music-demos`. Mapping
+  and alt text: `docs/legacy-images-2026-09.json`. The twelve drafted
+  records carry a `summary`, for owner review.
 - **Brand pass** (amendment 18), shipped 2026-09-28: six theme tokens, every color a
   listed OSU palette value on pure white and black grounds, held by
   `tests/brand-palette.test.ts`; the official two-color mark swapped by
@@ -30,8 +33,8 @@ Last updated: 2026-09-28
   `scripts/ingest-photo.mjs` with its unit test and a repo-wide image
   invariant; the unchecked-apparatus note, the provisional-locations line
   near search, and `public/robots.txt` refusing all crawlers.
-- **Verification**: 74 vitest tests in 10 files plus 29 Playwright
-  tests (23 at 375x812, 6 at 1280x800), counted 2026-09-28. `npm run verify` is the gate; CI runs it on
+- **Verification**: 132 vitest tests in 11 files plus 29 Playwright tests
+  (23 at 375x812, 6 at 1280x800), observed 2026-09-28. `npm run verify` is the gate; CI runs it on
   every PR.
 - **Production** tracks `main` at https://osu-demo-catalog.vercel.app,
   `noindex` site-wide, permanently (amendment 22).
@@ -39,17 +42,14 @@ Last updated: 2026-09-28
 ## In flight
 
 Parts A (brand pass) and B (summary field, row cards, ingest tool) shipped
-2026-09-28. Part C is next and will open its PR unmerged for owner review
-(amendment 23); the build is planned in
+2026-09-28. Part C awaits owner review in an unmerged PR (amendment 23); the build is planned in
 `docs/plans/2026-09-28-brand-summary-images.md`. Amendments 16 to 22 merged
 2026-09-28 in PR #22.
 
 ## Queue, in order
 
-1. **Legacy images and the racket redraft** (amendment 17; Part C, PR left
-   unmerged for owner review, amendment 23): the mapping file with alt text
-   for owner review, the batch ingest, the tennis racket redraft for its
-   2026-09-25 rebuild, the reshoot list. Byte total reported before commit.
+1. **Legacy images and the racket redraft** (amendment 17; Part C, built,
+   PR unmerged for owner review, amendment 23): merge after review.
 2. **Legacy equations in KaTeX** (amendment 19).
 3. **Named, not scheduled**: embedded video and simulations; the installable
    offline catalog (phase 7); the cached PIRA list (phase 5).
@@ -65,10 +65,32 @@ after the stockroom reorganization; the website work is not blocked by it.
   audience"): rule it in or strike it.
 - Enable host-level bot blocking in the Vercel dashboard (amendment 22).
 - Review the twelve summaries (Part B, merged, reviewed afterward).
-- Part C's PR waits unmerged for review (amendment 23): the image alt text
-  and anything held from the faces pass, and the tennis racket redraft.
+- Review of Part C's PR (amendment 23), unmerged: the mapping and all alt
+  text; the racket redraft (single-LED rebuild); the byte total (8,285,610
+  across 51 JPEGs); and nine images held for a ruling, none ingested:
+  - image9, image29, image40, image31: each shows a hand.
+  - image16, image13: possible photographer reflection.
+  - image24: possible shoe.
+  - image58, image61: LRC data plots, source unknown.
 - The user-level OSU addendum still names `docs/build-plan.md` as this
   repo's living plan; state now lives in STATE.md.
+
+## Reshoot list
+
+Computed 2026-09-28 on `claude/legacy-images` from the records and files
+themselves.
+
+- **Representative photo, not the OSU apparatus**: `physics-of-music-demos`
+  carries the Commons Rubens tube image.
+- **Under 400 px on the long edge**: `holograms` (`holograms-01.jpg`,
+  320x240); `driven-spring-resonator` (`driven-spring-resonator-01.jpg`,
+  240x320). No other ingested image is under 400 px.
+- **Sideways with no EXIF tag**: `wire-rings` (`wire-rings-01.jpg`, from
+  legacy image21); needs rotation or a reshoot.
+- **No photo (10 records)**: ball-ramps, balloon-chamber, bed-of-nails,
+  current-generating-cranks, friction-block, inductive-jump-ropes,
+  leaf-blower-hovercraft, magdeburg-hemispheres, slit-interference,
+  tesla-gun. Records held out by the faces pass are among them.
 
 ## Watch items
 
