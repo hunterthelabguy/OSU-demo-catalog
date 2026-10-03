@@ -92,11 +92,8 @@ Git identity and transport:
 
 ## Conventions that bite
 
-- **No em dashes** in anything committed here. Grep before committing:
-  the owner's rule for public prose covers every file in a public repo.
-  `grep -P "\x{2014}"` fails on this machine's Git Bash ("character
-  value in \x{} is too large": the pattern is not in UTF-8 mode). What
-  works is the raw bytes: `git diff | grep $'\xe2\x80\x94'`.
+- **No em dashes in demo summaries.** `tests/content-invariants.test.ts`
+  enforces it (amendment 16); nothing else is checked.
 - **No invented record data.** Never fabricate PIRA codes, shelf locations,
   maintenance history, or dates. Fixture placeholders are marked in `notes`.
 - **Filter semantics live in `src/lib/filter-logic.ts`**, never in the

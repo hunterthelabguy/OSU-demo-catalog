@@ -55,8 +55,8 @@ the user before writing.
 
 ## 4. Respect repo conventions
 
-- Never use em dashes in anything committed to this repo; the owner's rule for public
-  prose applies to every file here.
+- No em dashes in demo summaries; `tests/content-invariants.test.ts` enforces it
+  (amendment 16).
 - A repo must not lie about its verification: never document a command, badge, or claim
   that is not real and tested.
 - Do not duplicate what the README, spec, or build-plan already record; link instead.
