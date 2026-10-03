@@ -87,7 +87,7 @@ did; do not re-summarize the whole conversation. Shape:
   judgment; do not build on these until ruled.
 - **Verify**: `npm run verify`; the preview-not-dev rule for search; the PR gate recipe
   above, compressed to a line.
-- **Watch-items**: standing conventions that bite (no em dashes in repo prose, no
+- **Watch-items**: standing conventions that bite (no em dashes in demo summaries, test-enforced; no
   invented record data, accent tokens and their contrast contract, the noindex-until-
   launch flag).
 
